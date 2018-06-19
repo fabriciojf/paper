@@ -1,0 +1,1104 @@
+﻿<html><head><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,  initial-scale=1"><meta content="Linguagem de template para formatação de texto com elementos extraídos de um XML." name="description"><title>Template de Texto</title>
+<style type="text/css">
+body {
+  font-family: "Helvetica Neue", Helvetica, arial, sans;
+  max-width: 900px;
+  margin: auto;
+  color: #515151;
+  padding-bottom: 50px;
+  font-size: 10pt;
+}
+
+pre,
+code {
+  font-family: monospace consola courier;
+}
+code {
+  font-family: monospace;
+  font-size: 90%;
+}
+
+h6 { font-size: 10pt; }
+h5 { font-size: 11pt; }
+h4 { font-size: 12pt; }
+h3 { font-size: 13pt; }
+h2 { font-size: 14pt; }
+h1 { font-size: 15pt; }
+
+p {
+  text-align: justify;
+}
+
+h1 a, h1 a:visited,
+h2 a, h2 a:visited,
+h3 a, h3 a:visited,
+h4 a, h4 a:visited,
+h5 a, h5 a:visited {
+  color: #515151;
+  text-decoration: none;
+}
+
+blockquote {
+  border-left: 2px solid lightgray;
+  padding-left: 10px;
+  font-style: italic;
+  color: #888;
+}
+
+table {
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+colgroup {
+  display: none;
+}
+
+td, th {
+  padding: 4px 8px 4px 8px;
+}
+
+td {
+  border: 1px solid #eee;
+}
+
+li {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+dl {
+  margin-left: 40px;
+}
+
+dt {
+  font-weight: bold;
+  display: list-item;
+  list-style: square;
+}
+
+dd {
+  margin-left: 0;
+  margin-bottom: 10px;
+}
+
+code, pre {
+}
+
+code {
+/*
+  padding: 0px 2px 0px 2px;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+*/
+}
+
+pre code {
+  padding: 0;
+  color: inherit;
+  background-color: inherit;
+  border: none;
+}
+
+pre {
+  padding: 10px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+}
+
+hr {
+  border: 0px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 0px;
+  margin-top: 20px;
+}
+
+.figure {
+  display: inline-block;
+  text-align: center;
+}
+
+.vermelho {
+  padding-left: 4px;
+  padding-right: 4px;
+  background-color: #d40000;
+  color: white;
+}
+
+#TOC {
+  margin: 30px 0px 20px 20px;
+  float: right;
+  border: 1px solid #eee;
+  background-color: #f8f8f8;
+}
+
+#TOC li {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#TOC>ul {
+  padding: 0px;
+}
+
+#TOC>ul>li {
+  display: block;
+}
+
+</style>
+
+
+
+</head><body><div class="workplace"><div class="container"><div class="content">
+<div id="TOC">
+<ul>
+<li><a href="#template-de-texto">Template de Texto</a><ul>
+<li><a href="#visão-geral">Visão Geral</a></li>
+<li><a href="#sintaxe">1. Sintaxe</a></li>
+<li><a href="#comandos-de-extração-de-dados">2. Comandos de Extração de Dados</a><ul>
+<li><a href="#tag-de-xml">2.1. Tag de XML</a></li>
+<li><a href="#property">2.2. Property</a></li>
+</ul></li>
+<li><a href="#comandos-de-transformação-de-dados">3. Comandos de Transformação de Dados</a><ul>
+<li><a href="#coalesce">3.1. Coalesce</a></li>
+<li><a href="#array">3.2. Array</a></li>
+<li><a href="#format">3.3. Format</a></li>
+<li><a href="#replace">3.4. Replace</a></li>
+<li><a href="#search-regex">3.5. Search (Regex)</a></li>
+<li><a href="#mid">3.6. Mid</a></li>
+<li><a href="#casting">3.7. Casting</a></li>
+</ul></li>
+<li><a href="#comandos-de-controle-de-fluxo">4. Comandos de Controle de Fluxo</a><ul>
+<li><a href="#ternary">4.1. Ternary</a></li>
+<li><a href="#comparison">4.2. Comparison</a></li>
+</ul></li>
+<li><a href="#sintaxe-avançada">5. Sintaxe Avançada</a><ul>
+<li><a href="#coalesce-e-array">5.1. Coalesce e Array</a></li>
+<li><a href="#expansão-de-array">5.2. Expansão de Array</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="template-de-texto"><a href="#TOC">Template de Texto</a></h1>
+<p>Linguagem de template para formatação de texto com elementos extraídos de um XML.</p>
+<h2 id="visão-geral"><a href="#TOC">Visão Geral</a></h2>
+<p>O template é uma linguagem simplificada para extrair, transformar e formatar dados extraídos de um XML para produzir um texto de saída, como o caminho de um arquivo exportado, por exemplo.</p>
+<p>O template é um texto simples mesclado com instruções de transformação de dados.</p>
+<p>Uma transformação de dados é uma série de comandos em linha. Durante o processamento da transformação o resultado de um comando é passado para o comando seguinte, formando assim, um processamento em linha.</p>
+<p>Um comando é composto de um ou mais blocos de código.</p>
+<p><strong>Notação básica:</strong></p>
+<ul>
+<li>A transformação é denotada por chaves (<code>{...}</code>).</li>
+<li>A sequência de comandos da instrução é separada por barra vertical (<code>|</code>).</li>
+<li>A sequência de blocos do comando é separada por ponto-e-vírgula (<code>;</code>).</li>
+<li>Os caracteres <code>$</code>, <code>%</code>, <code>{</code>, <code>}</code> e <code>:</code> têm significado na estruturação da linguagem e por isso são reservados.</li>
+</ul>
+<p><strong>Exemplo do Template:</strong></p>
+<p>A sintaxe da linguagem é detalhada nas próximas seções, mas por ora, para apresentar a linguagem, considere este template:</p>
+<pre><code>D:\Xmls\{$..emit.CNPJ}\{$..dhEmi;$..dhEvento|%d|{yyyy-MM}}\{$..@Id|%s;[^0-9];}-{$..NFe|?;procNFe;cancNFe}.xml</code></pre>
+<p>O que este template faz?</p>
+<ol style="list-style-type: decimal">
+<li>Imprime <code>D:\Xmls\</code></li>
+<li>Destaca a tag <code>emit/CNPJ</code> e imprime</li>
+<li>Imprime <code>\</code></li>
+<li>Destaca a tag <code>dhEmi</code> se houver, senão, destaca a tag <code>dhEvento</code>.
+<ol style="list-style-type: decimal">
+<li>Converte o texto para data.</li>
+<li>Formata a data como mês e ano.</li>
+<li>Imprime o resultado</li>
+</ol></li>
+<li>Imprime <code>\</code></li>
+<li>Destaca o atributo <code>Id</code>
+<ol style="list-style-type: decimal">
+<li>Aplica uma substituição com Regex, substituindo caracteres não numéricos por nada.</li>
+<li>Imprime o resultado</li>
+</ol></li>
+<li>Imprime <code>-</code></li>
+<li>Destaca a tag <code>NFe</code>
+<ol style="list-style-type: decimal">
+<li>Se a tag existir:
+<ol style="list-style-type: decimal">
+<li>Então, imprime <code>procNFe</code></li>
+<li>Senão, imprime <code>cancNFe</code></li>
+</ol></li>
+</ol></li>
+<li>Imprime <code>.xml</code></li>
+</ol>
+<p>O resultado é algo como:</p>
+<pre><code>D:\Xmls\51224514000140\2017-06\31070251224514000140560010000245610000125419-procNFe.xml</code></pre>
+<h2 id="sintaxe"><a href="#TOC">1. Sintaxe</a></h2>
+<dl>
+<dt>Template</dt>
+<dd><p>Template mesclando textos e pipelines de transformação.</p>
+<pre><code>"A chave da nota {$..NFe..chNFe} é válida"
+ ^^^^^^^^^^^^^^^ ^^^^^^^^^^^^^^^ ^^^^^^^^
+      texto          pipeline      texto</code></pre>
+</dd>
+<dt>Pipeline</dt>
+<dd><p>Uma sequência de comandos separados por (<code>|</code>).<br>Durante o processamento o resultado de um comando é repassado para o comando seguinte, criando o processamento em linha.</p>
+<pre><code>$..vNF|%f|{#,##.00}
+^^^^^^ ^^ ^^^^^^^^^
+     comandos</code></pre>
+</dd>
+<dt>Comando</dt>
+<dd><p>Um código que desempenha uma função de extração, transformação ou formatação de dados.</p>
+<pre><code>   # acesso a propriedade:
+   $ctx.user.name
+
+   # conversao para data/hora:
+   %d
+
+   # substitui "a" por "A":
+   %s;a;A
+
+   # extrai do segundo ao nono caractere:
+   [2;9]
+
+   # formata uma data
+   {dd/MM/yyyy}</code></pre>
+</dd>
+<dt>Argumentos</dt>
+<dd><p>Parâmetros do comando separados por ponto-e-vírgula (<code>;</code>):</p>
+<pre><code>   %s;NFe;55
+   ^^ ^^^ ^^</code></pre>
+</dd>
+<dt>Template Aninhado</dt>
+<dd><p>Um template inserido dentro de um outro template delimitado por parêntesis <code>(...)</code>:</p>
+<pre><code>%r;NFe;($..mod|%d|{00})
+        ^^^^^^^^^^^^^^
+       pipeline interno</code></pre>
+</dd>
+</dl>
+<h2 id="comandos-de-extração-de-dados"><a href="#TOC">2. Comandos de Extração de Dados</a></h2>
+<p>Comandos que extraem dados do contexto de execução do template e repassam para o comando seguinte.</p>
+<h3 id="tag-de-xml"><a href="#TOC">2.1. Tag de XML</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Extrair tag ou atributo de um XML.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>$TERMO</code></pre>
+</dd>
+</dl>
+<p>A sintaxe de escrita segue a forma <a href="TagPath.md">TagPath</a> e deve ser iniciado por um dólar (<code>$</code>).</p>
+<pre><code>$enviNFe.NFe.infNFe.ide.nNF</code></pre>
+<p>TagPath é usado na detecção de tag por parentesco. Todas as formas de TagPath são suportadas, mas a forma mais comum é a detecção de tag independentemente do parentesco:</p>
+<pre><code>$..nNF</code></pre>
+<p>Em TagPath atributo é referenciado por arroba (<code>@</code>):</p>
+<pre><code>$..@Id</code></pre>
+<p>Leia mais:</p>
+<ul>
+<li><a href="TagPath.md">TagPath</a></li>
+</ul>
+<h3 id="property"><a href="#TOC">2.2. Property</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Extrair propriedade de objeto anexado ao contexto de execução.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>$ctx.TERMO</code></pre>
+</dd>
+</dl>
+<p>O método de processamento do template pode oferecer diversas variáveis e objetos adicionais relacionados com o contexto de execução. Estes recursos são acessados pelo comando de <code>$ctx</code>, na forma simples de propriedades.</p>
+<pre><code>$ctx.aplicativo.titulo</code></pre>
+<p>Na forma simples, as propriedades são expressas em <a href="ConvencaoDeNome.md">camelCase</a> e separadas por ponto (<code>.</code>). Quando uma propriedade é nula a varredura de profundidade pára e nulo é retornado para o algoritmo.</p>
+<p>As propriedades oferecidas pelo <code>$ctx</code> dependem do aplicativo que utiliza o template. Por padrão não há propriedades declaradas.</p>
+<h2 id="comandos-de-transformação-de-dados"><a href="#TOC">3. Comandos de Transformação de Dados</a></h2>
+<p>Comandos que aplicam regras de transformação no dado recebido e repassam o resultado para o comando seguinte.</p>
+<h3 id="coalesce"><a href="#TOC">3.1. Coalesce</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Retornar o primeiro valor não-nulo e não-vazio de uma sequência.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>TERMO;TERMO;...</code></pre>
+</dd>
+</dl>
+<p>O comando resolve a lista de termos separados por ponto-e-vírgula da esquerda para a direita e retorna o primeiro item não-nulo e não-vazio, repassando o resultado para o comando seguinte.</p>
+<p>Neste exemplo, o comando extrai a primeira tag CNPJ ou CPF que ele encontrar no XML:</p>
+<pre><code>$..emit.CNPJ;..emit.CPF</code></pre>
+<p>Coalesce e Array são intrinsecamente relacionados.<br>O mesmo algoritmo implementa os dois comandos.<br>Leia mais na seção <a href="#coalesce-e-array">3.1. Coalesce e Array</a></p>
+<h3 id="array"><a href="#TOC">3.2. Array</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Repassar um conjunto de termos para o comando seguinte.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>TERMO;TERMO;...</code></pre>
+</dd>
+</dl>
+<p>Os termos são repassados para o comando seguinte em um Array de índice iniciado em 1.</p>
+<p>Os termos deve ser explicitamente referenciados pelo índice entre chaves <code>{I}</code>.</p>
+<p>Exemplo:</p>
+<pre><code>$..nNF;$..serie;$..vNF|O valor da nota de número {1}, série {2} é: {3}</code></pre>
+<p>Coalesce e Array são intrinsecamente relacionados.<br>O mesmo algoritmo implementa os dois comandos.<br>Leia mais na seção <a href="#coalesce-e-array">3.1. Coalesce e Array</a></p>
+<h3 id="format"><a href="#TOC">3.3. Format</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Aplicar uma formatação de valor.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>{INDICE,ALINHAMENTO:FORMATO}</code></pre>
+</dd>
+</dl>
+<p>O comando aplica uma formatação de texto de acordo com o padrão suportado pelo método [String.Format() do C#].</p>
+<p>Em resumo:</p>
+<dl>
+<dt>ÍNDICE</dt>
+<dd><p>Índice do termo do Array a ser formatado, iniciando em 1.</p>
+<p>Exemplo:</p>
+<pre><code>$..nNF;$..serie|Nota fiscal número {1}, série {2}</code></pre>
+<p>Os índices a partir de "1" se referem a termos do Array, enquanto o índice "0" refere-se à entrada padrão do comando, e pode ser omitida se desejado.</p>
+<p>Os dois exemplos são equivalentes:</p>
+<pre><code>$..nNF|Nota fiscal número {}
+$..nNF|Nota fiscal número {0}</code></pre>
+<p>Desta forma, para obter o valor do comando <a href="#coalesce">Coalesce</a> aplicado sobre o <a href="#array">Array</a> e ainda acessar os termos do Array basta usar o índice "0" para o resultado do coalesce e índices a partir de "1" para acessar os termos do Array. Leia mais na seção <a href="#coalesce-e-array">3.1. Coalesce e Array</a>.</p>
+<p>Exemplo:</p>
+<pre><code>;10;20|Dos termos '{1}', '{2}' e '{3}' o termo '{0}' foi escolhido.
+
+Imprime
+  "Dos termos '', '10' e '20' o termo '10' foi escolhido."</code></pre>
+</dd>
+<dt>ALINHAMENTO</dt>
+<dd><p>Alinhamento do texto quando construindo texto de tamanho fixo.</p>
+<p>Use um número positivo para alinhar à direita e negativo para alinhar à esquerda.</p>
+<p>Exemplos:</p>
+<pre><code>NFe;55|{1,-5}{2,5}
+
+Imprime
+  "NFe     55"</code></pre>
+</dd>
+<dt>FORMATO</dt>
+<dd><p>Aplica uma formatação personalizada para o tipo do argumento.</p>
+<p>O valor a ser formatado deve corresponder ao tipo desejado. Por exemplo, para formatar um valor como número decimal é necessário convertê-lo para decimal.</p>
+<p>Apenas os tipos número e data/hora são suportados e os <a href="#conversao-de-tipo">comandos de conversão</a> de tipo podem ser usados:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Conversão</th>
+<th align="left">Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Inteiro</td>
+<td align="left">%i</td>
+<td align="left"><code>$..nNF|%i|{00000000}</code></td>
+</tr>
+<tr class="even">
+<td align="left">Flutuante</td>
+<td align="left">%f</td>
+<td align="left"><code>$..vICMS|%f|{#,##0.00}</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Data/Hora</td>
+<td align="left">%d</td>
+<td align="left"><code>$..dhEmi|%d|{dd/MM/yyyy}</code></td>
+</tr>
+</tbody>
+</table>
+<p>O template suporta os padrões do C# para:</p>
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings">Formatação de números</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings">Formatação de data/hora</a></li>
+</ul>
+<p>Sendo os mais comuns:</p>
+<dl>
+<dt>Casas decimais</dt>
+<dd><pre><code>1500|%f|{#,#00.00}
+
+Imprime
+  "1.500,00"</code></pre>
+</dd>
+<dt>Zeros à esquerda</dt>
+<dd><pre><code>1500|%i|{00000000}
+
+Imprime
+  "00001500"</code></pre>
+</dd>
+<dt>Data/Hora</dt>
+<dd><p>Com formatos personalizados para datas, horas e time-zones.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Formato</th>
+<th align="left">Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>d</code></td>
+<td align="left">Dia com uma casa.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>dd</code></td>
+<td align="left">Dia com duas casas.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>M</code></td>
+<td align="left">Mês com uma casa.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>MM</code></td>
+<td align="left">Mês com duas casas.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>yy</code></td>
+<td align="left">Ano com duas casas.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>yyyy</code></td>
+<td align="left">Ano com três casas.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>h</code></td>
+<td align="left">Hora com uma casa.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>hh</code></td>
+<td align="left">Hora com duas casas.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>m</code></td>
+<td align="left">Minuto com uma casa.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>mm</code></td>
+<td align="left">Minuto com duas casas.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>s</code></td>
+<td align="left">Segundo com uma casa.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>ss</code></td>
+<td align="left">Segundo com duas casas.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>zzz</code></td>
+<td align="left">Time-zone, no formato <code>+0:00</code> e <code>-0:00</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Exemplo:</p>
+<pre><code>$..dhEmi|{yyyy-MM-ddThh:mm:sszzz}
+
+Imprime:
+  "2017-10-03T19:47:42-3:00"</code></pre>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Exemplo Geral</strong></p>
+<p>Exemplo de formatação composta dos diversos elementos apresentados:</p>
+<pre><code>$..nNF;$..dhEmi|$;%d|Nota fiscal {1} emitida em: {2:dd/MM/yy}
+
+Imprime
+  "Nota fiscal 1234 emitida em: 03/10/17"</code></pre>
+<p>Explicação:</p>
+<ol style="list-style-type: decimal">
+<li>O número e a data de emissão da nota são destacados do XML.</li>
+<li>Usando <a href="#expansão-de-array">Expansão de Array</a> o primeiro termo é repassado como está e o segundo termo é convertido para data.</li>
+<li>Os dois termos são aplicados na formatação.</li>
+</ol>
+<h3 id="replace"><a href="#TOC">3.4. Replace</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Aplicar uma substituição de texto</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>%r;TERMO;TERMO</code></pre>
+</dd>
+</dl>
+<p>O comando procura por um termo no texto recebido do comando anterior e aplica uma substituição.</p>
+<pre><code>Lorem ipsum|%r;ipsum;ipsum dolore
+
+Imprime
+  "Lorem ipsum dolore"</code></pre>
+<h3 id="search-regex"><a href="#TOC">3.5. Search (Regex)</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Aplicar uma substituição de texto por expressão regular.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>%s;REGEX
+%s;REGEX;TERMO</code></pre>
+</dd>
+</dl>
+<p>O comando procura pela ocorrência de uma <a href="https://pt.wikipedia.org/wiki/Express%C3%A3o_regular">expressão regular</a> no texto recebido do comando anterior e opcionalmente aplica uma substituição.</p>
+<p><strong>Formato de Pequisa</strong></p>
+<p>No formato de pesquisa o comando deve ter duas partes: O comando <code>%s</code> e a expressão regular.</p>
+<p>O comando aplica a expressão regular no texto recebido do comando anterior e repassa para o próximo comando ou o texto capturado ou vazio.</p>
+<pre><code>Lorem ipsum dolore|%s;sum.*lo|Texto: '{}'
+
+Imprime
+  Texto: 'sum dolo'
+
+Lorem ipsum|%s;sum.*lo|Texto: '{}'
+
+Imprime
+  Texto: ''</code></pre>
+<p>O resultado do comando pode ser usado em conjunto com os comandos de controle de fluxo, como o operador [Ternary]:</p>
+<pre><code>Lorem ipsum|%s;dolore|?;Encontrado;Não encontrado
+
+Imprime
+  "Não encontrado"</code></pre>
+<p><strong>Formato de Substituição</strong></p>
+<p>No formato de substituição o comando deve ter três partes: O comando <code>%s</code>, a expressão regular e o termo substituto.</p>
+<p>O comando aplica uma substituição no texto capturado com a expressão regular e repassa o texto inteiro modificado para o próximo comando. Se a expressão regular não capturar qualquer texto o texto inteiro recebido é passado a diante.</p>
+<p>A substituição pode referenciar grupos capturados pela expressão regular e partes do texto original:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Parte</th>
+<th align="left">Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">$N</td>
+<td align="left">O texto de grupo capturado identificado pelo seu número.</td>
+</tr>
+<tr class="even">
+<td align="left">$+</td>
+<td align="left">O texto do último grupo capturado.</td>
+</tr>
+<tr class="odd">
+<td align="left">$&amp;</td>
+<td align="left">O texto capturado pelo regex.</td>
+</tr>
+<tr class="even">
+<td align="left">$`</td>
+<td align="left">O texto antes do regex capturado.</td>
+</tr>
+<tr class="odd">
+<td align="left">$'</td>
+<td align="left">O texto depois do regex capturado.</td>
+</tr>
+<tr class="even">
+<td align="left">$_</td>
+<td align="left">O texto inteiro, exatamente como recebido.</td>
+</tr>
+<tr class="odd">
+<td align="left">$$</td>
+<td align="left">Escape para imprimir o caractere <code>$</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Em <a href="https://pt.wikipedia.org/wiki/Express%C3%A3o_regular">expressão regular</a>, grupos são denotados por parêntesis <code>(...)</code>.</p>
+<pre><code>Nota fiscal 451, série 5|%s;([0-9]+).+([0-9]+);$`$2/$1
+            ^^^^^^^^^^^^
+           regex capturado
+
+Imprime
+  "Nota fiscal 5/451"</code></pre>
+<h3 id="mid"><a href="#TOC">3.6. Mid</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Destacar partes de um texto.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>%[N;M]</code></pre>
+</dd>
+</dl>
+<p>O comando recebe dois argumentos, o índice inicial inclusivo e o índice final inclusivo, e destaca do texto os caracteres no intervalo. Os índices se iniciam em 1.</p>
+<pre><code>Lorem ipsum|%[3;7]
+^^^^^^^^^^^
+12345678...
+  índices
+
+Imprime
+  "rem i"</code></pre>
+<p>Se o primeiro índice for negativo a consulta é feita de traz pra frente:</p>
+<pre><code>Lorem ipsum|%[-3;7]
+^^^^^^^^^^^
+...87654321
+  índices
+
+Imprime
+  "m ips"</code></pre>
+<p>Se o segundo parâmetro for omitido o intervalo destacado segue até o fim da sequência:</p>
+<pre><code>Lorem ipsum|%[3]
+^^^^^^^^^^^
+12345678...
+  índices
+
+Imprime
+  "rem ipsum"
+
+Lorem ipsum|%[-3]
+^^^^^^^^^^^
+...87654321
+  índices
+
+Imprime
+  "Lorem ips"</code></pre>
+<p>Se o intervalo é maior que o texto o excesso é apenas desconsiderado:</p>
+<pre><code>Lorem ipsum|%[3;100]
+^^^^^^^^^^^
+12345678...
+  índices
+
+Imprime
+  "rem ipsum"</code></pre>
+<h3 id="casting"><a href="#TOC">3.7. Casting</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Converter o valor para um tipo específico.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>%X
+Sendo X o identificado do tipo</code></pre>
+</dd>
+</dl>
+<p>O comando aplica uma conversão de tipo.<br>Os tipos suportados são:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Tipo</th>
+<th align="left">Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>%f</code></td>
+<td align="left">Flutuante. Número com casas decimais.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>%i</code></td>
+<td align="left">Inteiro. Número sem casas decimais.</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>%b</code></td>
+<td align="left">Booliano. Verdadeiro ou falso.</td>
+</tr>
+<tr class="even">
+<td align="left"><code>%d</code></td>
+<td align="left">Data/Hora.</td>
+</tr>
+</tbody>
+</table>
+<p>A conversão é requerida principalmente pelo comando <a href="#format">Format</a> para formatar números e datas.</p>
+<pre><code>$..vICMS|%f|O valor do ICMS é: {#,##0.00}
+
+Imprime
+  O valor do ICMS é: 1.250,00"</code></pre>
+<p><strong>Conversão para Booliano</strong></p>
+<dl>
+<dt>Texto</dt>
+<dd><p>Texto vazio resolve para falso.<br>Qualquer outro texto resolve para verdadeiro.</p>
+</dd>
+<dt>Numero</dt>
+<dd><p>Zero resolve para falso.<br>Qualquer outro número resolve para verdadeiro.<br>O literal "0" é um texto e deve ser convertido para inteiro antes, se este for o caso.</p>
+<pre><code>0|%b
+1|%b
+0|%i|%b
+1|%i|%b
+
+Imprime
+  "true"
+  "true"
+  "false"
+  "true"</code></pre>
+</dd>
+<dt>Outros</dt>
+<dd><p>Tag de XML inexistente resolve para falso.<br>Propriedade inexistente resolve para falso.<br>Propriedade nula resolve para falso.<br>Texto nulo resolve para falso.<br>Qualquer outro valor resolve para verdadeiro.</p>
+<pre><code>$tag.invalida|%b
+$ctx.propriedade.invalida|%b
+
+Imprime
+  "false"
+  "false"</code></pre>
+</dd>
+</dl>
+<p><strong>Conversão para Data</strong></p>
+<p>O algoritmo de conversão detecta as partes da data/hora pelos padrões conhecidos. O texto pode conter apenas a data, apenas a hora ou as duas partes, separadas por espaço ou pela letra T.</p>
+<p>Formatos suportados:</p>
+<ul>
+<li>Data
+<ul>
+<li><code>dd-MM-yyyy</code></li>
+<li><code>yyyy-MM-dd</code></li>
+</ul></li>
+<li>Hora
+<ul>
+<li><code>hh:mm</code></li>
+<li><code>hh:mm:ss</code></li>
+<li><code>hh:mm:ss.nnn</code></li>
+</ul></li>
+<li>Data-Hora
+<ul>
+<li><code>dd-MM-yyyy hh:mm</code></li>
+<li><code>dd-MM-yyyy hh:mm:ss</code></li>
+<li><code>dd-MM-yyyy hh:mm:ss.nnn</code></li>
+<li><code>yyyy-MM-dd hh:mm</code></li>
+<li><code>yyyy-MM-dd hh:mm:ss</code></li>
+<li><code>yyyy-MM-dd hh:mm:ss.nnn</code></li>
+</ul></li>
+<li>Data de XML
+<ul>
+<li><code>yyyy-MM-ddThh:mm:ss</code></li>
+<li><code>yyyy-MM-ddThh:mm:ss-z:zz</code></li>
+</ul></li>
+</ul>
+<p>Notas:</p>
+<ul>
+<li>"<code>nnn</code>" corresponde aos milissegundos.</li>
+<li>"<code>z:zz</code>" corresponde ao timezone, como em "<code>-3:00</code>"</li>
+<li>Dia e mês podem ou não conter zeros à esquerda.
+<ul>
+<li>Porém, quando o ano aparece no inicio da data deve ter obrigatoriamente 4 casas.</li>
+</ul></li>
+<li>Ano pode ter duas ou quatro casas.</li>
+<li>O separador de data pode ser: "<code>/</code>" ou "<code>-</code>"</li>
+</ul>
+<p>Exemplo:</p>
+<pre><code>2017-05-01|%d|{dd/MM/yyyy hh:mm:ss}
+
+Imprime
+  "01/05/2017 00:00:00"</code></pre>
+<h2 id="comandos-de-controle-de-fluxo"><a href="#TOC">4. Comandos de Controle de Fluxo</a></h2>
+<p>Comandos que manipulam a sequência de execução dos comandos no pipeline.</p>
+<h3 id="ternary"><a href="#TOC">4.1. Ternary</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Executar um comando ou outro de acordo com o valor recebido.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>?;COMANDO;COMANDO</code></pre>
+</dd>
+</dl>
+<p>O comando converte para booliano o valor recebido do comando anterior e decide qual dos dois comandos seguintes deve ser executado.</p>
+<p>Caso verdadeiro o primeiro comando subsequente é executado e o seguinte ignorado.</p>
+<p>Caso falso o primeiro comando subsequente é ignorado e o segundo executado.</p>
+<p>O comando repassa para o comando subsequente que será executado o mesmo valor exatamente como recebido por ele do comando anterior.</p>
+<pre><code>$..NFe|?;$..chNFe;Não existe|Chave da nota: {}
+         ^^^^^^^^ ^^^^^^^^^^
+           caso      caso
+          verdade    falso
+
+Imprime
+  "Chave da nota: 33170619406654000148650330000121881000121887"
+  ou
+  "Chave da nota: Não existe"</code></pre>
+<h3 id="comparison"><a href="#TOC">4.2. Comparison</a></h3>
+<dl>
+<dt>Função</dt>
+<dd><p>Executar um comando ou outro de acordo com o resultado de uma comparação.</p>
+</dd>
+<dt>Sintaxe</dt>
+<dd><pre><code>OPERADOR;TERMO;COMANDO;COMANDO</code></pre>
+</dd>
+</dl>
+<p>O comando aplica um operador de comparação entre o valor recebido do comando anterior e o termo indicado em seguida e decide qual comando subsequente deve ser executado.</p>
+<p>Se o termo for um Array a comparação é feita contra todos os argumentos.<br>Se o termo for texto as relações são feitas pela ordem alfabética.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Operador</th>
+<th align="left">Contra um valor</th>
+<th align="left">Contra um Array</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>%eq</code></td>
+<td align="left">Igual a</td>
+<td align="left">Igual a qualquer</td>
+</tr>
+<tr class="even">
+<td align="left"><code>%ne</code></td>
+<td align="left">Diferente de</td>
+<td align="left">Diferente de todos</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>%gt</code></td>
+<td align="left">Maior que</td>
+<td align="left">Maior que todos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>%ge</code></td>
+<td align="left">Maior ou igual a</td>
+<td align="left">Maior que todos ou igual ao maior</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>%lt</code></td>
+<td align="left">Menor que</td>
+<td align="left">Menor que todos</td>
+</tr>
+<tr class="even">
+<td align="left"><code>%le</code></td>
+<td align="left">Menor ou igual a</td>
+<td align="left">Menor que todos ou igual ao menor</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>%is</code></td>
+<td align="left">Parecido com</td>
+<td align="left">Parecido com qualquer</td>
+</tr>
+<tr class="even">
+<td align="left"><code>%in</code></td>
+<td align="left">Igual a</td>
+<td align="left">Esta dentro do limite</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Operador "Parecido com" (%is)</strong></p>
+<p>O comando se comporta como o "LIKE" do SQL, comparando trechos do texto com o curinga <code>*</code>, como em:</p>
+<pre><code>Lorem ipsum|%is;*rem*;Sim;Nao
+
+Imprime
+  "Sim"</code></pre>
+<p><strong>Operador "Esta dentro" (%in)</strong></p>
+<p>O comando espera como termo um Array de dois itens, contendo o menor e o maior índice. O comando então verifica que o valor está dentro do intervalo.</p>
+<pre><code>10|%i|%in;(5;15);Sim;Nao
+
+Imprime
+  "Sim"</code></pre>
+<p>Note que para determinar se um valor esta dentro de um Array o operador "Igual a" (%eq) deve ser usado. O comando "Esta dentro" (%in) apenas determina se o valor está dentro do intervalo indicado pelos índices.</p>
+<pre><code>10|%i|%in;(5;15);Sim;Nao
+
+Imprime
+  "Sim"     porque %in verifica se o valor está entre 5 e 15.
+
+10|%i|%eq;(5;15);Sim;Nao
+
+Imprime
+  "Nao"     porque %eq verifica se o valor está dentro do Array.</code></pre>
+<p><strong>Auto-conversão de tipo</strong></p>
+<p>O termo é automaticamente convertido para o tipo do valor recebido.<br>Desta forma, o valor comparado pode ser expresso em texto simples.</p>
+<pre><code>$020|%gt;10;Sim;Nao
+
+Imprime
+  "Nao"     porque o texto "020" foi comparado com "10"
+
+$020|%i|%gt;10;Sim;Nao
+
+Imprime
+  "Sim"     porque o texto "020" foi convertido para numero
+            e o 10 foi convertido implicitamente.
+
+$..dhEmi|%d|%ge;2018-01-01;Recente;Antigo
+
+Imprime
+  "Recente"     se dhEmi for uma data a partir de 2018
+  "Antigo"      se dhEmi for uma data anterior a 2018</code></pre>
+<p><strong>Repasse do valor recebido</strong></p>
+<p>Durante a avaliação do termo o comando repassa como parâmetro o valor exatamente como recebido do comando anterior. Isto permite usar o valor recebido como parte da construção do termo.</p>
+<p>Por exemplo, o exemplo a seguir sempre retorna "Verdadeiro", já que o valor recebido pelo comando é mesmo emitido pelo termo:</p>
+<pre><code>$..serie|%eq;$;Verdadeiro;Falso
+^^^^^^^^   ^
+|          |
+'--&gt; repassa o proprio
+     valor como termo
+
+Imprime
+  "Verdadeiro"</code></pre>
+<p>O comando também repassa o valor recebido para o comando subsequente escolhido para execução.</p>
+<p>Por exemplo, no exemplo a seguir, caso verdade um texto é impresso, mas caso falso, o valor recebido pelo comando é repassado como está.</p>
+<pre><code>$..vProd|%f|%lt;10;barato;$|O preço é {}
+         ^^             ^
+         |              |
+         '----&gt; repassa o proprio
+                 valor comparado
+
+Imprime
+  "O preço é barato"      se vProd for menor que 10
+  "O preço é 11.5"        se vProd for R$ 11.50</code></pre>
+<h2 id="sintaxe-avançada"><a href="#TOC">5. Sintaxe Avançada</a></h2>
+<h3 id="coalesce-e-array"><a href="#TOC">5.1. Coalesce e Array</a></h3>
+<p><a href="#coalesce">Coalesce</a> e <a href="#array">Array</a> são intrinsecamente relacionados. O mesmo algoritmo implementa os dois comandos.</p>
+<p>O algoritmo repassa dois parâmetros para o comando seguinte:</p>
+<p><strong>Repassando o coalesce</strong></p>
+<ol style="list-style-type: decimal">
+<li>A solução do coalesce, como parâmetro padrão.</li>
+<li>O Array dos termos, como parâmetro adicional.</li>
+</ol>
+<p>A solução do coalesce é repassada na entrada padrão do comando seguinte, que então, acessa o resultado diretamente.</p>
+<p>Como em:</p>
+<pre><code>;10;20|%i</code></pre>
+<p>Onde:</p>
+<ol style="list-style-type: decimal">
+<li>O coalesce resolve para 10, já que o primeiro termo é vazio.</li>
+<li>O número 10 é convertido para inteiro.</li>
+</ol>
+<p>O coalesce também pode ser acessado pelo índice na forma:</p>
+<pre><code>$0</code></pre>
+<p>Ou pela emissão do índice na forma:</p>
+<pre><code>$</code></pre>
+<p>A forma com índice é recomendada quando no template também é usado o índice do termos do Array, que começam a partir de 1, conforme explicado mais abaixo.</p>
+<p>Já a forma sem índice é recomendada quando o termo deve ser passado como está, sem processamento adicional, para o comando seguinte, conforme explicado na seção [3.1. Expansão de Array].</p>
+<p><strong>Repassando os termos do Array</strong></p>
+<p>Já os itens do Array precisam ser explicitamente referenciados pelo seu índice, iniciando em 1, na forma:</p>
+<pre><code>$X
+
+Sendo X um índice a partir de 1</code></pre>
+<p>Exemplo:</p>
+<pre><code>;10;20|$3|%i</code></pre>
+<p>Onde:</p>
+<ol style="list-style-type: decimal">
+<li>O coalesce resolve para 10, já que o primeiro termo é vazio.</li>
+<li>O 10 recebido é descartado e o 20 é impresso no lugar, já que o 20 é o terceiro termo a partir de 1.</li>
+<li>O número 20 é convertido para inteiro.</li>
+</ol>
+<p><strong>Usando coalesce e os termos do Array</strong></p>
+<p>No exemplo abaixo o índice zero é usado para acessar o resultado do coalesce, enquanto os índices a partir de 1 são usados para acesso aos termos do Array. É recomendado usar o índice zero sempre que, no mesmo comando, seja referenciando também os termos do Array.</p>
+<p>Note que o comando de <a href="#format">Format</a> acessa os termos pelo padrão <code>{X}</code>, em vez do padrão <code>$X</code>, usado pelos demais comandos:</p>
+<pre><code>;10;20|Dos termos '{1}', '{2}' e '{3}' o termo '{0}' foi escolhido.
+
+Imprime
+  "Dos termos '', '10' e '20' o termo '10' foi escolhido."</code></pre>
+<p>No exemplo abaixo o índice zero é omitido. É recomendado omitir o índice quando os termos do Array não são referenciados.:</p>
+<pre><code>;10;20|%i
+;10;20|O número é {}</code></pre>
+<h3 id="expansão-de-array"><a href="#TOC">5.2. Expansão de Array</a></h3>
+<p>Quando o comando <a href="#array">Array</a> é posto no início do pipeline não existem parâmetros de entrada para processamento, porém, quando o Array é posto a partir da segunda posição do pipeline, a saída do comando anterior é passado como parâmetro para o Array. Neste caso a expansão de Array é ativada.</p>
+<p>A expansão pode se comportar de duas formas diferentes:</p>
+<dl>
+<dt>Expansão da parâmetro de entrada</dt>
+<dd><p>Quando o comando anterior emite uma valor em vez de um Array.</p>
+<p>Neste caso, o valor emitido é passado como parâmetro de entrada para cada item do Array processado.</p>
+<p>Exemplo:</p>
+<pre><code>150|$;e;$|{1} {2} {3}
+
+Imprime:
+  "150 e 150"</code></pre>
+<p>Explicação:</p>
+<ol style="list-style-type: decimal">
+<li>O texto 150 é repassado para o próximo comando.</li>
+<li>Pela expansão de variável o texto 150 é repassado para cada termo separadamente.
+<ol style="list-style-type: decimal">
+<li>No primeiro termo, a referência "$" equivale ao parâmetro de entrada (150), que é repassado como está.</li>
+<li>No segundo termo o texto "e" é emitido.</li>
+<li>No terceiro termo, a referência "$" equivale ao parâmetro de entrada (150), que é repassado como está.</li>
+<li>O Array com os três termos é emitido para o próximo comando.</li>
+</ol></li>
+<li>O comando de formatação imprime os três termos encontrados no Array.</li>
+</ol>
+</dd>
+<dt>Expansão de termo correspondente</dt>
+<dd><p>Quando o comando anterior emite um Array como saída.</p>
+<p>Neste caso uma correspondência de termo é ativada. Cada item do Array emitido pelo comando anterior é passado como entrada no processamento do item correspondente no Array atual.</p>
+<p>A correspondência é posicional, isto é, o primeiro termo emitido é a entrada do primeiro termo processado, e assim por diante.</p>
+<p>Caso não haja mais termos no Array emitido, então, o último termo dele é repassado para os demais termos do Array atual.</p>
+<p>Exemplo:</p>
+<pre><code>10;20|$;$;e;$|{1} {2} {3} {4}
+
+Imprime:
+  "10 20 e 20"</code></pre>
+<p>Explicação:</p>
+<ol style="list-style-type: decimal">
+<li>O Array com os termos 10 e 20 é emitido.</li>
+<li>A expansão de Array é ativada:
+<ol style="list-style-type: decimal">
+<li>No primeiro termo o primeiro termo recebido do Array é emitido (10).</li>
+<li>No segundo termo o segundo termo recebido do Array é emitido (20).</li>
+<li>No terceiro termo "e" é emitido.</li>
+<li>No quarto termo, como não existe um quarto termo no Array recebido, o último termo encontrado nele (20) é emitido.</li>
+<li>Um novo Array é emitido.</li>
+</ol></li>
+<li>O comando de formatação imprime os quatro termos encontrados no Array.</li>
+</ol>
+</dd>
+</dl>
+<!-- LINKS -->
+<!-- O conteúdo a partir daqui é criado automaticamente pelo links.sh -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+  Tabela de links da documentação.
+  Inserido automaticamente nos arquivos MD quando
+  links.sh é executado.
+-->
+
+<!-- Links de páginas -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Links de páginas com nomes especiais -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Referências -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- Glossário -->
+
+
+
+
+
+
+
+
+
+
+</div></div><div class="space"></div></div><hr>
+<p>Out/2017<br>
+Guga Coder</p>
+</body></html>

@@ -1,0 +1,12 @@
+{
+  "class": [ "fat" ],
+  "rel": [ "fat" ],
+  "title": "Gorduras",
+  "properties": {
+    "name": "Gorduras",
+    "description": "Gordura é um termo genérico para uma classe de lipídios."
+  },
+   "links": [
+     { "rel": ["self"], "href": "/demo/15" }
+   ]
+}

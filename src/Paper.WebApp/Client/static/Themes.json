@@ -1,0 +1,135 @@
+{
+  "red":  
+    {
+      "title": "Vermelho",
+      "primary": "#D32F2F",
+      "secondary": "#607D8B",
+      "accent": "#009688",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "black":
+    {
+      "title": "Preto",
+      "primary": "#000000",
+      "secondary": "#64DD17",
+      "accent": "#FFA000",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "purple":
+    {
+      "title": "Roxo",
+      "primary": "#6a1b9a",
+      "secondary": "#ff6d00",
+      "accent": "#9c27b0",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "pink":
+    {
+      "title": "Rosa",
+      "primary": "#E91E63",
+      "secondary": "#009688",
+      "accent": "#757575",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "deep-purple":
+    {
+      "title": "Lilás",
+      "primary": "#673AB7",
+      "secondary": "#00B8D4",
+      "accent": "#7CB342",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "orange":
+    {
+      "title": "Laranja",
+      "primary": "#FF9800",
+      "secondary": "#689F38",
+      "accent": "#7CB342",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "grey":
+    {
+      "title": "Cinza",
+      "primary": "#757575",
+      "secondary": "#00838F",
+      "accent": "#757575",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "green":
+    {
+      "title": "Verde",
+      "primary": "#4CAF50",
+      "secondary": "#FFC107",
+      "accent": "#FFC107",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "indigo":
+    {
+      "title": "Padrão",
+      "primary": "#3f51b5",
+      "secondary": "#546e7a",
+      "accent": "#546e7a",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "blue":
+    {
+      "title": "Azul",
+      "primary": "#2196f3",
+      "secondary": "#FF4081",
+      "accent": "#546e7a",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "cyan":
+    {
+      "title": "Ciano",
+      "primary": "#00bcd4",
+      "secondary": "#FFa726",
+      "accent": "#00ACC1",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    },
+  "teal":
+    {
+      "title": "Verde Azulado",
+      "primary": "#009688",
+      "secondary": "#795548",
+      "accent": "#00ACC1",
+      "error": "#f44336",
+      "warning": "#ffeb3b",
+      "info": "#2196f3",
+      "success": "#4caf50"
+    }
+}
+ 

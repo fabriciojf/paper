@@ -1,0 +1,548 @@
+{
+  "class":[
+    "items", "list"
+  ],
+  "entities":[
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "1",
+        "name": "Doce de Leite",
+        "calories": 159,
+        "fat": 6.0,
+        "carbs": 24,
+        "protein": 4.0,
+        "sodium": 87,
+        "calcium": "14%",
+        "iron": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "/page/demo/1", "title": "Detalhes" }
+      ],
+      "actions": [
+      {
+        "name": "exportar",
+        "href": "demo/Exportar",
+        "title": "Exportar",
+        "method": "GET",
+        "fields": [
+          {
+              "name":"productCode",
+              "title":"Código do produto",
+              "type":"text",
+              "dataType":"string"
+          },
+          {
+              "name":"quantity",
+              "title":"Quantidade",
+              "type":"number",
+              "dataType":"int"
+          },
+          {
+              "name":"active",
+              "title":"Ativo",
+              "type":"number",
+              "dataType":"int"
+          }
+        ]
+      }
+    ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "2",
+        "name": "Caramelo",
+        "calories": 237,
+        "fat": 9.0,
+        "carbs": 37,
+        "protein": 4.3,
+        "sodium": 129,
+        "calcium": "8%",
+        "iron": "1%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/2", "title": "Detalhes" }
+      ],
+      "actions": [
+      {
+        "name": "exportar",
+        "href": "demo/Exportar",
+        "title": "Exportar",
+        "method": "POST",
+        "fields": [
+          {
+              "name":"productCode",
+              "title":"Código do produto",
+              "type":"text",
+              "dataType":"string"
+          },
+          {
+              "name":"quantity",
+              "title":"Quantidade",
+              "type":"number",
+              "dataType":"int"
+          },
+          {
+            "name": "id",
+            "type": "hidden",
+            "title":"Id",
+            "value": "1"
+          },
+          {
+            "name": "tipo",
+            "type": "hidden",
+            "title":"Tipo",
+            "value": "E"
+          },
+          {
+            "name": "destino",
+            "title":"Destino",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "name": "enviarEmail",
+        "href": "demo/Email",
+        "title": "Enviar Email",
+        "fields": [
+          {
+            "name": "id",
+            "type": "hidden",
+            "title":"Id",
+            "value": "1"
+          },
+          {
+            "name": "tipo",
+            "type": "hidden",
+            "title":"Tipo",
+            "value": "E"
+          },
+          {
+            "name": "destino",
+            "title":"Destino",
+            "type": "text"
+          }
+        ]
+      }
+    ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "3",
+        "name": "Bala",
+        "calories": 262,
+        "fat": 16.0,
+        "carbs": 23,
+        "protein": 6.0,
+        "sodium": 337,
+        "calcium": "6%",
+        "iron": "7%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/3", "title": "Detalhes" }
+      ],
+      "actions": [
+      {
+        "name": "enviarEmail",
+        "href": "demo/Email",
+        "title": "Enviar Email",
+        "method": "POST",
+        "fields": [
+          {
+            "name": "id",
+            "type": "hidden",
+            "title":"Id",
+            "value": "1"
+          },
+          {
+            "name": "tipo",
+            "type": "hidden",
+            "title":"Tipo",
+            "value": "E"
+          },
+          {
+            "name": "destino",
+            "title":"Destino",
+            "type": "text"
+          }
+        ]
+      }
+    ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "4",
+        "name": "Chiclete",
+        "calories": 305,
+        "fat": 3.7,
+        "carbs": 67,
+        "protein": 4.3,
+        "sodium": 413,
+        "calcium": "3%",
+        "iron": "8%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/4", "title": "Detalhes" }
+      ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "5",
+        "name": "Chocolate",
+        "calories": 356,
+        "fat": 16.0,
+        "carbs": 49,
+        "protein": 3.9,
+        "sodium": 327,
+        "calcium": "7%",
+        "iron": "16%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/5", "title": "Detalhes" }
+      ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "6",
+        "name": "Chokito",
+        "calories": 375,
+        "fat": 0.0,
+        "carbs": 94,
+        "protein": 0.0,
+        "sodium": 50,
+        "calcium": "0%",
+        "iron": "0%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/6", "title": "Detalhes" }
+      ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "7",
+        "name": "Banana",
+        "calories": 392,
+        "fat": 0.2,
+        "carbs": 98,
+        "protein": 0,
+        "sodium": 38,
+        "calcium": "0%",
+        "iron": "2%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/7", "title": "Detalhes" }
+      ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "8",
+        "name": "Café",
+        "calories": 408,
+        "fat": 3.2,
+        "carbs": 87,
+        "protein": 6.5,
+        "sodium": 562,
+        "calcium": "0%",
+        "iron": "45%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/8", "title": "Detalhes" }
+      ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "9",
+        "name": "Doce de côco",
+        "calories": 452,
+        "fat": 25.0,
+        "carbs": 51,
+        "protein": 4.9,
+        "sodium": 326,
+        "calcium": "2%",
+        "iron": "22%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/9", "title": "Detalhes" }
+      ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "item" ],
+      "properties": {
+        "id": "10",
+        "name": "Jujuba",
+        "calories": 518,
+        "fat": 26.0,
+        "carbs": 65,
+        "protein": 7,
+        "sodium": 54,
+        "calcium": "12%",
+        "iron": "6%",
+        "_teste": "1%"
+      },
+      "links": [
+        { "rel": ["self"], "href": "demo/10", "title": "Detalhes" }
+      ]
+    }
+  ],
+  "actions":[
+    {
+       "name":"add-item",
+       "method":"GET",
+       "title":"Adicionar Item",
+       "href":"http://localhost:8080/#/form/demo?action=confirm-add-item",
+       "type":"application/x-www-form-urlencoded",
+       "fields":[
+          {
+             "name":"productCode",
+             "title":"Código do produto",
+             "type":"hidden",
+             "value":"valor",
+             "dataType":"string"
+          },
+          {
+             "name":"quantity",
+             "title":"Quantidade",
+             "type":"number",
+             "dataType":"int"
+          },
+          {
+             "name":"active",
+             "title":"Ativo",
+             "type":"number",
+             "dataType":"float"
+          },
+          {
+             "name":"data",
+             "title":"Data Inicial",
+             "type":"date",
+             "dataType":"date"
+          },
+          {
+            "name":"preco",
+            "title":"Preço",
+            "type":"number",
+            "dataType":"currency"
+         },
+          {
+             "name":"hora",
+             "title":"Hora Inicial",
+             "type":"time",
+             "dataType":"time"
+          },
+          {
+             "name":"select",
+             "title":"Selecione",
+             "type":"text",
+             "dataType":"multi"
+          },
+          {
+             "name":"ligado",
+             "title":"Ligado",
+             "type":"text",
+             "dataType":"bool"
+          },
+         {
+            "name":"message",
+            "title":"Confirmação",
+            "type":"text",
+            "dataType":"string",
+            "value":"Tem certeza que deseja exibir essa mensagem?"
+         }
+       ]
+    },
+    {
+       "name":"config-item",
+       "title":"Configurar Item",
+       "href":"items",
+       "type":"application/x-www-form-urlencoded",
+       "fields":[
+          {
+             "name":"productCode",
+             "title":"Código do produto",
+             "type":"text"
+          },
+          {
+             "name":"quantity",
+             "title":"Quantidade",
+             "type":"number"
+          },
+          {
+             "name":"active",
+             "title":"Ativo",
+             "type":"checkbox",
+             "value": false
+          },
+          {
+             "name":"activia",
+             "title":"Ativio",
+             "type":"checkbox",
+             "value": true
+          }
+       ]
+    },
+    {
+      "name":"filters",
+      "method":"GET",
+      "title":"Filtrar",
+      "href":"items",
+      "type":"application/x-www-form-urlencoded",
+      "fields":[
+         {
+            "name":"productCode",
+            "title":"Código do produto",
+            "type":"hidden",
+            "value":"valor",
+            "dataType":"string"
+         },
+         {
+            "name":"quantity",
+            "title":"Quantidade",
+            "type":"number",
+            "dataType":"int"
+         },
+         {
+            "name":"active",
+            "title":"Ativo",
+            "type":"number",
+            "dataType":"float"
+         },
+         {
+            "name":"datainicial",
+            "title":"Data Inicial",
+            "type":"date",
+            "dataType":"date"
+         },
+         {
+            "name":"horainicial",
+            "title":"Hora Inicial",
+            "type":"time",
+            "dataType":"time"
+         },
+         {
+            "name":"datafinal",
+            "title":"Data Final",
+            "type":"date",
+            "dataType":"date"
+         },
+         {
+            "name":"horafinal",
+            "title":"Hora Final",
+            "type":"time",
+            "dataType":"time"
+         },
+         {
+            "name":"preco",
+            "title":"Preço",
+            "type":"number",
+            "dataType":"currency"
+         },
+         {
+            "name":"select",
+            "title":"Selecione",
+            "type":"checkbox",
+            "dataType":"multi",
+            "value": {
+              "items": [{
+                "title": "Item 1",
+                "value": "1",
+                "selected": true
+              },
+              {
+                "title": "Item 2",
+                "value": "2",
+                "selected": false
+              },
+              {
+                "title": "Item 3",
+                "value": "3",
+                "selected": false
+              },
+              {
+                "title": "Item 4",
+                "value": "4",
+                "selected": false
+              },
+              {
+                "title": "Item 5",
+                "value": "5",
+                "selected": false
+              },
+              {
+                "title": "Item 6",
+                "value": "6",
+                "selected": false
+              }]
+            }
+         },
+         {
+            "name":"ligado",
+            "title":"Ligado",
+            "type":"text",
+            "dataType":"bool"
+         },
+         {
+            "name":"message",
+            "title":"Mensagem",
+            "type":"text",
+            "dataType":"string",
+            "value":"Tem certeza que deseja exibir essa mensagem?"
+         }
+      ]
+   }
+  ],
+  "links":[
+    {
+      "rel":["self"],
+      "href":"demo"
+    },
+    {
+      "rel":["first"],
+      "href":"/demo"
+    },
+    {
+      "rel":["previous"],
+      "href":"/demo"
+    },
+    {
+      "rel":["next"],
+      "href":"/demoPage3"
+    },
+    {
+      "rel":["home"],
+      "title":"Página Inicial",
+      "href":"/page/demoIndex"
+    },
+    {
+      "rel":["vue"],
+      "title":"VueJS",
+      "href":"https://vuejs.org/"
+    }
+  ]
+}
