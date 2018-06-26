@@ -1,0 +1,332 @@
+{
+  "class":[
+    "items", "list"
+  ],
+  "entities":[
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "http://x.io/rels/customer" ],
+      "properties": {
+        "id": "11",
+        "name": "Jelly bean",
+        "calories": 375,
+        "fat": 0.0,
+        "carbs": 94,
+        "protein": 0.0,
+        "sodium": 50,
+        "calcium": "0%",
+        "iron": "0%",
+        "_teste": "1%"
+      },
+        "links": [
+          { "rel": ["self"], "href": "demo/11", "title": "Detalhes" }
+        ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "http://x.io/rels/customer" ],
+      "properties": {
+        "id": "12",
+        "name": "Lollipop",
+        "calories": 392,
+        "fat": 0.2,
+        "carbs": 98,
+        "protein": 0,
+        "sodium": 38,
+        "calcium": "0%",
+        "iron": "2%",
+        "_teste": "1%"
+      },
+        "links": [
+          { "rel": ["self"], "href": "demo/12", "title": "Detalhes" }
+        ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "http://x.io/rels/customer" ],
+      "properties": {
+        "id": "13",
+        "name": "Honeycomb",
+        "calories": 408,
+        "fat": 3.2,
+        "carbs": 87,
+        "protein": 6.5,
+        "sodium": 562,
+        "calcium": "0%",
+        "iron": "45%",
+        "_teste": "1%"
+      },
+        "links": [
+          { "rel": ["self"], "href": "demo/13", "title": "Detalhes" }
+        ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "http://x.io/rels/customer" ],
+      "properties": {
+        "id": "14",
+        "name": "Donut",
+        "calories": 452,
+        "fat": 25.0,
+        "carbs": 51,
+        "protein": 4.9,
+        "sodium": 326,
+        "calcium": "2%",
+        "iron": "22%",
+        "_teste": "1%"
+      },
+        "links": [
+          { "rel": ["self"], "href": "demo/14", "title": "Detalhes" }
+        ]
+    },
+    {
+      "class": [ "order", "item" ],
+      "rel": [ "http://x.io/rels/customer" ],
+      "properties": {
+        "id": "15",
+        "name": "KitKat",
+        "calories": 518,
+        "fat": 26.0,
+        "carbs": 65,
+        "protein": 7,
+        "sodium": 54,
+        "calcium": "12%",
+        "iron": "6%",
+        "_teste": "1%"
+      },
+        "links": [
+          { "rel": ["self"], "href": "demo/15", "title": "Detalhes" }
+        ]
+    }
+  ],
+  "actions":[
+    {
+       "name":"add-item",
+       "method":"GET",
+       "title":"Adicionar Item",
+       "href":"http://localhost:8080/#/form/demo?action=confirm-add-item",
+       "type":"application/x-www-form-urlencoded",
+       "fields":[
+          {
+             "name":"productCode",
+             "title":"Código do produto",
+             "type":"hidden",
+             "value":"valor",
+             "dataType":"string"
+          },
+          {
+             "name":"quantity",
+             "title":"Quantidade",
+             "type":"number",
+             "dataType":"int"
+          },
+          {
+             "name":"active",
+             "title":"Ativo",
+             "type":"number",
+             "dataType":"float"
+          },
+          {
+             "name":"data",
+             "title":"Data Inicial",
+             "type":"date",
+             "dataType":"date"
+          },
+          {
+            "name":"preco",
+            "title":"Preço",
+            "type":"number",
+            "dataType":"currency"
+         },
+          {
+             "name":"hora",
+             "title":"Hora Inicial",
+             "type":"time",
+             "dataType":"time"
+          },
+          {
+             "name":"select",
+             "title":"Selecione",
+             "type":"text",
+             "dataType":"multi"
+          },
+          {
+             "name":"ligado",
+             "title":"Ligado",
+             "type":"text",
+             "dataType":"bool"
+          },
+         {
+            "name":"message",
+            "title":"Confirmação",
+            "type":"text",
+            "dataType":"string",
+            "value":"Tem certeza que deseja exibir essa mensagem?"
+         }
+       ]
+    },
+    {
+       "name":"config-item",
+       "title":"Configurar Item",
+       "href":"items",
+       "type":"application/x-www-form-urlencoded",
+       "fields":[
+          {
+             "name":"productCode",
+             "title":"Código do produto",
+             "type":"text"
+          },
+          {
+             "name":"quantity",
+             "title":"Quantidade",
+             "type":"number"
+          },
+          {
+             "name":"active",
+             "title":"Ativo",
+             "type":"checkbox",
+             "value": false
+          },
+          {
+             "name":"activia",
+             "title":"Ativio",
+             "type":"checkbox",
+             "value": true
+          }
+       ]
+    },
+    {
+      "name":"filters",
+      "method":"GET",
+      "title":"Filtrar",
+      "href":"items",
+      "type":"application/x-www-form-urlencoded",
+      "fields":[
+         {
+            "name":"productCode",
+            "title":"Código do produto",
+            "type":"hidden",
+            "value":"valor",
+            "dataType":"string"
+         },
+         {
+            "name":"quantity",
+            "title":"Quantidade",
+            "type":"number",
+            "dataType":"int"
+         },
+         {
+            "name":"active",
+            "title":"Ativo",
+            "type":"number",
+            "dataType":"float"
+         },
+         {
+            "name":"datainicial",
+            "title":"Data Inicial",
+            "type":"date",
+            "dataType":"date"
+         },
+         {
+            "name":"horainicial",
+            "title":"Hora Inicial",
+            "type":"time",
+            "dataType":"time"
+         },
+         {
+            "name":"datafinal",
+            "title":"Data Final",
+            "type":"date",
+            "dataType":"date"
+         },
+         {
+            "name":"horafinal",
+            "title":"Hora Final",
+            "type":"time",
+            "dataType":"time"
+         },
+         {
+            "name":"preco",
+            "title":"Preço",
+            "type":"number",
+            "dataType":"currency"
+         },
+         {
+            "name":"select",
+            "title":"Selecione",
+            "type":"checkbox",
+            "dataType":"multi",
+            "value": {
+              "items": [{
+                "title": "Item 1",
+                "value": "1",
+                "selected": true
+              },
+              {
+                "title": "Item 2",
+                "value": "2",
+                "selected": false
+              },
+              {
+                "title": "Item 3",
+                "value": "3",
+                "selected": false
+              },
+              {
+                "title": "Item 4",
+                "value": "4",
+                "selected": false
+              },
+              {
+                "title": "Item 5",
+                "value": "5",
+                "selected": false
+              },
+              {
+                "title": "Item 6",
+                "value": "6",
+                "selected": false
+              }]
+            }
+         },
+         {
+            "name":"ligado",
+            "title":"Ligado",
+            "type":"text",
+            "dataType":"bool"
+         },
+         {
+            "name":"message",
+            "title":"Mensagem",
+            "type":"text",
+            "dataType":"string",
+            "value":"Tem certeza que deseja exibir essa mensagem?"
+         }
+      ]
+   }
+  ],
+  "links":[
+    {
+      "rel":["self"],
+      "href":"demo"
+    },
+    {
+      "rel":["first"],
+      "href":"/demo"
+    },
+    {
+      "rel":["previous"],
+      "href":"/demoPage2"
+    },
+    {
+      "rel":["home"],
+      "title":"Página Inicial",
+      "href":"/page/demoIndex"
+    },
+    {
+      "rel":["vue"],
+      "title":"VueJS",
+      "href":"https://vuejs.org/"
+    }
+  ]
+}
