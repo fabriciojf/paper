@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <RuntimeIdentifiers>win10-x64;ubuntu.16.10-x64</RuntimeIdentifiers>
+    <StartupObject>Paper.WebApp.Server.Program</StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\launchSettings.json.bak" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Properties\launchSettings.json.bak" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.1.0" />
+    <PackageReference Include="Npgsql" Version="4.0.0" />
+    <PackageReference Include="System.CodeDom" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Paper\Paper.csproj" />
+    <ProjectReference Include="..\Toolset\Toolset.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="Debug_NpmRun" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\index.html') ">
+    
+    <!-- Checa a existência do npm -->
+    <Exec Command="npm --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="O comando `npm' é requerido para compilar este projeto. Por favor, instale um pacote apropriado do `npm' disponível no site https://www.npmjs.com/." />
+
+    <Message Importance="high" Text="Resolvendo dependências do javascript..." Condition=" !Exists('Client\node_modules') " />
+    <Exec WorkingDirectory="Client" Command="npm install" Condition=" !Exists('Client\node_modules') " />
+    <Message Importance="high" Text="Compilando o aplicativo javascript..." />
+    <Exec WorkingDirectory="Client" Command="npm run build --environment development" />
+  </Target>
+
+  <Target Name="Release_NpmRun" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Release'">
+
+    <!-- Checa a existência do npm -->
+    <Exec Command="npm --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="O comando `npm' é requerido para compilar este projeto. Por favor, instale um pacote apropriado do `npm' disponível no site https://www.npmjs.com/." />
+
+    <Message Importance="high" Text="Resolvendo dependências do javascript..." Condition=" !Exists('Client\node_modules') " />
+    <Exec WorkingDirectory="Client" Command="npm install" />
+    <Message Importance="high" Text="Compilando o aplicativo javascript..." />
+    <Exec WorkingDirectory="Client" Command="npm run build --environment production" />
+  </Target>
+
+</Project>

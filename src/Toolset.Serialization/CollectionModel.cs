@@ -82,12 +82,12 @@ namespace Toolset.Serialization
       return items;
     }
 
-    public new int Count
+    public int Count
     {
       get { return items.Count; }
     }
 
-    public new NodeModel this[int index]
+    public NodeModel this[int index]
     {
       get { return items.ElementAtOrDefault(index); }
     }

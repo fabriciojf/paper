@@ -88,17 +88,17 @@ namespace Toolset.Serialization
       get { return properties.Count; }
     }
 
-    public new IEnumerable<string> PropertyNames
+    public IEnumerable<string> PropertyNames
     {
       get { return properties.Select(p => p.Name).Distinct(); }
     }
 
-    public new PropertyModel this[string name]
+    public PropertyModel this[string name]
     {
       get { return properties.FirstOrDefault(p => p.Name == name); }
     }
 
-    public new PropertyModel this[int index]
+    public PropertyModel this[int index]
     {
       get { return properties.ElementAtOrDefault(index); }
     }
