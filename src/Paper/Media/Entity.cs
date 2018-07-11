@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace Paper.Media
 {
   [DataContract(Namespace = Namespaces.Default, Name = "Entity")]
-  public class Entity : IEntity
+  public class Entity : IEntity, IMediaObject
   {
     /// <summary>
     /// Tipo da entidade.

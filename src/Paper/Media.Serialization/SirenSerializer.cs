@@ -176,13 +176,6 @@ namespace Paper.Media.Serialization
         return target;
       }
 
-      if (type == typeof(FieldProperties))
-      {
-        var properties = new FieldProperties();
-        CopyNodeProperties(node, properties);
-        return properties;
-      }
-
       if (type == typeof(LinkCollection))
       {
         var target = new LinkCollection();

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using Toolset.Collections;
 using Toolset;
+using System.ComponentModel;
 
 namespace Paper.Media
 {
@@ -64,6 +65,8 @@ namespace Paper.Media
       set => this.Add(value);
     }
 
+    [Obsolete("Prefira usar as extensoes de EntityPropertyExtensions")]
+    [Browsable(false)]
     public Property Add(string name, object value)
     {
       var property = this.FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));

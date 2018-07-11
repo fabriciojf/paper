@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Obsolete.Media.Design\**" />
+    <EmbeddedResource Remove="Obsolete.Media.Design\**" />
+    <None Remove="Obsolete.Media.Design\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.CodeDom" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.1.0" />

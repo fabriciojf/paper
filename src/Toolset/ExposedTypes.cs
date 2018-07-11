@@ -48,7 +48,7 @@ namespace Toolset
     /// <param name="contractName">Nome do contrato.</param>
     /// <param name="contractType">Tipo do alvo procurado.</param>
     /// <returns>
-    /// Todas as instâncias expostos que implementam ou estendem o tipo.
+    /// Todos os tipos expostos. que implementam ou estendem o tipo.
     /// </returns>
     public static IEnumerable<Type> GetTypes(string contractName, Type contractType)
     {
@@ -67,7 +67,7 @@ namespace Toolset
     /// </summary>
     /// <param name="contractName">Nome do contrato.</param>
     /// <returns>
-    /// Todas as instâncias expostos que implementam ou estendem o tipo.
+    /// Todos os tipos expostos. que implementam ou estendem o tipo.
     /// </returns>
     public static IEnumerable<Type> GetTypes(string contractName)
       => GetTypes(contractName, null);
@@ -78,7 +78,7 @@ namespace Toolset
     /// </summary>
     /// <param name="contractType">O tipo procurado.</param>
     /// <returns>
-    /// Todas as instâncias expostos que implementam ou estendem o tipo.
+    /// Todos os tipos expostos. que implementam ou estendem o tipo.
     /// </returns>
     public static IEnumerable<Type> GetTypes(Type contractType)
       => GetTypes(null, contractType);
@@ -89,9 +89,18 @@ namespace Toolset
     /// </summary>
     /// <typeparam name="T">O tipo procurado.</typeparam>
     /// <returns>
-    /// Todas as instâncias expostos que implementam ou estendem o tipo.
+    /// Todos os tipos expostos. que implementam ou estendem o tipo.
     /// </returns>
     public static IEnumerable<Type> GetTypes<T>()
       => GetTypes(null, typeof(T));
+
+    /// <summary>
+    /// Obtém todos os tipos que expostos pelo atributo <see cref="ExposeAttribute"/>
+    /// </summary>
+    /// <returns>
+    /// Todos os tipos expostos. que implementam ou estendem o tipo.
+    /// </returns>
+    public static IEnumerable<Type> GetTypes()
+      => GetTypes(null, null);
   }
 }

@@ -9,7 +9,7 @@ namespace Paper.Media
   /// Representação de um link associado a uma entidade.
   /// </summary>
   [DataContract(Namespace = Namespaces.Default)]
-  public class Link
+  public class Link : IMediaObject
   {
     /// <summary>
     /// Tipo do link. Opcional.

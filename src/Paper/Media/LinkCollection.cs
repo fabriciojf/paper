@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.ComponentModel;
 
 namespace Paper.Media
 {
@@ -20,6 +21,8 @@ namespace Paper.Media
     {
     }
 
+    [Obsolete]
+    [Browsable(false)]
     public Link Add(string rel, string href)
     {
       var link = new Link { Rel = rel, Href = href };
@@ -27,6 +30,8 @@ namespace Paper.Media
       return link;
     }
 
+    [Obsolete]
+    [Browsable(false)]
     public Link Add(string rel, string title, string href)
     {
       var link = new Link { Rel = rel, Title = title, Href = href };

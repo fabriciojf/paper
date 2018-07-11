@@ -12,9 +12,7 @@ namespace Paper.Media
   /// Propriedade de uma entidade.
   /// </summary>
   [DataContract(Namespace = Namespaces.Default)]
-  [KnownType(typeof(Many))]
   [KnownType(typeof(NameCollection))]
-  [KnownType(typeof(HeaderCollection))]
   [KnownType(typeof(PropertyCollection))]
   [KnownType(typeof(CaseVariantString))]
   public class Property
@@ -71,9 +69,7 @@ namespace Paper.Media
       || value is IEnumerable
       || value is CaseVariantString
       || value is PropertyCollection
-      || value is HeaderCollection
-      || value is NameCollection
-      || value is Many)
+      || value is NameCollection)
         return value;
 
       var collection = new PropertyCollection();
