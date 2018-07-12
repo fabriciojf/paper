@@ -22,6 +22,7 @@ namespace Paper.Media.Design.Extensions
   public static class RowsExtensions
   {
     public const string HeaderNamesProperty = "__RowHeaders";
+    public const string PaginationProperty = "__RowsPagination";
 
     #region ForEach...
 
@@ -368,6 +369,79 @@ namespace Paper.Media.Design.Extensions
         , RelNames.RowHeader
         , opt => opt.AddHidden()
       );
+      return entity;
+    }
+
+    #endregion
+
+    #region Pagination
+
+    public static Entity AddRowsPagination(this Entity entity, int? limit, int? offset)
+    {
+      return AddRowsPagination(entity, Pagination.CreateOffset(limit, offset));
+    }
+
+    public static Entity AddRowsPagination(this Entity entity, Pagination pagination)
+    {
+      var exists = (entity.Properties?[PaginationProperty]?.Value != null);
+      if (exists)
+      {
+        entity.Properties.Remove(PaginationProperty);
+      }
+
+      if (pagination.IsLimitSet)
+      {
+        entity.AddProperty($"{PaginationProperty}.Limit", pagination.Limit);
+      }
+      else
+      {
+        entity.AddProperty($"{PaginationProperty}.PageSize", pagination.PageSize);
+      }
+
+      if (pagination.IsOffsetSet)
+      {
+        entity.AddProperty($"{PaginationProperty}.Offset", pagination.Offset);
+      }
+      else
+      {
+        entity.AddProperty($"{PaginationProperty}.Page", pagination.Page);
+      }
+      return entity;
+    }
+
+    public static Entity AddLinkNextRows(this Entity entity, string href, int? limit, int? offset)
+    {
+      return AddLinkNextRows(entity, href, Pagination.CreateOffset(limit, offset));
+    }
+
+    public static Entity AddLinkNextRows(this Entity entity, string href, Pagination pagination)
+    {
+      href = new Route(href).SetArg(pagination.ToString());
+      entity.AddLink(href, "Próximo", Rel.Next);
+      return entity;
+    }
+
+    public static Entity AddLinkPreviousRows(this Entity entity, string href, int? limit, int? offset)
+    {
+      return AddLinkPreviousRows(entity, href, Pagination.CreateOffset(limit, offset));
+    }
+
+    public static Entity AddLinkPreviousRows(this Entity entity, string href, Pagination pagination)
+    {
+      href = new Route(href).SetArg(pagination.ToString());
+      entity.AddLink(href, "Anterior", Rel.Previous);
+      return entity;
+    }
+
+    public static Entity AddLinkFirstRows(this Entity entity, string href, int? limit, int? offset)
+    {
+      return AddLinkFirstRows(entity, href, Pagination.CreateOffset(limit, offset));
+    }
+
+    public static Entity AddLinkFirstRows(this Entity entity, string href, Pagination pagination)
+    {
+      href = new Route(href).SetArg(pagination.ToString());
+      entity.AddLink(href, "Primeiro", Rel.First);
       return entity;
     }
 

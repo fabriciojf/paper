@@ -215,5 +215,63 @@ namespace Paper.Media.Design
 
       return entity;
     }
+
+    /// <summary>
+    /// Resolve os links relativos segundo o padrão de URLs do Paper:
+    /// -   /Path, corresponde a um caminho relativo à API
+    ///     Como em:
+    ///         http://localhost/Api/1/Path
+    /// -   ^/Path, corresponde a um caminho relativo à raiz da URI
+    ///     Como em:
+    ///         http://localhost/Path
+    /// -   ./Path ou ../Path, corresponde a um caminho relativo à URI atual
+    ///     Como em:
+    ///         http://localhost/Api/1/Meu/Site/Path
+    /// </summary>
+    /// <param name="entity">A entidade a ser modificada.</param>
+    /// <param name="requestUri">A URI de requisição da entidade.</param>
+    /// <param name="apiPath">
+    /// O caminho considerado como caminho da API.
+    /// Geralmente "/Api/VERSAO", sendo versão o número de versão de API do Paper.
+    /// Por padrão: "/Api/1"
+    /// </param>
+    /// <returns>A própria instância da entidade modificada.</returns>
+    public static Entity ResolveLinks(this Entity entity, string requestUri, string apiPath = "/Api/1")
+    {
+      var route = new Route(requestUri);
+
+      var entities = EnumerateDescendantsAndSelf(entity);
+      var links = entities.SelectMany(x => x.Links);
+      foreach (var link in links)
+      {
+        if (link.Href.StartsWith("^/"))
+        {
+          link.Href = route.Combine(link.Href.Substring(1));
+        }
+        else if (link.Href.StartsWith("/"))
+        {
+          link.Href = route.Combine(apiPath).Append(link.Href);
+        }
+        else if (link.Href == ""
+              || link.Href.StartsWith(".")
+              || link.Href.StartsWith("?"))
+        {
+          link.Href = route.Combine(link.Href);
+        }
+      }
+      return entity;
+    }
+
+    private static IEnumerable<Entity> EnumerateDescendantsAndSelf(Entity entity)
+    {
+      yield return entity;
+      if (entity.Entities != null)
+      {
+        foreach (var child in entity.Entities.SelectMany(EnumerateDescendantsAndSelf))
+        {
+          yield return child;
+        }
+      }
+    }
   }
 }

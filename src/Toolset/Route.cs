@@ -503,6 +503,19 @@ namespace Toolset
       if (graph == null)
         return this;
 
+      if (graph is string)
+      {
+        var queryString = ((string)graph).Split('?').Last();
+        graph = (
+          from token in queryString.Split('&')
+          let parts = token.Split('=')
+          let name = parts.First()
+          let value = string.Join('=', parts.Skip(1))
+          where !string.IsNullOrEmpty(value)
+          select new[] { name, value }
+        ).SelectMany();
+      }
+
       if (graph.GetType().IsPrimitive || graph is string || graph is DateTime || graph is TimeSpan)
         throw new InvalidOperationException("Era esperado um objeto mas foi encontrado um: " + graph.GetType().FullName);
 
