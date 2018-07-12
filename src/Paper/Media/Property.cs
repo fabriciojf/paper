@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using System.Collections;
 using Paper.Media.Serialization;
+using System.ComponentModel;
 
 namespace Paper.Media
 {
@@ -32,7 +33,7 @@ namespace Paper.Media
     public object Value
     {
       get => _value;
-      set => _value = CreateValue(value);
+      set => _value = CreatePropertyValue(value);
     }
 
     public Property()
@@ -55,7 +56,7 @@ namespace Paper.Media
       return $"{Name}={Value}";
     }
 
-    public static object CreateValue(object value)
+    public static object CreatePropertyValue(object value)
     {
       if (value == null)
         return null;
@@ -72,7 +73,50 @@ namespace Paper.Media
       || value is NameCollection)
         return value;
 
-      var collection = new PropertyCollection();
+      var properties = UnwrapPropertyValues(value);
+      return new PropertyCollection(properties);
+    }
+
+    public static IEnumerable<Info> UnwrapPropertyInfo(object typeOrInstance)
+    {
+      if (typeOrInstance == null)
+        yield break;
+
+      var type = (typeOrInstance as Type) ?? typeOrInstance.GetType();
+      if (type.GetElementType() != null)
+      {
+        type = type.GetElementType();
+      }
+
+      foreach (var property in type.GetProperties())
+      {
+        var hasArgs = property.GetIndexParameters().Any();
+        if (hasArgs)
+          continue;
+
+        var displayNameAttr =
+          property
+            .GetCustomAttributes(true)
+            .OfType<DisplayNameAttribute>()
+            .FirstOrDefault();
+        
+        var info = new Info
+        {
+          Name = property.Name,
+          Type = property.PropertyType,
+          Title = displayNameAttr?.DisplayName
+        };
+        yield return info;
+      }
+    }
+
+    public static IEnumerable<Property> UnwrapPropertyValues(object value)
+    {
+      if (value == null)
+        yield break;
+
+      var type = value.GetType();
+
       foreach (var property in type.GetProperties())
       {
         var hasArgs = property.GetIndexParameters().Any();
@@ -80,13 +124,37 @@ namespace Paper.Media
           continue;
 
         var propertyValue = property.GetValue(value);
-        var compatibleValue = CreateValue(propertyValue);
+        var compatibleValue = CreatePropertyValue(propertyValue);
         if (compatibleValue != null)
         {
-          collection.Add(property.Name, compatibleValue);
+          yield return new Property
+          {
+            Name = property.Name,
+            Value = compatibleValue
+          };
         }
       }
-      return collection;
+    }
+
+    /// <summary>
+    /// Coleção de informações adicionais sobre a propriedade.
+    /// </summary>
+    public class Info
+    {
+      /// <summary>
+      /// Nome do campo.
+      /// </summary>
+      public string Name { get; internal set; }
+
+      /// <summary>
+      /// Tipo de dado do campo.
+      /// </summary>
+      public Type Type { get; internal set; }
+
+      /// <summary>
+      /// Título do campo.
+      /// </summary>
+      public string Title { get; internal set; }
     }
   }
 }

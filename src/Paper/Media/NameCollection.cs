@@ -41,6 +41,10 @@ namespace Paper.Media
       {
         var camelItems = items.Where(item => char.IsLower(item.FirstOrDefault()));
         var otherItems = items.Except(camelItems);
+
+        camelItems = camelItems.Except(store);
+        otherItems = otherItems.Except(store);
+
         base.OnCommitAdd(store, camelItems, 0);
         base.OnCommitAdd(store, otherItems, -1);
       }

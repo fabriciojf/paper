@@ -332,6 +332,9 @@ namespace Toolset
       if (text == null)
         return false;
 
+      if (other == null)
+        return false;
+
       return text.Equals(other, StringComparison.InvariantCultureIgnoreCase);
     }
 

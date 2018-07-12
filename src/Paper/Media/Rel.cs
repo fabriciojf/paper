@@ -64,26 +64,19 @@ namespace Paper.Media
     Property,
 
     /// <summary>
-    /// Estabelece relacionamento entre o alvo e uma entidade que representa dados.
-    /// </summary>
-    Data,
-
-    /// <summary>
-    /// Estabelece relacionamento entre o alvo e uma entidade que representa uma 
-    /// coleção de registros.
-    /// </summary>
-    Rows,
-
-    /// <summary>
-    /// Estabelece relacionamento entre o alvo e uma entidade que representa um 
-    /// registro em uma coleção de registros.
+    /// Relacionamento entre o registro e a entidade pai.
     /// </summary>
     Row,
 
     /// <summary>
-    /// Estabelece relacionamento entre o alvo e um cabeçalho.
+    /// Estabelece relacionamento entre o alvo e um cabeçalho de dados.
     /// </summary>
-    Header,
+    DataHeader,
+
+    /// <summary>
+    /// Estabelece relacionamento entre o alvo e um cabeçalho de registro.
+    /// </summary>
+    RowHeader,
 
     #endregion
   }

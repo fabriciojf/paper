@@ -25,6 +25,11 @@ namespace Paper.Media
     Row,
 
     /// <summary>
+    /// Nome de classe para ume entidade que se comporta como um cabeçalho.
+    /// </summary>
+    Header,
+
+    /// <summary>
     /// Nome de classe para uma entidade que se comporta como status de execução.
     /// </summary>
     Status,

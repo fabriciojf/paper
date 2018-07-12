@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.CSharp;
+using System.CodeDom;
 
 namespace Paper.Media
 {
@@ -23,6 +25,11 @@ namespace Paper.Media
     /// Nome de classe para ume entidade que se comporta como um registro de coleção de registros.
     /// </summary>
     public const string Row = "row";
+
+    /// <summary>
+    /// Nome de classe para ume entidade que se comporta como um cabeçalho.
+    /// </summary>
+    public const string Header = "header";
 
     /// <summary>
     /// Nome de classe para uma entidade que se comporta como status de execução.
@@ -69,5 +76,16 @@ namespace Paper.Media
     /// Classe de uma entidade que representa um propriedade ou coluna de dados.
     /// </summary>
     public const string Field = "field";
+
+    /// <summary>
+    /// Determina o nome de classe da entidade.
+    /// </summary>
+    /// <param name="typeOrInstance">O tipo ou a instância da entidade.</param>
+    /// <returns>O nome de classe mais apropriado.</returns>
+    public static string GetClassName(object typeOrInstance)
+    {
+      // O algoritmo é o mesmo aplicado ao tipo de dados.
+      return DataTypeNames.GetDataTypeName(typeOrInstance);
+    }
   }
 }

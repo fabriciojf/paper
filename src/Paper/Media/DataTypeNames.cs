@@ -61,7 +61,7 @@ namespace Paper.Media
     public const string Datetime = "datetime";
 
     /// <summary>
-    /// Determinar o DataType apropriado para representar o tipo ou instância indicado.
+    /// Determina o DataType apropriado para representar o tipo ou instância indicado.
     /// </summary>
     /// <param name="typeOrInstance">O tipo ou a instância testada.</param>
     /// <returns>O DataType mais apropriado.</returns>
@@ -105,7 +105,50 @@ namespace Paper.Media
       if (typeName.Contains("AnonymousType"))
         typeName = "AnonymousType";
 
+      typeName = Canonicalize(typeName);
+
       return typeName;
+    }
+
+    /// <summary>
+    /// Um mesmo tipo de dado pode ser mapeado com diferentes nomes.
+    /// Por exemplo, o tipo texto pode ser mapeado como "text" ou "string".
+    /// Este método avalia o nome do tipo e escolhe uma
+    /// representação recomendada para padronização dos nomes.
+    /// </summary>
+    /// <param name="dataTypeName">O nome do tipo de dado.</param>
+    /// <returns>O nome do tipo de dado padronizado.</returns>
+    public static string Canonicalize(string dataTypeName)
+    {
+      switch (dataTypeName)
+      {
+        case "boolean":
+        case "bit":
+        case "integer":
+        case "int":
+        case "long":
+        case "number":
+        case "double":
+        case "float":
+        case "decimal":
+          return Number;
+
+        case "date":
+          return Date;
+
+        case "time":
+          return Time;
+
+        case "datetime":
+          return Datetime;
+
+        case "string":
+        case "text":
+          return Text;
+
+        default:
+          return dataTypeName;
+      }
     }
 
     public static bool IsList(object typeOrInstance)

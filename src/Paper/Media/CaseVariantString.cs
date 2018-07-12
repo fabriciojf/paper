@@ -31,6 +31,10 @@ namespace Paper.Media
 
     public override bool Equals(object obj)
     {
+      if (obj is CaseVariantString)
+      {
+        obj = ((CaseVariantString)obj).Value;
+      }
       return Value.Equals(obj);
     }
 

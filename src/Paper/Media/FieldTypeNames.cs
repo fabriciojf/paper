@@ -24,7 +24,7 @@ namespace Paper.Media
     public const string Month = "month";
     public const string Week = "week";
     public const string Time = "time";
-    public const string DatetimeLocal = "datetime-local";
+    public const string DatetimeLocal = "datetimeLocal";
     public const string Number = "number";
     public const string Range = "range";
     public const string Color = "color";
@@ -43,36 +43,28 @@ namespace Paper.Media
     {
       switch (dataTypeName)
       {
-        case "string":
-        case "text":
-          return DataTypeNames.Text;
-
         case "boolean":
         case "bit":
-          return DataTypeNames.Number;
-
         case "integer":
         case "int":
         case "long":
         case "number":
-          return DataTypeNames.Number;
-
         case "double":
         case "float":
         case "decimal":
-          return DataTypeNames.Number;
+          return Number;
 
         case "date":
-          return DataTypeNames.Date;
+          return Date;
 
         case "time":
-          return DataTypeNames.Time;
+          return Time;
 
         case "datetime":
-          return DataTypeNames.Datetime;
+          return Datetime;
 
         default:
-          return DataTypeNames.Text;
+          return Text;
       }
     }
   }

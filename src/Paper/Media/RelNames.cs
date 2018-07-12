@@ -21,7 +21,7 @@ namespace Paper.Media
     public const string Current = "current";
     public const string Describes = "describes";
     public const string Edit = "edit";
-    public const string EditForm = "edit-form";
+    public const string EditForm = "editForm";
     public const string First = "first";
     public const string Glossary = "glossary";
     public const string Help = "help";
@@ -29,7 +29,7 @@ namespace Paper.Media
     public const string Index = "index";
     public const string Item = "item";
     public const string Last = "last";
-    public const string LatestVersion = "latest-version";
+    public const string LatestVersion = "latestVersion";
     public const string License = "license";
     public const string Memento = "memento";
     public const string Next = "next";
@@ -63,26 +63,19 @@ namespace Paper.Media
     public const string Property = "property";
 
     /// <summary>
-    /// Estabelece relacionamento entre o alvo e uma entidade que representa dados.
-    /// </summary>
-    public const string Data = "data";
-
-    /// <summary>
-    /// Estabelece relacionamento entre o alvo e uma entidade que representa uma 
-    /// coleção de registros.
-    /// </summary>
-    public const string Rows = "rows";
-
-    /// <summary>
-    /// Estabelece relacionamento entre o alvo e uma entidade que representa um 
-    /// registro em uma coleção de registros.
+    /// Relacionamento entre o registro e a entidade pai.
     /// </summary>
     public const string Row = "row";
 
     /// <summary>
-    /// Estabelece relacionamento entre o alvo e um cabeçalho.
+    /// Estabelece relacionamento entre o alvo e um cabeçalho de dados.
     /// </summary>
-    public const string Header = "header";
+    public const string DataHeader = "dataHeader";
+
+    /// <summary>
+    /// Estabelece relacionamento entre o alvo e um cabeçalho de registro.
+    /// </summary>
+    public const string RowHeader = "rowHeader";
 
     #endregion
   }

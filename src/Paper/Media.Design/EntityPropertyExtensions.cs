@@ -53,6 +53,64 @@ namespace Paper.Media.Design
       return entity;
     }
 
+    /// <summary>
+    /// Adiciona uma propriedade à entidade.
+    /// </summary>
+    /// <typeparam name="T">Tipo do valor da propriedade.</typeparam>
+    /// <param name="entity">A entidade a ser modificada.</param>
+    /// <param name="name">O nome da propriedade.</param>
+    /// <param name="builder">
+    /// Construtor de valor da propriedade.
+    /// O construtor deve retornar o novo valor da propriedade.
+    /// </param>
+    /// <returns>A própria instância da entidade modificada.</returns>
+    public static Entity AddProperty<T>(this Entity entity, string name, Func<T, T> builder)
+      where T : class
+    {
+      if (entity.Properties == null)
+      {
+        entity.Properties = new PropertyCollection();
+      }
+      entity.Properties.AddProperty<T>(name, builder);
+      return entity;
+    }
+
+    /// <summary>
+    /// Adiciona uma propriedade à entidade.
+    /// </summary>
+    /// <typeparam name="T">Tipo do valor da propriedade.</typeparam>
+    /// <param name="entity">A entidade a ser modificada.</param>
+    /// <param name="name">O nome da propriedade.</param>
+    /// <param name="builder">Construtor de valor da propriedade.</param>
+    /// <returns>A própria instância da entidade modificada.</returns>
+    public static Entity AddProperty<T>(this Entity entity, string name, Action<T> builder)
+      where T : class
+    {
+      if (entity.Properties == null)
+      {
+        entity.Properties = new PropertyCollection();
+      }
+      entity.Properties.AddProperty<T>(name, builder);
+      return entity;
+    }
+
+    /// <summary>
+    /// Copia as propriedads do objeto indicado para as propriedades da entidade.
+    /// </summary>
+    /// <param name="entity">A entidade a ser modificada.</param>
+    /// <param name="graph">O objeto que terá suas propriedades copiadas.</param>
+    /// <returns>A própria instância da entidade modificada.</returns>
+    public static Entity AddProperties(this Entity entity, object graph)
+    {
+      if (entity.Properties == null)
+      {
+        entity.Properties = new PropertyCollection();
+      }
+      var properties = Property.UnwrapPropertyValues(graph);
+      entity.Properties.AddMany(properties);
+      return entity;
+    }
+
     #endregion
 
     #region Extensões para Property
@@ -92,6 +150,73 @@ namespace Paper.Media.Design
       }
 
       builder.Invoke(collection);
+
+      return propertyCollection;
+    }
+
+    /// <summary>
+    /// Adiciona uma proprieedade à coleção de propriedades.
+    /// </summary>
+    /// <typeparam name="T">Tipo do valor da propriedade.</typeparam>
+    /// <param name="entity">A entidade a ser modificada.</param>
+    /// <param name="name">O nome da propriedade.</param>
+    /// <param name="builder">
+    /// Construtor de valor da propriedade.
+    /// O construtor deve retornar o novo valor da propriedade.
+    /// </param>
+    /// <returns>A própria instância da coleção de propriedades modificada.</returns>
+    public static PropertyCollection AddProperty<T>(this PropertyCollection propertyCollection, string name, Func<T, T> builder)
+      where T : class
+    {
+      Property property = EnsureProperty(propertyCollection, name);
+
+      var value = property.Value as T;
+      if (value == null)
+      {
+        if (typeof(T).IsArray)
+        {
+          var itemType = typeof(T).GetElementType();
+          property.Value = value = (T)(object)Array.CreateInstance(itemType, 0);
+        }
+        else
+        {
+          property.Value = value = Activator.CreateInstance<T>();
+        }
+      }
+
+      property.Value = builder.Invoke(value);
+
+      return propertyCollection;
+    }
+
+    /// <summary>
+    /// Adiciona uma proprieedade à coleção de propriedades.
+    /// </summary>
+    /// <typeparam name="T">Tipo do valor da propriedade.</typeparam>
+    /// <param name="entity">A entidade a ser modificada.</param>
+    /// <param name="name">O nome da propriedade.</param>
+    /// <param name="builder">Construtor de valor da propriedade.</param>
+    /// <returns>A própria instância da coleção de propriedades modificada.</returns>
+    public static PropertyCollection AddProperty<T>(this PropertyCollection propertyCollection, string name, Action<T> builder)
+      where T : class
+    {
+      Property property = EnsureProperty(propertyCollection, name);
+
+      var value = property.Value as T;
+      if (value == null)
+      {
+        if (typeof(T).IsArray)
+        {
+          var itemType = typeof(T).GetElementType();
+          property.Value = value = (T)(object)Array.CreateInstance(itemType, 0);
+        }
+        else
+        {
+          property.Value = value = Activator.CreateInstance<T>();
+        }
+      }
+
+      builder.Invoke(value);
 
       return propertyCollection;
     }

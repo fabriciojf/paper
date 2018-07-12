@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Toolset.Serialization;
 using Toolset.Serialization.Json;
 using Toolset.Reflection;
+using System.Globalization;
 
 namespace Paper.Media.Serialization
 {
@@ -341,9 +342,11 @@ namespace Paper.Media.Serialization
         return;
       }
 
-      if (IsNumeric(value))
+      if (value is IFormattable)
       {
-        writer.Write(value);
+        var formattable = (IFormattable)value;
+        var text = formattable.ToString(null, CultureInfo.InvariantCulture);
+        writer.Write(text);
         return;
       }
 

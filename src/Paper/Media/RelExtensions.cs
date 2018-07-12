@@ -16,7 +16,7 @@ namespace Paper.Media
     /// <returns>O nome padronizado do relacionamento</returns>
     public static string GetName(this Rel rel)
     {
-      return rel.ToString().ChangeCase(TextCase.Hyphenated);
+      return rel.ToString().ChangeCase(TextCase.CamelCase);
     }
   }
 }

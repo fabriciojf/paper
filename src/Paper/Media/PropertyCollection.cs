@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using Toolset.Collections;
 using Toolset;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Paper.Media
 {
@@ -30,9 +31,35 @@ namespace Paper.Media
 
     protected override void OnCommitAdd(ItemStore store, IEnumerable<Property> items, int index = -1)
     {
+      // removendo itens duplicados
+      items = (
+        from x in items
+        group x by x.Name into g
+        select g.Last()
+      ).ToArray();
+
       var names = items.Select(x => x.Name);
       store.RemoveWhen(item => names.Any(name => name.EqualsIgnoreCase(item.Name)));
-      base.OnCommitAdd(store, items, index);
+
+      if (index > -1)
+      {
+        base.OnCommitAdd(store, items, index);
+      }
+      else
+      {
+        var metas = items.Where(x => x.Name.StartsWith("__"));
+        var nonMetas = items.Except(metas);
+
+        var firstMeta =
+          store
+            .Select((item, at) => new { item, at })
+            .FirstOrDefault(x => x.item.Name.StartsWith("__"));
+
+        var firstMetaIndex = (firstMeta?.at ?? store.Count);
+
+        base.OnCommitAdd(store, nonMetas, firstMetaIndex);
+        base.OnCommitAdd(store, metas, -1);
+      }
     }
 
     #endregion
@@ -62,11 +89,13 @@ namespace Paper.Media
     public Property this[string propertyName]
     {
       get => this.FirstOrDefault(x => x.Name.EqualsIgnoreCase(propertyName));
-      set => this.Add(value);
+      set
+      {
+        value.Name = propertyName;
+        this.Add(value);
+      }
     }
 
-    [Obsolete("Prefira usar as extensoes de EntityPropertyExtensions")]
-    [Browsable(false)]
     public Property Add(string name, object value)
     {
       var property = this.FirstOrDefault(x => x.Name.EqualsIgnoreCase(name));
@@ -76,6 +105,11 @@ namespace Paper.Media
       }
       property.Value = value;
       return property;
+    }
+
+    public void Remove(string name)
+    {
+      this.RemoveWhen(x => x.Name.EqualsIgnoreCase(name));
     }
 
     public bool ContainsKey(string PropertyName)
