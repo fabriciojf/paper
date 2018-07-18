@@ -7,7 +7,7 @@ namespace Toolset.Collections
 {
   public class HashMap : IDictionary<string, object>
   {
-    private readonly Dictionary<string, object> items = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> items;
 
     public HashMap()
     {
@@ -17,6 +17,11 @@ namespace Toolset.Collections
     public HashMap(int capacity)
     {
       items = new Dictionary<string, object>(capacity);
+    }
+
+    public HashMap(IEnumerable<KeyValuePair<string, object>> entries)
+    {
+      items = new Dictionary<string, object>(entries);
     }
 
     public object this[string key]

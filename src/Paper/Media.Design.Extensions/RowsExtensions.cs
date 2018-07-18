@@ -70,6 +70,28 @@ namespace Paper.Media.Design.Extensions
       return entity;
     }
 
+    /// <summary>
+    /// Itera sob a coleção de cabeçalhos de registro na entidade.
+    /// </summary>
+    /// <param name="entity">A entidade inspecionada.</param>
+    /// <param name="inspection">A função de inspeção do item.</param>
+    /// <returns>A própria instância da entidade inspecionada.</returns>
+    public static Entity ForEachRowHeaderInfo(this Entity entity, Action<HeaderInfo> inspection)
+    {
+      if (entity.Entities == null)
+        return entity;
+
+      var headers =
+        from child in entity.Entities
+        where child.Class.Contains(ClassNames.Header)
+           && child.Rel.Contains(RelNames.RowHeader)
+        select new HeaderInfo(child.Properties ?? (child.Properties = new PropertyCollection()));
+
+      headers.ForEach(inspection);
+
+      return entity;
+    }
+
     #endregion
 
     #region AddRow
@@ -331,6 +353,26 @@ namespace Paper.Media.Design.Extensions
     /// Adiciona informações sobre um campo.
     /// </summary>
     /// <param name="entity">A entidade modificada.</param>
+    /// <param name="header">Informações cobre o campo.</param>
+    /// <returns>A própria entidade modificada.</returns>
+    public static Entity AddRowHeader(this Entity entity, HeaderInfo header)
+    {
+      HeaderUtil.AddHeaderToEntity(
+          entity
+        , HeaderNamesProperty
+        , header.Name
+        , header.Title
+        , header.DataType
+        , RelNames.RowHeader
+        , options => header.CopyToHeaderOptions(options)
+      );
+      return entity;
+    }
+
+    /// <summary>
+    /// Adiciona informações sobre um campo.
+    /// </summary>
+    /// <param name="entity">A entidade modificada.</param>
     /// <param name="name">Os dados adicionados à entidade.</param>
     /// <param name="title">Título do campo.</param>
     /// <param name="dataType">Tipo do dado do campo.</param>
@@ -371,7 +413,7 @@ namespace Paper.Media.Design.Extensions
       );
       return entity;
     }
-
+    
     #endregion
 
     #region Pagination

@@ -28,7 +28,7 @@ namespace Toolset
         var text = (string)value;
         if (Regex.IsMatch(text, @"\d{4}-\d{2}-\d{2}.*"))
         {
-          return DateTime.Parse(text);
+          return DateTime.Parse(text, CultureInfo.InvariantCulture);
         }
       }
 

@@ -14,6 +14,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Media.Papers.Rendering\LinkRenderer.cs" />
+    <Compile Remove="Media.Papers.Rendering\QueryPathBuilder.cs" />
+    <Compile Remove="Media.Papers.Rendering\QueryRenderer.cs" />
+    <Compile Remove="Media.Papers.Rendering\RenderContext.cs" />
+    <Compile Remove="Media.Papers.Rendering\RenderOfFilter.cs" />
+    <Compile Remove="Media.Papers.Rendering\RenderOfPagination.cs" />
+    <Compile Remove="Media.Papers.Rendering\RenderOfRows.cs" />
+    <Compile Remove="Media.Papers.Rendering\RenderOfSort.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.CodeDom" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.1.0" />

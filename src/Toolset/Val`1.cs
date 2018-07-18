@@ -7,24 +7,24 @@ using Toolset.Reflection;
 
 namespace Toolset
 {
-  public class Values<T> : Values
+  public class Val<T> : Val
   {
-    public Values(object value)
+    public Val(object value)
       : base(MakeCompatibleValue<T>(value))
     {
     }
 
-    public Values(T value)
+    public Val(T value)
       : base(value)
     {
     }
 
-    public Values(T min, T max)
+    public Val(T min, T max)
       : base(min, max)
     {
     }
 
-    public Values(IEnumerable<T> items)
+    public Val(IEnumerable<T> items)
       : base(items)
     {
     }
@@ -42,10 +42,10 @@ namespace Toolset
       if (value == null)
         return null;
 
-      if (value.Has("Min") || value.Has("Max"))
+      if (value._Has("Min") || value._Has("Max"))
       {
-        var min = value.Get("Min");
-        var max = value.Get("Max");
+        var min = value._Get("Min");
+        var max = value._Get("Max");
 
         if (min != null && max != null)
         {
@@ -79,23 +79,23 @@ namespace Toolset
 
     #region Conversões
 
-    public static implicit operator T(Values<T> value)
+    public static implicit operator T(Val<T> value)
       => value.Value;
 
-    public static implicit operator Values<T>(T value)
-      => new Values<T>(value);
+    public static implicit operator Val<T>(T value)
+      => new Val<T>(value);
 
-    public static implicit operator T[] (Values<T> value)
+    public static implicit operator T[] (Val<T> value)
       => value.Array?.ToArray();
 
-    public static implicit operator Values<T>(T[] value)
-      => new Values<T>(value);
+    public static implicit operator Val<T>(T[] value)
+      => new Val<T>(value);
 
-    public static implicit operator Range(Values<T> value)
+    public static implicit operator Range(Val<T> value)
       => value.IsNull ? null : new Range(value.Min, value.Max);
 
-    public static implicit operator Values<T>(Range value)
-      => new Values<T>(value);
+    public static implicit operator Val<T>(Range value)
+      => new Val<T>(value);
 
     #endregion
 

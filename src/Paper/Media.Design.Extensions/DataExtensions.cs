@@ -47,6 +47,28 @@ namespace Paper.Media.Design.Extensions
       return entity;
     }
 
+    /// <summary>
+    /// Itera sob a coleção de cabeçalhos de dados na entidade.
+    /// </summary>
+    /// <param name="entity">A entidade inspecionada.</param>
+    /// <param name="inspection">A função de inspeção do item.</param>
+    /// <returns>A própria instância da entidade inspecionada.</returns>
+    public static Entity ForEachDataHeaderInfo(this Entity entity, Action<HeaderInfo> inspection)
+    {
+      if (entity.Entities == null)
+        return entity;
+
+      var headers =
+        from child in entity.Entities
+        where child.Class.Contains(ClassNames.Header)
+           && child.Rel.Contains(RelNames.DataHeader)
+        select new HeaderInfo(child.Properties ?? (child.Properties = new PropertyCollection()));
+
+      headers.ForEach(inspection);
+
+      return entity;
+    }
+
     #endregion
 
     #region AddData
@@ -167,6 +189,26 @@ namespace Paper.Media.Design.Extensions
         , dataType
         , RelNames.DataHeader
         , opt => opt.AddHidden(hidden)
+      );
+      return entity;
+    }
+
+    /// <summary>
+    /// Adiciona informações sobre um campo.
+    /// </summary>
+    /// <param name="entity">A entidade modificada.</param>
+    /// <param name="header">Informações cobre o campo.</param>
+    /// <returns>A própria entidade modificada.</returns>
+    public static Entity AddDataHeader(this Entity entity, HeaderInfo header)
+    {
+      HeaderUtil.AddHeaderToEntity(
+          entity
+        , HeaderNamesProperty
+        , header.Name
+        , header.Title
+        , header.DataType
+        , RelNames.DataHeader
+        , options => header.CopyToHeaderOptions(options)
       );
       return entity;
     }

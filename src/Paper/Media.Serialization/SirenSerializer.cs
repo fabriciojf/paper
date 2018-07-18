@@ -112,7 +112,7 @@ namespace Paper.Media.Serialization
     {
       foreach (var property in sourceNode.ChildProperties())
       {
-        var info = targetGraph.GetProperty(property.Name);
+        var info = targetGraph._GetPropertyInfo(property.Name);
         if (info == null)
           continue;
 
@@ -132,7 +132,7 @@ namespace Paper.Media.Serialization
           }
         }
 
-        targetGraph.Set(property.Name, propertyValue);
+        targetGraph._Set(property.Name, propertyValue);
       }
     }
 

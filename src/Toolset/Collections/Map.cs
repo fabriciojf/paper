@@ -8,7 +8,22 @@ namespace Toolset.Collections
   public class Map<TKey, TValue> : IDictionary<TKey, TValue>
     where TValue : class
   {
-    private readonly Dictionary<TKey, TValue> items = new Dictionary<TKey, TValue>();
+    private readonly Dictionary<TKey, TValue> items;
+
+    public Map()
+    {
+      items = new Dictionary<TKey, TValue>();
+    }
+
+    public Map(int capacity)
+    {
+      items = new Dictionary<TKey, TValue>(capacity);
+    }
+
+    public Map(IEnumerable<KeyValuePair<TKey, TValue>> entries)
+    {
+      items = new Dictionary<TKey, TValue>(entries);
+    }
 
     public TValue this[TKey key]
     {

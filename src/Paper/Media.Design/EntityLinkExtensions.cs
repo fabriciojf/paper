@@ -137,7 +137,7 @@ namespace Paper.Media.Design
     /// <param name="entity">A entidade a ser modificada.</param>
     /// <param name="href">A URL de referência do link.</param>
     /// <returns>A própria instância da entidade modificada.</returns>
-    public static Entity AddLinkSelf(this Entity entity, string href, params string[] otherRels)
+    public static Entity AddLinkSelf(this Entity entity, string href, string rel, params string[] otherRels)
     {
       if (entity.Links == null)
       {
@@ -148,6 +148,7 @@ namespace Paper.Media.Design
       link.Href = href;
       link.Rel = new NameCollection();
       link.Rel.Add(RelNames.Self);
+      link.Rel.Add(rel);
       link.Rel.AddMany(otherRels);
 
       entity.Links.Add(link);

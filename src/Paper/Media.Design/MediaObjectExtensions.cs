@@ -72,6 +72,23 @@ namespace Paper.Media.Design
     /// Adiciona as classes indicadas à entidade.
     /// </summary>
     /// <param name="target">O link a ser modificado.</param>
+    /// <param name="classNames">Os nomes das classes.</param>
+    /// <returns>A própria instância do link modificado.</returns>
+    public static TMediaObject AddClass<TMediaObject>(this TMediaObject target, IEnumerable<string> classNames)
+      where TMediaObject : IMediaObject
+    {
+      if (target.Class == null)
+      {
+        target.Class = new NameCollection();
+      }
+      target.Class.AddMany(classNames);
+      return target;
+    }
+
+    /// <summary>
+    /// Adiciona as classes indicadas à entidade.
+    /// </summary>
+    /// <param name="target">O link a ser modificado.</param>
     /// <param name="className">O nome de uma classe.</param>
     /// <param name="otherClassNames">Os nomes de outras classes.</param>
     /// <returns>A própria instância do link modificado.</returns>
@@ -148,7 +165,24 @@ namespace Paper.Media.Design
     /// Adiciona as relações indicadas à entidade.
     /// </summary>
     /// <param name="target">O link a ser modificado.</param>
-    /// <param name="rel">O nome de uma relação.</param>
+    /// <param name="rels">O nome de uma relação.</param>
+    /// <returns>A própria instância do link modificado.</returns>
+    public static TMediaObject AddRel<TMediaObject>(this TMediaObject target, IEnumerable<string> rels)
+      where TMediaObject : IMediaObject
+    {
+      if (target.Rel == null)
+      {
+        target.Rel = new NameCollection();
+      }
+      target.Rel.AddMany(rels);
+      return target;
+    }
+
+    /// <summary>
+    /// Adiciona as relações indicadas à entidade.
+    /// </summary>
+    /// <param name="target">O link a ser modificado.</param>
+    /// <param name="rels">O nome de uma relação.</param>
     /// <param name="otherRels">Nomes de outras relações.</param>
     /// <returns>A própria instância do link modificado.</returns>
     public static TMediaObject AddRel<TMediaObject>(this TMediaObject target, string rel, params string[] otherRels)

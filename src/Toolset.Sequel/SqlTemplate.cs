@@ -397,14 +397,14 @@ namespace Toolset.Sequel
     /// <returns>A condição que substituirá o template.</returns>
     private static string CreateCriteria(Sql sql, string parameter, object value)
     {
-      if (value == null || (value as Values)?.IsNull == true)
+      if (value == null || (value as Val)?.IsNull == true)
       {
         return null;
       }
 
-      if ((value as Values)?.IsValue == true)
+      if ((value as Val)?.IsValue == true)
       {
-        value = ((Values)value).Value;
+        value = ((Val)value).Value;
       }
 
       string criteria = null;
@@ -438,16 +438,16 @@ namespace Toolset.Sequel
 
         criteria = "{0} in (" + innerText + ")";
       }
-      else if ((value as Values)?.IsArray == true)
+      else if ((value as Val)?.IsArray == true)
       {
         var items = Commander.CreateSqlCompatibleValue(value);
         var values = string.Join(",", items);
 
         criteria = "{0} in (" + values + ")";
       }
-      else if ((value as Values)?.IsRange == true)
+      else if ((value as Val)?.IsRange == true)
       {
-        var range = (Values)value;
+        var range = (Val)value;
         if (range.Min != null && range.Max != null)
         {
           var min = sql.KeyGen.Rename(parameter);
@@ -475,9 +475,9 @@ namespace Toolset.Sequel
           sql[parameter] = value;
         }
       }
-      else if ((value as Values)?.IsText == true)
+      else if ((value as Val)?.IsText == true)
       {
-        var text = (Values)value;
+        var text = (Val)value;
         if (text.HasWildcard)
         {
           criteria = "{0} like @" + parameter;

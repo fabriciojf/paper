@@ -9,7 +9,7 @@ using Toolset.Reflection;
 
 namespace Toolset
 {
-  public class Values
+  public class Val
   {
     public class Range
     {
@@ -23,7 +23,7 @@ namespace Toolset
       public object Max { get; }
     }
 
-    public Values(object value)
+    public Val(object value)
     {
       this.RawValue = value;
 
@@ -41,10 +41,10 @@ namespace Toolset
         this.IsArray = true;
         this.Array = ((IEnumerable)value).Cast<object>();
       }
-      else if (value.Has("Min") || value.Has("Max"))
+      else if (value._Has("Min") || value._Has("Max"))
       {
-        this.Min = value.Get("Min");
-        this.Max = value.Get("Max");
+        this.Min = value._Get("Min");
+        this.Max = value._Get("Max");
         this.IsNull = (this.Min.IsNull() && this.Max.IsNull());
         this.IsRange = !this.IsNull;
       }
@@ -55,7 +55,7 @@ namespace Toolset
       }
     }
 
-    public Values(object min, object max)
+    public Val(object min, object max)
       : this((min ?? max) != null ? (object)new Range(min, max) : null)
     {
     }
@@ -94,15 +94,15 @@ namespace Toolset
       => (RawValue ?? this).GetHashCode();
 
     public override bool Equals(object obj)
-      => (RawValue ?? this).Equals(obj is Values ? ((Values)obj).RawValue : obj);
+      => (RawValue ?? this).Equals(obj is Val ? ((Val)obj).RawValue : obj);
 
     public override string ToString()
       => RawValue?.ToString();
 
-    public static Values<T> Create<T>(T value)
-      => new Values<T>(value);
+    public static Val<T> Create<T>(T value)
+      => new Val<T>(value);
 
-    public static Values Create(object value)
-      => new Values(value);
+    public static Val Create(object value)
+      => new Val(value);
   }
 }

@@ -48,14 +48,14 @@ namespace Toolset.Sequel
 
     public static object CreateSqlCompatibleValue(object value)
     {
-      if (value == null || (value as Values)?.IsNull == true)
+      if (value == null || (value as Val)?.IsNull == true)
       {
         return DBNull.Value;
       }
 
-      if ((value as Values)?.IsValue == true)
+      if ((value as Val)?.IsValue == true)
       {
-        value = ((Values)value).Value;
+        value = ((Val)value).Value;
       }
 
       if (value is Sql)
@@ -69,19 +69,19 @@ namespace Toolset.Sequel
         return xml;
       }
 
-      if ((value as Values)?.IsText == true)
+      if ((value as Val)?.IsText == true)
       {
-        return ((Values)value).Text;
+        return ((Val)value).Text;
       }
 
-      if ((value as Values)?.IsRange == true)
+      if ((value as Val)?.IsRange == true)
       {
         return DBNull.Value;
       }
 
-      if ((value as Values)?.IsArray == true)
+      if ((value as Val)?.IsArray == true)
       {
-        var list = ((Values)value).Array;
+        var list = ((Val)value).Array;
         var sample = list.FirstOrDefault();
         if (sample is string)
         {
