@@ -85,8 +85,8 @@ namespace Toolset
       var canPrefix = !textCase.HasFlag(TextCase.NoPrefix);
       textCase &= ~TextCase.NoPrefix;
 
-      var isPreserveData = textCase.HasFlag(TextCase.PreserveSpecialChars);
-      textCase &= ~TextCase.PreserveSpecialChars;
+      var isPreserveData = textCase.HasFlag(TextCase.PreserveSpecialCharacters);
+      textCase &= ~TextCase.PreserveSpecialCharacters;
 
       var isProperCase = (textCase == TextCase.ProperCase);
       if (isProperCase)

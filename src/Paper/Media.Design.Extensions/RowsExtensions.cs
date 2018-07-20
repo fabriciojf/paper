@@ -281,6 +281,32 @@ namespace Paper.Media.Design.Extensions
     #region AddRowHeader
 
     /// <summary>
+    /// Adiciona informações sobre campos.
+    /// </summary>
+    /// <param name="entity">A entidade modificada.</param>
+    /// <param name="headers">Os dados adicionados à entidade.</param>
+    /// <returns>A própria entidade modificada.</returns>
+    public static Entity AddRowHeaders(this Entity entity, IEnumerable<HeaderInfo> headers)
+    {
+      if (headers != null)
+      {
+        foreach (var header in headers)
+        {
+          HeaderUtil.AddHeaderToEntity(
+              entity
+            , HeaderNamesProperty
+            , header.Name
+            , header.Title
+            , header.DataType
+            , RelNames.RowHeader
+            , options => header.CopyToHeaderOptions(options)
+          );
+        }
+      }
+      return entity;
+    }
+
+    /// <summary>
     /// Adiciona informações sobre um campo.
     /// </summary>
     /// <typeparam name="T">Um tipo para inferência dos campos.</typeparam>

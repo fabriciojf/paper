@@ -98,13 +98,24 @@ namespace Paper.Media.Papers.Rendering
     private static ArgCollection CollectQueryArgs(string requestUri)
     {
       var queryString = requestUri.Split('?').LastOrDefault() ?? "";
+
       var entries =
         from arg in queryString.Split('&')
         where arg.Contains("=")
         let tokens = arg.Split('=')
         let key = tokens.First()
         let value = string.Join('=', tokens.Skip(1))
-        select KeyValuePair.Create(key, value);
+        let entry = new { key, value }
+        group entry by entry.key into g
+        let isArray = g.Key.Contains("[")
+        let keyName = g.Key.Replace("[", "").Replace("]", "")
+        select KeyValuePair.Create(
+          keyName,
+          isArray
+            ? string.Join(",", g)
+            : g.Select(x => x.key).First()
+        );
+
       var args = new ArgCollection(entries);
       return args;
     }

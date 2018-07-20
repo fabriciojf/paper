@@ -78,6 +78,16 @@ namespace Paper.Media
     /// </summary>
     RowHeader,
 
+    /// <summary>
+    /// Relaciona um link a um dado.
+    /// </summary>
+    DataLink,
+
+    /// <summary>
+    /// Relaciona um link a um registro.
+    /// </summary>
+    RowLink,
+
     #endregion
   }
 }

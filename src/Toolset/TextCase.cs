@@ -53,6 +53,6 @@ namespace Toolset
     /// Preserva os caracteres especiais.
     /// Caracteres preservados: ? ! # $ % & @ * + / \ ; < > = ^ ~ ( ) [ ] { }
     /// </summary>
-    PreserveSpecialChars = 0x2000
+    PreserveSpecialCharacters = 0x2000
   }
 }

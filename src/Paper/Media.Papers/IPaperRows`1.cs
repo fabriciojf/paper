@@ -18,8 +18,8 @@ namespace Paper.Media.Papers
 
     IEnumerable<TRow> GetRows();
 
-    IEnumerable<Link> GetRowLinks(TRow row);
+    IEnumerable<HeaderInfo> GetRowHeaders(IEnumerable<TRow> rows);
 
-    IEnumerable<HeaderInfo> GetRowHeaders(TRow row);
+    IEnumerable<ILink> GetRowLinks(TRow row);
   }
 }

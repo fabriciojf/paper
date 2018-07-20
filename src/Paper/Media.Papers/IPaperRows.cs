@@ -18,8 +18,8 @@ namespace Paper.Media.Papers
 
     DataTable GetRows();
 
-    IEnumerable<Link> GetRowLinks(DataRow row);
+    IEnumerable<HeaderInfo> GetRowHeaders(DataTable rows);
 
-    IEnumerable<HeaderInfo> GetRowHeaders(DataRow row);
+    IEnumerable<ILink> GetRowLinks(DataRow row);
   }
 }

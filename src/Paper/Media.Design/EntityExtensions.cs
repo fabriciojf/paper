@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Toolset;
+using Toolset.Collections;
 
 namespace Paper.Media.Design
 {
@@ -238,10 +239,10 @@ namespace Paper.Media.Design
     /// <returns>A própria instância da entidade modificada.</returns>
     public static Entity ResolveLinks(this Entity entity, string requestUri, string apiPath = "/Api/1")
     {
-      var route = new Route(requestUri);
+      var route = new Route(requestUri).UnsetAllArgs();
 
       var entities = EnumerateDescendantsAndSelf(entity);
-      var links = entities.SelectMany(x => x.Links);
+      var links = entities.Select(x => x.Links).NonNull().SelectMany();
       foreach (var link in links)
       {
         if (link.Href.StartsWith("^/"))
@@ -265,7 +266,7 @@ namespace Paper.Media.Design
     private static IEnumerable<Entity> EnumerateDescendantsAndSelf(Entity entity)
     {
       yield return entity;
-      if (entity.Entities != null)
+      if (entity != null && entity.Entities != null)
       {
         foreach (var child in entity.Entities.SelectMany(EnumerateDescendantsAndSelf))
         {

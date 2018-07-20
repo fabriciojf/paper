@@ -77,6 +77,16 @@ namespace Paper.Media
     /// </summary>
     public const string RowHeader = "rowHeader";
 
+    /// <summary>
+    /// Relaciona um link a um dado.
+    /// </summary>
+    public const string DataLink = "DataLink";
+
+    /// <summary>
+    /// Relaciona um link a um registro.
+    /// </summary>
+    public const string RowLink = "RowLink";
+
     #endregion
   }
 }

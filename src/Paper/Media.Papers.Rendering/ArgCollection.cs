@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Toolset;
 using Toolset.Collections;
@@ -44,6 +45,17 @@ namespace Paper.Media.Papers.Rendering
     public T Get<T>(string key)
     {
       var value = this.map[key];
+      if (value == null)
+        return default(T);
+
+      if (typeof(T).IsArray)
+      {
+        if (value.Contains(";"))
+          return (T)(object)value.Split(';').Select(x => x.Trim()).ToArray();
+        else
+          return (T)(object)value.Split(',').Select(x => x.Trim()).ToArray();
+      }
+
       return Cast.To<T>(value);
     }
 

@@ -19,9 +19,6 @@
     <Compile Remove="Media.Papers.Rendering\QueryRenderer.cs" />
     <Compile Remove="Media.Papers.Rendering\RenderContext.cs" />
     <Compile Remove="Media.Papers.Rendering\RenderOfFilter.cs" />
-    <Compile Remove="Media.Papers.Rendering\RenderOfPagination.cs" />
-    <Compile Remove="Media.Papers.Rendering\RenderOfRows.cs" />
-    <Compile Remove="Media.Papers.Rendering\RenderOfSort.cs" />
   </ItemGroup>
 
   <ItemGroup>

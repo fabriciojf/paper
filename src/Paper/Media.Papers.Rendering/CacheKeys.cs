@@ -18,5 +18,15 @@ namespace Paper.Media.Papers.Rendering
     /// Coleção dos registros consultados durante a renderização da página.
     /// </summary>
     public const string Rows = "Rows";
+
+    /// <summary>
+    /// Determina se ainda existem mais páginas de registro no lado do servidor.
+    /// </summary>
+    public const string HasMoreRows = "HasMoreRows";
+
+    /// <summary>
+    /// Instância do paginador de registros caso exista.
+    /// </summary>
+    public const string RowsPagination = "RowPagination";
   }
 }

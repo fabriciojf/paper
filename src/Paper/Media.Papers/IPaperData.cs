@@ -10,10 +10,10 @@ namespace Paper.Media.Papers
   {
     string GetTitle();
 
-    DataRow GetData();
+    DataTable GetData();
 
-    IEnumerable<ILink> GetDataLinks(DataRow data);
+    IEnumerable<HeaderInfo> GetDataHeaders(DataTable data);
 
-    IEnumerable<HeaderInfo> GetDataHeaders(DataRow data);
+    IEnumerable<ILink> GetDataLinks(DataTable data);
   }
 }

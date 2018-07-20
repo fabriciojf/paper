@@ -12,8 +12,8 @@ namespace Paper.Media.Papers
 
     TData GetData();
 
-    IEnumerable<ILink> GetDataLinks(TData data);
-
     IEnumerable<HeaderInfo> GetDataHeaders(TData data);
+
+    IEnumerable<ILink> GetDataLinks(TData data);
   }
 }

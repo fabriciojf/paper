@@ -190,6 +190,22 @@ namespace Toolset.Reflection
       return (T)_SetNew(target, propertyName, args);
     }
 
+    public static bool _TrySet(this object target, string propertyName, object value)
+    {
+      if (!_Has(target, propertyName))
+        return false;
+
+      try
+      {
+        _Set(target, propertyName, value);
+        return true;
+      }
+      catch (Exception ex)
+      {
+        return false;
+      }
+    }
+
     public static object _Call(this object target, string methodName, params object[] args)
     {
       var type = target.GetType();

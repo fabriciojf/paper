@@ -102,6 +102,32 @@ namespace Paper.Media.Design.Extensions
     #region AddDataHeader
 
     /// <summary>
+    /// Adiciona informações sobre campos.
+    /// </summary>
+    /// <param name="entity">A entidade modificada.</param>
+    /// <param name="headers">Os dados adicionados à entidade.</param>
+    /// <returns>A própria entidade modificada.</returns>
+    public static Entity AddDataHeaders(this Entity entity, IEnumerable<HeaderInfo> headers)
+    {
+      if (headers != null)
+      {
+        foreach (var header in headers)
+        {
+          HeaderUtil.AddHeaderToEntity(
+              entity
+            , HeaderNamesProperty
+            , header.Name
+            , header.Title
+            , header.DataType
+            , RelNames.DataHeader
+            , options => header.CopyToHeaderOptions(options)
+          );
+        }
+      }
+      return entity;
+    }
+
+    /// <summary>
     /// Adiciona informações sobre um campo.
     /// </summary>
     /// <typeparam name="T">Um tipo para inferência dos campos.</typeparam>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +8,13 @@ using Toolset;
 
 namespace Paper.Media.Design.Extensions
 {
-  public class Pagination
+  public class Pagination : IEnumerable<KeyValuePair<string, int>>
   {
-    private int rows = 50;
+    private int count = 50;
+    private int index = 0;
 
-    private int? _offset;
-    private int? _page;
+    private bool _isOffsetSet;
+    private bool _isLimitSet;
 
     public Pagination()
     {
@@ -20,110 +22,74 @@ namespace Paper.Media.Design.Extensions
 
     public int Limit
     {
-      get => rows;
+      get => count;
       set
       {
-        rows = (value > 0) ? value : 50;
-        IsPageSizeSet = false;
+        SetLimitOrPageSize(value);
+        IsLimitSet = true;
       }
     }
 
     public int PageSize
     {
-      get => rows;
+      get => count;
       set
       {
-        rows = (value > 0) ? value : 50;
+        SetLimitOrPageSize(value);
         IsPageSizeSet = true;
       }
     }
 
     public int Offset
     {
-      get
-      {
-        if (_offset != null)
-        {
-          return _offset.Value;
-        }
-        if (_page > 1)
-        {
-          return (_page.Value - 1) * rows;
-        }
-        return 0;
-      }
+      get => IsOffsetSet ? index : (index - 1) * count;
       set
       {
-        if (value > 0)
-        {
-          _offset = value;
-          _page = null;
-        }
-        else
-        {
-          _offset = null;
-        }
+        index = (value > 0) ? value : 0;
+        IsOffsetSet = true;
       }
     }
 
     public int Page
     {
-      get
-      {
-        if (_page != null)
-        {
-          return _page.Value;
-        }
-        else if (_offset > 0)
-        {
-          return (_offset.Value /  rows) + 1;
-        }
-        else
-        {
-          return 1;
-        }
-      }
+      get => IsPageSet ? index : (index / count) + 1;
       set
       {
-        if (value > 1)
-        {
-          _page = value;
-          _offset = null;
-        }
-        else
-        {
-          _page = null;
-        }
+        index = (value > 1) ? value : 1;
+        IsPageSet = true;
       }
     }
 
-    public bool IsLimitSet => !IsPageSizeSet;
-
-    public bool IsPageSizeSet { get; private set; }
-
-    public bool IsOffsetSet => _page == null;
-
-    public bool IsPageSet => _page != null;
-
-    public IEnumerable<KeyValuePair<string, int>> GetValues()
+    public bool IsLimitSet
     {
-      if (IsLimitSet)
-        yield return KeyValuePair.Create("limit", Limit);
-      else
-        yield return KeyValuePair.Create("pageSize", PageSize);
+      get => _isLimitSet;
+      set => _isLimitSet = value;
+    }
 
-      if (IsOffsetSet)
-        yield return KeyValuePair.Create("offset", Offset);
-      else
-        yield return KeyValuePair.Create("page", Page);
+    public bool IsPageSizeSet
+    {
+      get => !_isLimitSet;
+      set => _isLimitSet = !value;
+    }
+
+    public bool IsOffsetSet
+    {
+      get => _isOffsetSet;
+      set => _isOffsetSet = value;
+    }
+
+    public bool IsPageSet
+    {
+      get => !_isOffsetSet;
+      set => _isOffsetSet = !value;
+    }
+
+    public void SetLimitOrPageSize(int value)
+    {
+      count = (value > 0) ? value : 50;
     }
 
     public override string ToString()
-    {
-      return ToUriComponent();
-    }
-
-    public string ToUriComponent()
     {
       var rowsName = IsPageSizeSet ? "pageSize" : "limit";
       return IsPageSet
@@ -131,20 +97,8 @@ namespace Paper.Media.Design.Extensions
         : $"offset={Offset}&{rowsName}={Limit}";
     }
 
-    public static Pagination CreateOffset(int? limit = 50, int? offset = 0)
+    public void CopyFromUri(string uri)
     {
-      return new Pagination { Limit = limit.Value, Offset = offset.Value };
-    }
-
-    public static Pagination CreatePage(int? pageSize = 50, int? page = 1)
-    {
-      return new Pagination { PageSize = pageSize.Value, Page = page.Value };
-    }
-
-    public static Pagination CreateFromUri(string uri)
-    {
-      var pagination = new Pagination();
-
       var queryString = uri.Split('?').Skip(1).FirstOrDefault();
       if (queryString == null)
       {
@@ -174,7 +128,7 @@ namespace Paper.Media.Design.Extensions
                 int number = 0;
                 if (int.TryParse(arg.value, out number))
                 {
-                  pagination.Page = number;
+                  Page = number;
                 }
                 break;
               }
@@ -183,7 +137,7 @@ namespace Paper.Media.Design.Extensions
                 int number = 0;
                 if (int.TryParse(arg.value, out number))
                 {
-                  pagination.Offset = number;
+                  Offset = number;
                 }
                 break;
               }
@@ -192,7 +146,7 @@ namespace Paper.Media.Design.Extensions
                 int number = 0;
                 if (int.TryParse(arg.value, out number))
                 {
-                  pagination.PageSize = number;
+                  PageSize = number;
                 }
                 break;
               }
@@ -201,14 +155,152 @@ namespace Paper.Media.Design.Extensions
                 int number = 0;
                 if (int.TryParse(arg.value, out number))
                 {
-                  pagination.Limit = number;
+                  Limit = number;
                 }
                 break;
               }
           }
         }
       }
+    }
 
+    public string CopyToUri(string uri)
+    {
+      return CopyToUri(new Route(uri));
+    }
+
+    public Route CopyToUri(Route uri)
+    {
+      var args = EnumerateArgs();
+      uri = uri
+        .UnsetArgs("pageSize", "limit", "page", "offset")
+        .SetArg(args);
+      return uri;
+    }
+
+    public IEnumerator<KeyValuePair<string, int>> GetEnumerator()
+    {
+      return EnumerateArgPairs().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return EnumerateArgPairs().GetEnumerator();
+    }
+
+    private IEnumerable<KeyValuePair<string, int>> EnumerateArgPairs()
+    {
+      if (IsLimitSet)
+        yield return KeyValuePair.Create("limit", Limit);
+      else
+        yield return KeyValuePair.Create("pageSize", PageSize);
+
+      if (IsOffsetSet)
+        yield return KeyValuePair.Create("offset", Offset);
+      else
+        yield return KeyValuePair.Create("page", Page);
+    }
+
+    private IEnumerable<object> EnumerateArgs()
+    {
+      if (IsPageSet)
+      {
+        yield return "page";
+        yield return Page;
+      }
+      else
+      {
+        yield return "offset";
+        yield return Offset;
+      }
+
+      if (IsPageSizeSet)
+      {
+        yield return "pageSize";
+        yield return PageSize;
+      }
+      else
+      {
+        yield return "limit";
+        yield return Limit;
+      }
+    }
+
+    public Pagination Clone()
+    {
+      return new Pagination
+      {
+        count = this.count,
+        index = this.index,
+        _isOffsetSet = this._isOffsetSet,
+        _isLimitSet = this._isLimitSet
+      };
+    }
+
+    public Pagination FirstPage()
+    {
+      var clone = this.Clone();
+      if (clone.IsPageSet)
+      {
+        clone.Page = 1;
+      }
+      else
+      {
+        clone.Offset = 0;
+      }
+      return clone;
+    }
+
+    public Pagination NextPage()
+    {
+      var clone = this.Clone();
+      if (clone.IsPageSet)
+      {
+        clone.Page++;
+      }
+      else
+      {
+        clone.Offset += clone.PageSize;
+      }
+      return clone;
+    }
+
+    public Pagination PreviousPage()
+    {
+      var clone = this.Clone();
+      if (clone.IsPageSet)
+      {
+        if (clone.Page <= 1)
+          return null;
+
+        clone.Page--;
+      }
+      else
+      {
+        if (clone.Offset <= 0)
+          return null;
+
+        clone.Offset -= clone.PageSize;
+        if (clone.Offset < 0)
+          clone.Offset = 0;
+      }
+      return clone;
+    }
+
+    public static Pagination CreateOffset(int? limit = 50, int? offset = 0)
+    {
+      return new Pagination { Limit = limit.Value, Offset = offset.Value };
+    }
+
+    public static Pagination CreatePage(int? pageSize = 50, int? page = 1)
+    {
+      return new Pagination { PageSize = pageSize.Value, Page = page.Value };
+    }
+
+    public static Pagination CreateFromUri(string uri)
+    {
+      var pagination = new Pagination();
+      pagination.CopyFromUri(uri);
       return pagination;
     }
   }
