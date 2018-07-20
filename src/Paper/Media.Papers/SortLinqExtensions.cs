@@ -12,10 +12,30 @@ namespace Paper.Media.Papers
 {
   public static class SortLinqExtensions
   {
+
+    #region IQueryable
+
     public static ISortableQueryable<T> SortBy<T, TKey>(
         this IQueryable<T> items
       , Sort sort
       , Expression<Func<T, TKey>> keySelector)
+    {
+      return DoSortBy(items, sort, keySelector, reset: true);
+    }
+
+    public static ISortableQueryable<T> ThenBy<T, TKey>(
+        this ISortableQueryable<T> items
+      , Sort sort
+      , Expression<Func<T, TKey>> keySelector)
+    {
+      return DoSortBy(items, sort, keySelector, reset: false);
+    }
+
+    private static ISortableQueryable<T> DoSortBy<T, TKey>(
+        this IQueryable<T> items
+      , Sort sort
+      , Expression<Func<T, TKey>> keySelector
+      , bool reset)
     {
       var expression = keySelector.Body as MemberExpression;
       if (expression == null)
@@ -23,33 +43,68 @@ namespace Paper.Media.Papers
 
       var name = expression.Member.Name;
       var field = sort[name];
-      
+
       if (field?.Order == SortOrder.Ascending)
       {
         var source = (items as ISortableQueryable<T>)?.Source ?? items;
-        items =
-          (source is IOrderedQueryable<T>)
-            ? ((IOrderedQueryable<T>)source).ThenBy(keySelector)
-            : source.OrderBy(keySelector);
+        if (reset)
+        {
+          items = source.OrderBy(keySelector);
+        }
+        else
+        {
+          items =
+            (source is IOrderedQueryable<T>)
+              ? ((IOrderedQueryable<T>)source).ThenBy(keySelector)
+              : source.OrderBy(keySelector);
+        }
       }
 
       if (field?.Order == SortOrder.Descending)
       {
         var source = (items as ISortableQueryable<T>)?.Source ?? items;
-        items =
-          (source is IOrderedQueryable<T>)
-            ? ((IOrderedQueryable<T>)source).ThenByDescending(keySelector)
-            : source.OrderByDescending(keySelector);
+        if (reset)
+        {
+          items = source.OrderByDescending(keySelector);
+        }
+        else
+        {
+          items =
+            (source is IOrderedQueryable<T>)
+              ? ((IOrderedQueryable<T>)source).ThenByDescending(keySelector)
+              : source.OrderByDescending(keySelector);
+        }
       }
 
       return new SortableQueryable<T>(items);
     }
+
+    #endregion
+
+    #region IEnumerable
 
     public static ISortableEnumerable<T> SortBy<T, TKey>(
         this IEnumerable<T> items
       , Sort sort
       , Expression<Func<T, TKey>> keySelector)
     {
+      return DoSortBy(items, sort, keySelector, reset: true);
+    }
+
+    public static ISortableEnumerable<T> ThenBy<T, TKey>(
+        this ISortableEnumerable<T> items
+      , Sort sort
+      , Expression<Func<T, TKey>> keySelector)
+    {
+      return DoSortBy(items, sort, keySelector, reset: false);
+    }
+
+    private static ISortableEnumerable<T> DoSortBy<T, TKey>(
+        this IEnumerable<T> items
+      , Sort sort
+      , Expression<Func<T, TKey>> keySelector
+      , bool reset)
+    {
       var expression = keySelector.Body as MemberExpression;
       if (expression == null)
         throw new Exception("A expressão não é válida. Apenas um seletor de propriedade de objeto é suportado.");
@@ -60,22 +115,39 @@ namespace Paper.Media.Papers
       if (field?.Order == SortOrder.Ascending)
       {
         var source = (items as ISortableEnumerable<T>)?.Source ?? items;
-        items =
-          (source is IOrderedEnumerable<T>)
-            ? ((IOrderedEnumerable<T>)source).ThenBy(keySelector.Compile())
-            : source.OrderBy(keySelector.Compile());
+        if (reset)
+        {
+          items = source.OrderBy(keySelector.Compile());
+        }
+        else
+        {
+          items =
+            (source is IOrderedEnumerable<T>)
+              ? ((IOrderedEnumerable<T>)source).ThenBy(keySelector.Compile())
+              : source.OrderBy(keySelector.Compile());
+        }
       }
 
       if (field?.Order == SortOrder.Descending)
       {
         var source = (items as ISortableEnumerable<T>)?.Source ?? items;
-        items =
-          (source is IOrderedEnumerable<T>)
-            ? ((IOrderedEnumerable<T>)source).ThenByDescending(keySelector.Compile())
-            : source.OrderByDescending(keySelector.Compile());
+        if (reset)
+        {
+          items = source.OrderByDescending(keySelector.Compile());
+        }
+        else
+        {
+          items =
+            (source is IOrderedEnumerable<T>)
+              ? ((IOrderedEnumerable<T>)source).ThenByDescending(keySelector.Compile())
+              : source.OrderByDescending(keySelector.Compile());
+        }
       }
 
       return new SortableEnumerable<T>(items);
     }
+
+    #endregion
+
   }
 }
