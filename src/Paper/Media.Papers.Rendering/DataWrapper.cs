@@ -9,7 +9,7 @@ using Paper.Media.Design.Extensions;
 using Toolset;
 using Toolset.Reflection;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   /// <summary>
   /// Utilitário de inspeção de propriedades de um objeto.
@@ -82,7 +82,7 @@ namespace Paper.Media.Papers.Rendering
     /// <summary>
     /// Inspeção para DataRow.
     /// </summary>
-    /// <seealso cref="Paper.Media.Papers.Rendering.DataWrapper" />
+    /// <seealso cref="Media.Design.Extensions.Papers.Rendering.DataWrapper" />
     internal class DataRowInspector : DataWrapper
     {
       // NOTA: Pode ser nulo.
@@ -148,7 +148,7 @@ namespace Paper.Media.Papers.Rendering
     /// <summary>
     /// Inspeção para dicionário.
     /// </summary>
-    /// <seealso cref="Paper.Media.Papers.Rendering.DataWrapper" />
+    /// <seealso cref="Media.Design.Extensions.Papers.Rendering.DataWrapper" />
     internal class DictionaryInspector : DataWrapper
     {
       // NOTA: Pode ser nulo.
@@ -193,7 +193,7 @@ namespace Paper.Media.Papers.Rendering
     /// <summary>
     /// Inspeção de propriedades de objeto.
     /// </summary>
-    /// <seealso cref="Paper.Media.Papers.Rendering.DataWrapper" />
+    /// <seealso cref="Media.Design.Extensions.Papers.Rendering.DataWrapper" />
     internal class GraphInspector : DataWrapper
     {
       // NOTA: Pode ser nulo.

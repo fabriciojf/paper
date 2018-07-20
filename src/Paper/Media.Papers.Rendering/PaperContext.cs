@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Toolset.Collections;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   public class PaperContext
   {

@@ -8,7 +8,7 @@ using Paper.Media.Design;
 using Paper.Media.Design.Extensions;
 using Toolset.Reflection;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   static class RenderOfData
   {

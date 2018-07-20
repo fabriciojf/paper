@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   /// <summary>
   /// Coleção das chaves de cache conhecidas.
@@ -27,6 +27,6 @@ namespace Paper.Media.Papers.Rendering
     /// <summary>
     /// Instância do paginador de registros caso exista.
     /// </summary>
-    public const string RowsPagination = "RowPagination";
+    public const string RowsPage = "RowsPage";
   }
 }

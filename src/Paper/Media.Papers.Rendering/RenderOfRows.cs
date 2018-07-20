@@ -6,9 +6,10 @@ using System.Linq;
 using System.Reflection;
 using Paper.Media.Design;
 using Paper.Media.Design.Extensions;
+using Toolset;
 using Toolset.Reflection;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   static class RenderOfRows
   {
@@ -66,10 +67,47 @@ namespace Paper.Media.Papers.Rendering
         entity.AddRowHeader(header);
       }
 
+      var sort = paper._Get<Sort>("RowsSort");
+      if (sort != null)
+      {
+        entity.ForEachRowHeader((e, h) =>
+          AddRowHeaderSortInfo(paper, ctx, sort, e, h)
+        );
+      }
+
       var headers = paper._Call<IEnumerable<HeaderInfo>>("GetRowHeaders", rows.DataSource);
       if (headers != null)
       {
         entity.AddRowHeaders(headers);
+      }
+    }
+
+    private static void AddRowHeaderSortInfo(
+        IPaper paper
+      , PaperContext ctx
+      , Sort sort
+      , Entity headerEntity
+      , HeaderInfo headerInfo
+      )
+    {
+      var isSortable = (sort.Contains(headerInfo.Name) == true);
+      var field = sort.GetSortedField(headerInfo.Name);
+      if (isSortable)
+      {
+        headerInfo.Order = field?.Order;
+
+        // O link será o inverso da ordem atual, para permitir essa inversão
+        var canAscend = (field?.Order != SortOrder.Ascending);
+
+        var fieldName = headerInfo.Name.ChangeCase(TextCase.CamelCase);
+        var sortValue = canAscend ? fieldName : $"{fieldName}:desc";
+        var sortTitle = canAscend ? "Ordenar Crescente" : "Ordenar Decrescente";
+
+        var route = 
+          new Route(ctx.RequestUri)
+            .UnsetArgs("sort", "sort[]").SetArg("sort[]", sortValue);
+
+        headerEntity.AddLink(route, sortTitle, Rel.HeaderLink);
       }
     }
   }

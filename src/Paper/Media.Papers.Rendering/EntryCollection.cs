@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Toolset.Collections;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   /// <summary>
   /// Cache de dados para o contexto de renderização do Paper.

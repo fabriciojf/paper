@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using Paper.Media;
-using Paper.Media.Papers.Rendering;
+using Media.Design.Extensions.Papers.Rendering;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   /// <summary>
   /// Cria o link da própria entidade.
   /// </summary>
   /// <seealso cref="Paper.Media.Link" />
-  /// <seealso cref="Paper.Media.Papers.ILink" />
+  /// <seealso cref="Media.Design.Extensions.Papers.ILink" />
   public class LinkSelf : Link, ILink
   {
     public LinkSelf(string href)

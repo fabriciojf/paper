@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   public interface ISortableQueryable<T> : IQueryable<T>
   {

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Toolset
 {
-  public static class Cast
+  public static class Change
   {
     public static object To(object value, Type targetType)
     {

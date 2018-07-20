@@ -35,7 +35,7 @@ namespace Toolset.Posix
     public override string Text
     {
       get => _value?.ToString();
-      set => _value = (value == null) ? null : Cast.To(value, typeof(T));
+      set => _value = (value == null) ? null : Change.To(value, typeof(T));
     }
 
     public override string ToString() => Text;

@@ -129,7 +129,7 @@ namespace Toolset.Reflection
 
       try
       {
-        var convertedValue = Cast.To<T>(value);
+        var convertedValue = Change.To<T>(value);
         return convertedValue;
       }
       catch (FormatException ex)
@@ -162,7 +162,7 @@ namespace Toolset.Reflection
 
       try
       {
-        var convertedValue = Cast.To(value, property.PropertyType);
+        var convertedValue = Change.To(value, property.PropertyType);
         property.SetValue(target, convertedValue);
       }
       catch (FormatException ex)
@@ -224,7 +224,7 @@ namespace Toolset.Reflection
       var value = _Call(target, methodName, args);
       try
       {
-        var convertedValue = Cast.To<TResult>(value);
+        var convertedValue = Change.To<TResult>(value);
         return convertedValue;
       }
       catch (FormatException ex)
@@ -295,7 +295,7 @@ namespace Toolset.Reflection
 
           if (sourceValue != null)
           {
-            targetValue = Cast.To(sourceValue, targetProperty.PropertyType);
+            targetValue = Change.To(sourceValue, targetProperty.PropertyType);
           }
 
           targetProperty.SetValue(target, targetValue);

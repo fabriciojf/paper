@@ -215,12 +215,12 @@ namespace Toolset.Xml
         }
         else if (rawType.IsSubclassOf(typeof(Enum)))
         {
-          var enumValue = Cast.To<int>(text);
+          var enumValue = Change.To<int>(text);
           convertedValue = Enum.ToObject(rawType, enumValue);
         }
         else
         {
-          convertedValue = Cast.To(text, rawType);
+          convertedValue = Change.To(text, rawType);
         }
 
         if (isNullableType)

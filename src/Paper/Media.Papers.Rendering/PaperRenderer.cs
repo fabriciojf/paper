@@ -6,7 +6,7 @@ using Paper.Media.Design;
 using Toolset.Collections;
 using Toolset.Reflection;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   public class PaperRenderer
   {
@@ -26,16 +26,16 @@ namespace Paper.Media.Papers.Rendering
       //
       SetArgs(ctx.Paper, ctx.QueryArgs);
       SetArgs(ctx.Paper, ctx.PathArgs);
-      RenderOfRowsPagination.SetArgs(ctx.Paper, ctx);
+      RenderOfRowsPage.SetArgs(ctx.Paper, ctx);
       RenderOfRowsSort.SetArgs(ctx.Paper, ctx);
 
       //
       // Fase 3: Consultando dados
       //
-      RenderOfRowsPagination.PreCacheRows(ctx.Paper, ctx);
+      RenderOfRowsPage.PreCacheRows(ctx.Paper, ctx);
       CacheData(ctx.Paper, ctx.Cache);
       CacheRows(ctx.Paper, ctx.Cache);
-      RenderOfRowsPagination.PosCacheRows(ctx.Paper, ctx);
+      RenderOfRowsPage.PosCacheRows(ctx.Paper, ctx);
 
       //
       // Fase 4: Renderizando entidade
@@ -43,7 +43,7 @@ namespace Paper.Media.Papers.Rendering
       RenderOfInfo.Render(ctx.Paper, entity, ctx);
       RenderOfData.Render(ctx.Paper, entity, ctx);
       RenderOfRows.Render(ctx.Paper, entity, ctx);
-      RenderOfRowsPagination.Render(ctx.Paper, entity, ctx);
+      RenderOfRowsPage.Render(ctx.Paper, entity, ctx);
       RenderOfRowsSort.Render(ctx.Paper, entity, ctx);
 
       //

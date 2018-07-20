@@ -4,13 +4,13 @@ using System.Data;
 using System.Text;
 using Paper.Media.Design.Extensions;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   public interface IPaperRows<TRow> : IPaper
   {
-    Pagination RowPagination { get; }
+    Page RowsPage { get; }
 
-    Sort RowSort { get; }
+    Sort RowsSort { get; }
 
     IFilter RowFilter { get; }
 

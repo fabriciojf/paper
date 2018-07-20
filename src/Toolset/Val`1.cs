@@ -49,20 +49,20 @@ namespace Toolset
 
         if (min != null && max != null)
         {
-          min = Cast.To<TTarget>(min);
-          max = Cast.To<TTarget>(max);
+          min = Change.To<TTarget>(min);
+          max = Change.To<TTarget>(max);
           return new Range(min, max);
         }
 
         if (min != null)
         {
-          min = Cast.To<TTarget>(min);
+          min = Change.To<TTarget>(min);
           return new Range(min, null);
         }
 
         if (max != null)
         {
-          max = Cast.To<TTarget>(max);
+          max = Change.To<TTarget>(max);
           return new Range(null, max);
         }
 
@@ -71,10 +71,10 @@ namespace Toolset
 
       if ((value is IEnumerable) && !(value is string))
       {
-        return ((IEnumerable)value).Cast<object>().Select(Cast.To<TTarget>);
+        return ((IEnumerable)value).Cast<object>().Select(Change.To<TTarget>);
       }
 
-      return Cast.To<TTarget>(value);
+      return Change.To<TTarget>(value);
     }
 
     #region Conversões

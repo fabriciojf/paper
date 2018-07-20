@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
   public class PaperAttribute : Attribute

@@ -58,6 +58,11 @@ namespace Paper.Media
     public const string Link = "link";
 
     /// <summary>
+    /// Relacionamento entre um link e um cabeçalho.
+    /// </summary>
+    public const string HeaderLink = "HeaderLink";
+
+    /// <summary>
     /// Estabecele relacionamento entre o alvo e uma proprieade da entidade.
     /// </summary>
     public const string Property = "property";

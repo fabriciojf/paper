@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Paper.Media;
-using Paper.Media.Papers.Rendering;
+using Media.Design.Extensions.Papers.Rendering;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   /// <summary>
   /// Interface para links vinculados a instâncias de IPaper.

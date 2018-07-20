@@ -4,7 +4,7 @@ using System.Data;
 using System.Text;
 using Paper.Media.Design.Extensions;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   public interface IPaperData : IPaper
   {

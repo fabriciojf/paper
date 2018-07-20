@@ -409,9 +409,9 @@ namespace Paper.Media.Serialization
         return;
       }
 
-      if (value is IList)
+      if (value is IEnumerable)
       {
-        var items = (IList)value;
+        var items = (IEnumerable)value;
 
         writer.Write("[");
 

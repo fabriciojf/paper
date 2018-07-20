@@ -43,14 +43,14 @@ namespace Toolset
 
     public static T To<T>(this string text)
     {
-      return Cast.To<T>(text);
+      return Change.To<T>(text);
     }
 
     public static T ToOrDefault<T>(this string text, T defaultValue = default(T))
     {
       try
       {
-        return Cast.To<T>(text);
+        return Change.To<T>(text);
       }
       catch
       {
@@ -323,6 +323,11 @@ namespace Toolset
     }
 
     public static bool EqualsAnyIgnoreCase(this string text, params string[] terms)
+    {
+      return terms.Any(x => x.EqualsIgnoreCase(text));
+    }
+
+    public static bool EqualsAnyIgnoreCase(this string text, IEnumerable<string> terms)
     {
       return terms.Any(x => x.EqualsIgnoreCase(text));
     }

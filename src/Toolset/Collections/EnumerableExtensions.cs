@@ -13,6 +13,18 @@ namespace Toolset.Collections
   public static class EnumerableExtensions
   {
     /// <summary>
+    /// Tenta converter o item para o tipo indicado.
+    /// Uma exceção é lançada se o tipo não for conversível destino.
+    /// </summary>
+    /// <typeparam name="T">O tipo destino da conversão.</typeparam>
+    /// <param name="enumerable">Os itens a serem convertidos.</param>
+    /// <returns>O enumerado dos itens convertidos.</returns>
+    public static IEnumerable<TType> ChangeTo<TType>(this IEnumerable enumerable)
+    {
+      return enumerable.Cast<object>().Select(Change.To<TType>);
+    }
+
+    /// <summary>
     /// Exclui uma instância do enumrado.
     /// </summary>
     /// <typeparam name="T">O tipo do objeto.</typeparam>

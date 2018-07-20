@@ -22,7 +22,7 @@ namespace Paper.Media.Design.Extensions
   public static class RowsExtensions
   {
     public const string HeaderNamesProperty = "__RowHeaders";
-    public const string PaginationProperty = "__RowsPagination";
+    public const string PaginationProperty = "__RowsPage";
 
     #region ForEach...
 
@@ -54,40 +54,24 @@ namespace Paper.Media.Design.Extensions
     /// <param name="entity">A entidade inspecionada.</param>
     /// <param name="inspection">A função de inspeção do item.</param>
     /// <returns>A própria instância da entidade inspecionada.</returns>
-    public static Entity ForEachRowHeader(this Entity entity, Action<Entity> inspection)
+    public static Entity ForEachRowHeader(this Entity entity, Action<Entity, HeaderInfo> inspection)
     {
       if (entity.Entities == null)
         return entity;
 
       var headers =
         from child in entity.Entities
-        where child.Class.Contains(ClassNames.Header)
-           && child.Rel.Contains(RelNames.RowHeader)
+        where child.Class?.Contains(ClassNames.Header) == true
+           && child.Rel?.Contains(RelNames.RowHeader) == true
         select child;
 
-      headers.ForEach(inspection);
-
-      return entity;
-    }
-
-    /// <summary>
-    /// Itera sob a coleção de cabeçalhos de registro na entidade.
-    /// </summary>
-    /// <param name="entity">A entidade inspecionada.</param>
-    /// <param name="inspection">A função de inspeção do item.</param>
-    /// <returns>A própria instância da entidade inspecionada.</returns>
-    public static Entity ForEachRowHeaderInfo(this Entity entity, Action<HeaderInfo> inspection)
-    {
-      if (entity.Entities == null)
-        return entity;
-
-      var headers =
-        from child in entity.Entities
-        where child.Class.Contains(ClassNames.Header)
-           && child.Rel.Contains(RelNames.RowHeader)
-        select new HeaderInfo(child.Properties ?? (child.Properties = new PropertyCollection()));
-
-      headers.ForEach(inspection);
+      headers.ForEach(child =>
+      {
+        var properties =
+          child.Properties
+          ?? (child.Properties = new PropertyCollection());
+        inspection(child, new HeaderInfo(properties));
+      });
 
       return entity;
     }
@@ -444,12 +428,12 @@ namespace Paper.Media.Design.Extensions
 
     #region Pagination
 
-    public static Entity AddRowsPagination(this Entity entity, int? limit, int? offset)
+    public static Entity AddRowsPage(this Entity entity, int? limit, int? offset)
     {
-      return AddRowsPagination(entity, Pagination.CreateOffset(limit, offset));
+      return AddRowsPage(entity, Page.CreateOffset(limit, offset));
     }
 
-    public static Entity AddRowsPagination(this Entity entity, Pagination pagination)
+    public static Entity AddRowsPage(this Entity entity, Page pagination)
     {
       var exists = (entity.Properties?[PaginationProperty]?.Value != null);
       if (exists)
@@ -463,7 +447,7 @@ namespace Paper.Media.Design.Extensions
       }
       else
       {
-        entity.AddProperty($"{PaginationProperty}.PageSize", pagination.PageSize);
+        entity.AddProperty($"{PaginationProperty}.PageSize", pagination.Size);
       }
 
       if (pagination.IsOffsetSet)
@@ -472,17 +456,17 @@ namespace Paper.Media.Design.Extensions
       }
       else
       {
-        entity.AddProperty($"{PaginationProperty}.Page", pagination.Page);
+        entity.AddProperty($"{PaginationProperty}.Page", pagination.Number);
       }
       return entity;
     }
 
     public static Entity AddLinkNextRows(this Entity entity, string href, int? limit, int? offset)
     {
-      return AddLinkNextRows(entity, href, Pagination.CreateOffset(limit, offset));
+      return AddLinkNextRows(entity, href, Page.CreateOffset(limit, offset));
     }
 
-    public static Entity AddLinkNextRows(this Entity entity, string href, Pagination pagination)
+    public static Entity AddLinkNextRows(this Entity entity, string href, Page pagination)
     {
       href = new Route(href).SetArg(pagination.ToString());
       entity.AddLink(href, "Próximo", Rel.Next);
@@ -491,10 +475,10 @@ namespace Paper.Media.Design.Extensions
 
     public static Entity AddLinkPreviousRows(this Entity entity, string href, int? limit, int? offset)
     {
-      return AddLinkPreviousRows(entity, href, Pagination.CreateOffset(limit, offset));
+      return AddLinkPreviousRows(entity, href, Page.CreateOffset(limit, offset));
     }
 
-    public static Entity AddLinkPreviousRows(this Entity entity, string href, Pagination pagination)
+    public static Entity AddLinkPreviousRows(this Entity entity, string href, Page pagination)
     {
       href = new Route(href).SetArg(pagination.ToString());
       entity.AddLink(href, "Anterior", Rel.Previous);
@@ -503,10 +487,10 @@ namespace Paper.Media.Design.Extensions
 
     public static Entity AddLinkFirstRows(this Entity entity, string href, int? limit, int? offset)
     {
-      return AddLinkFirstRows(entity, href, Pagination.CreateOffset(limit, offset));
+      return AddLinkFirstRows(entity, href, Page.CreateOffset(limit, offset));
     }
 
-    public static Entity AddLinkFirstRows(this Entity entity, string href, Pagination pagination)
+    public static Entity AddLinkFirstRows(this Entity entity, string href, Page pagination)
     {
       href = new Route(href).SetArg(pagination.ToString());
       entity.AddLink(href, "Primeiro", Rel.First);

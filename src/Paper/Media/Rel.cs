@@ -59,6 +59,11 @@ namespace Paper.Media
     Link = 1000,
 
     /// <summary>
+    /// Relacionamento entre um link e um cabeçalho.
+    /// </summary>
+    HeaderLink,
+
+    /// <summary>
     /// Estabecele relacionamento entre o alvo e uma proprieade da entidade.
     /// </summary>
     Property,

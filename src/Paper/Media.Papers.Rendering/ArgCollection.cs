@@ -6,7 +6,7 @@ using System.Text;
 using Toolset;
 using Toolset.Collections;
 
-namespace Paper.Media.Papers.Rendering
+namespace Media.Design.Extensions.Papers.Rendering
 {
   public class ArgCollection : IEnumerable<KeyValuePair<string, string>>
   {
@@ -56,7 +56,7 @@ namespace Paper.Media.Papers.Rendering
           return (T)(object)value.Split(',').Select(x => x.Trim()).ToArray();
       }
 
-      return Cast.To<T>(value);
+      return Change.To<T>(value);
     }
 
     /// <summary>

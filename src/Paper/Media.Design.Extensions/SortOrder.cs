@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Paper.Media.Papers
+namespace Paper.Media.Design.Extensions
 {
   public enum SortOrder
   {
-    None,
     Ascending,
     Descending
   }

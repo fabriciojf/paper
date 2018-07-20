@@ -31,40 +31,24 @@ namespace Paper.Media.Design.Extensions
     /// <param name="entity">A entidade inspecionada.</param>
     /// <param name="inspection">A função de inspeção do item.</param>
     /// <returns>A própria instância da entidade inspecionada.</returns>
-    public static Entity ForEachDataHeader(this Entity entity, Action<Entity> inspection)
+    public static Entity ForEachDataHeader(this Entity entity, Action<Entity, HeaderInfo> inspection)
     {
       if (entity.Entities == null)
         return entity;
 
       var headers =
         from child in entity.Entities
-        where child.Class.Contains(ClassNames.Header)
-           && child.Rel.Contains(RelNames.DataHeader)
+        where child.Class?.Contains(ClassNames.Header) == true
+           && child.Rel?.Contains(RelNames.DataHeader) == true
         select child;
 
-      headers.ForEach(inspection);
-
-      return entity;
-    }
-
-    /// <summary>
-    /// Itera sob a coleção de cabeçalhos de dados na entidade.
-    /// </summary>
-    /// <param name="entity">A entidade inspecionada.</param>
-    /// <param name="inspection">A função de inspeção do item.</param>
-    /// <returns>A própria instância da entidade inspecionada.</returns>
-    public static Entity ForEachDataHeaderInfo(this Entity entity, Action<HeaderInfo> inspection)
-    {
-      if (entity.Entities == null)
-        return entity;
-
-      var headers =
-        from child in entity.Entities
-        where child.Class.Contains(ClassNames.Header)
-           && child.Rel.Contains(RelNames.DataHeader)
-        select new HeaderInfo(child.Properties ?? (child.Properties = new PropertyCollection()));
-
-      headers.ForEach(inspection);
+      headers.ForEach(child =>
+      {
+        var properties =
+          child.Properties
+          ?? (child.Properties = new PropertyCollection());
+        inspection(child, new HeaderInfo(properties));
+      });
 
       return entity;
     }

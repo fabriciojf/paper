@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Toolset;
 
 namespace Paper.Media.Design.Extensions
 {
@@ -25,7 +26,7 @@ namespace Paper.Media.Design.Extensions
     private T Get<T>(string property)
     {
       var value = properties[property]?.Value;
-      return (value is T) ? (T)value : default(T);
+      return Change.To<T>(value);
     }
 
     private void Set(string property, object value)
@@ -67,6 +68,33 @@ namespace Paper.Media.Design.Extensions
     {
       get => Get<bool?>(nameof(Hidden));
       set => Set(nameof(Hidden), value);
+    }
+
+    /// <summary>
+    /// Ordenação da coluna, se aplicável.
+    /// </summary>
+    public SortOrder? Order
+    {
+      get
+      {
+        var order = Get<int?>(nameof(Order));
+        if (order == 1) return SortOrder.Ascending;
+        if (order == -1) return SortOrder.Descending;
+        return null;
+      }
+      set
+      {
+        int? order = null;
+        if (value == SortOrder.Ascending)
+        {
+          order = 1;
+        }
+        else if (value == SortOrder.Descending)
+        {
+          order = -1;
+        }
+        Set(nameof(Order), order);
+      }
     }
 
     /// <summary>

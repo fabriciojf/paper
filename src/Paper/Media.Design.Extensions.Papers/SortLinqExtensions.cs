@@ -4,16 +4,89 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Paper.Media.Papers.Rendering;
+using Paper.Media.Design.Extensions;
+using Media.Design.Extensions.Papers.Rendering;
+using Paper.Media.Utils;
 using Toolset.Collections;
 using Toolset.Reflection;
 
-namespace Paper.Media.Papers
+namespace Media.Design.Extensions.Papers
 {
   public static class SortLinqExtensions
   {
+    #region IQueryable com seletor de propriedade dinamico
 
-    #region IQueryable
+    public static ISortableQueryable<T> SortBy<T>(this IQueryable<T> items, Sort sort)
+    {
+      if (sort == null)
+        return new SortableQueryable<T>(items);
+
+      var type = typeof(T);
+      foreach (var field in sort.SortedFields)
+      {
+        var property = type._GetPropertyInfo(field.Name);
+        if (property == null)
+          continue;
+
+        var param = Expression.Parameter(type);
+        var keySelector =
+          Expression.Lambda<Func<T, object>>(
+            Expression.Convert(
+              Expression.Property(
+                param,
+                property.Name
+              ),
+              typeof(object)
+            ),
+            param
+          );
+
+        var reset = !(items is ISortableQueryable<T>);
+        items = DoSortBy(items, sort, keySelector, reset);
+      }
+
+      return items as SortableQueryable<T> ?? new SortableQueryable<T>(items);
+    }
+
+    #endregion
+
+    #region IEnumerable com seletor de propriedade dinamico
+
+    public static ISortableEnumerable<T> SortBy<T>(this IEnumerable<T> items, Sort sort)
+    {
+      if (sort == null)
+        return new SortableEnumerable<T>(items);
+
+      var type = typeof(T);
+      foreach (var field in sort.SortedFields)
+      {
+        var property = type._GetPropertyInfo(field.Name);
+        if (property == null)
+          continue;
+
+        var param = Expression.Parameter(type);
+        var keySelector =
+          Expression.Lambda<Func<T, object>>(
+            Expression.Convert(
+              Expression.Property(
+                param,
+                property.Name
+              ),
+              typeof(object)
+            ),
+            param
+          );
+
+        var reset = !(items is ISortableEnumerable<T>);
+        items = DoSortBy(items, sort, keySelector, reset);
+      }
+
+      return items as ISortableEnumerable<T> ?? new SortableEnumerable<T>(items);
+    }
+
+    #endregion
+
+    #region IQueryable com seletor de propriedade
 
     public static ISortableQueryable<T> SortBy<T, TKey>(
         this IQueryable<T> items
@@ -37,12 +110,15 @@ namespace Paper.Media.Papers
       , Expression<Func<T, TKey>> keySelector
       , bool reset)
     {
-      var expression = keySelector.Body as MemberExpression;
+      if (sort == null)
+        return new SortableQueryable<T>(items);
+
+      var expression = Expressions.FindMemberExpression(keySelector);
       if (expression == null)
         throw new Exception("A expressão não é válida. Apenas um seletor de propriedade de objeto é suportado.");
 
       var name = expression.Member.Name;
-      var field = sort[name];
+      var field = sort.GetSortedField(name);
 
       if (field?.Order == SortOrder.Ascending)
       {
@@ -81,13 +157,16 @@ namespace Paper.Media.Papers
 
     #endregion
 
-    #region IEnumerable
+    #region IEnumerable com seletor de propriedade
 
     public static ISortableEnumerable<T> SortBy<T, TKey>(
         this IEnumerable<T> items
       , Sort sort
       , Expression<Func<T, TKey>> keySelector)
     {
+      if (sort == null)
+        return new SortableEnumerable<T>(items);
+
       return DoSortBy(items, sort, keySelector, reset: true);
     }
 
@@ -105,12 +184,15 @@ namespace Paper.Media.Papers
       , Expression<Func<T, TKey>> keySelector
       , bool reset)
     {
-      var expression = keySelector.Body as MemberExpression;
+      if (sort == null)
+        return new SortableEnumerable<T>(items);
+
+      var expression = Expressions.FindMemberExpression(keySelector);
       if (expression == null)
         throw new Exception("A expressão não é válida. Apenas um seletor de propriedade de objeto é suportado.");
 
       var name = expression.Member.Name;
-      var field = sort[name];
+      var field = sort.GetSortedField(name);
 
       if (field?.Order == SortOrder.Ascending)
       {
@@ -148,6 +230,5 @@ namespace Paper.Media.Papers
     }
 
     #endregion
-
   }
 }
