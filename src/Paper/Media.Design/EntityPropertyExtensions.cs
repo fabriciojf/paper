@@ -116,6 +116,18 @@ namespace Paper.Media.Design
     #region Extensões para Property
 
     /// <summary>
+    /// Copia as propriedades do objeto indicado para a coleção de propriedads.
+    /// </summary>
+    /// <param name="propertyCollection">A coleção de propriedades a ser modificada.</param>
+    /// <param name="graph">O objeto que terá suas propriedads copiadas.</param>
+    /// <returns>A própria instância da coleção de propriedades modificada.</returns>
+    public static PropertyCollection AddProperty(this PropertyCollection propertyCollection, object graph)
+    {
+      propertyCollection.Add(graph);
+      return propertyCollection;
+    }
+
+    /// <summary>
     /// Adiciona uma propriedade à coleção de propriedades.
     /// </summary>
     /// <param name="propertyCollection">A coleção de propriedades a ser modificada.</param>

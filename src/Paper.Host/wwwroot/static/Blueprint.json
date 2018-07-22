@@ -1,0 +1,18 @@
+{
+  "class": [ "blueprint" ],
+  "properties": {
+    "hasNavBox": 0,
+    "info": {
+      "id":"001",
+      "name":"demoPage",
+      "title": "PaperBot",
+      "description": "Projeto de demonstração do Paper",
+      "version": "0.0.1",
+      "Data": "19/02/2018"
+    }
+  },
+  "links": [
+    { "rel": ["index"], "href": "/demoIndex" },
+    { "rel": ["planRoute"], "href": "/Api/1/Paper/PlanRoute" }
+  ]
+}

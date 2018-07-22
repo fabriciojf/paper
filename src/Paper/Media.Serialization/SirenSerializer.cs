@@ -342,11 +342,11 @@ namespace Paper.Media.Serialization
         return;
       }
 
-      if (value is IFormattable)
+      if (value is DateTime)
       {
-        var formattable = (IFormattable)value;
-        var text = formattable.ToString(null, CultureInfo.InvariantCulture);
-        writer.Write(text);
+        writer.Write("\"");
+        writer.Write(((DateTime)value).ToString("yyyy-MM-ddTHH:mm:sszzz"));
+        writer.Write("\"");
         return;
       }
 
@@ -364,11 +364,11 @@ namespace Paper.Media.Serialization
         return;
       }
 
-      if (value is DateTime)
+      if (value is IFormattable)
       {
-        writer.Write("\"");
-        writer.Write(((DateTime)value).ToString("yyyy-MM-ddTHH:mm:sszzz"));
-        writer.Write("\"");
+        var formattable = (IFormattable)value;
+        var text = formattable.ToString(null, CultureInfo.InvariantCulture);
+        writer.Write(text);
         return;
       }
 

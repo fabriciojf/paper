@@ -1,0 +1,2 @@
+webpackJsonp([5],{623:function(e,r){e.exports={class:["order"],rel:["http://x.io/rels/customer"],title:"Detalhes do Item 6",properties:{name:"Jelly bean",calories:375,fat:0,carbs:94,protein:0,sodium:50,calcium:"0%",iron:"0%"},links:[{rel:["self"],href:"/demo/6"}]}}});
+//# sourceMappingURL=5.7b9cb49e11da3e991f9f.js.map

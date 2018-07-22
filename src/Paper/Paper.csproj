@@ -14,11 +14,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Media.Papers.Rendering\LinkRenderer.cs" />
-    <Compile Remove="Media.Papers.Rendering\QueryPathBuilder.cs" />
-    <Compile Remove="Media.Papers.Rendering\QueryRenderer.cs" />
-    <Compile Remove="Media.Papers.Rendering\RenderContext.cs" />
-    <Compile Remove="Media.Papers.Rendering\RenderOfFilter.cs" />
+    <Compile Remove="Media.Design.Papers.Rendering\LinkRenderer.cs" />
+    <Compile Remove="Media.Design.Papers.Rendering\QueryPathBuilder.cs" />
+    <Compile Remove="Media.Design.Papers.Rendering\QueryRenderer.cs" />
+    <Compile Remove="Media.Design.Papers.Rendering\RenderContext.cs" />
+    <Compile Remove="Media.Design.Papers.Rendering\RenderOfFilter.cs" />
+    <Compile Remove="Media.Service.Proxies\Proxy.cs" />
+    <Compile Remove="Media.Service.Proxies\TimedProxyNotificationService.cs" />
+    <Compile Remove="Media.Service.Utilities\HttpNegotiation.cs" />
+    <Compile Remove="Media.Service.Utilities\PathIndex.cs" />
+    <Compile Remove="Media.Service.Utilities\PathIndex`1.cs" />
+    <Compile Remove="Media.Service\PaperRendererRegistry.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +37,11 @@
     <ProjectReference Include="..\Toolset.Serialization\Toolset.Serialization.csproj" />
     <ProjectReference Include="..\Toolset.Text.Template\Toolset.Text.Template.csproj" />
     <ProjectReference Include="..\Toolset\Toolset.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Media.Service.Proxies\" />
+    <Folder Include="Media.Service.Utilities\" />
   </ItemGroup>
 
 </Project>

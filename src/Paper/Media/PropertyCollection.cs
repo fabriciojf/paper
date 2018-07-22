@@ -27,6 +27,29 @@ namespace Paper.Media
     {
     }
 
+    public void Add(object graph)
+    {
+      if (graph == null)
+        return;
+
+      if (graph is Property)
+      {
+        base.Add((Property)graph);
+        return;
+      }
+
+      var properties =
+        from property in graph.GetType().GetProperties()
+        where !property.GetIndexParameters().Any()
+        select property;
+
+      foreach (var property in properties)
+      {
+        var value = property.GetValue(graph);
+        Add(property.Name, value);
+      }
+    }
+
     #region Sobreposicao de Add e Remove para garantir a unicidade de cada argumento
 
     protected override void OnCommitAdd(ItemStore store, IEnumerable<Property> items, int index = -1)
@@ -67,19 +90,7 @@ namespace Paper.Media
     public static PropertyCollection Create(object graph)
     {
       var collection = new PropertyCollection();
-      if (graph != null)
-      {
-        var properties =
-          from property in graph.GetType().GetProperties()
-          where !property.GetIndexParameters().Any()
-          select property;
-
-        foreach (var property in properties)
-        {
-          var value = property.GetValue(graph);
-          collection.Add(property.Name, value);
-        }
-      }
+      collection.Add(graph);
       return collection;
     }
 

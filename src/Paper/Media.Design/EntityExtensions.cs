@@ -239,8 +239,9 @@ namespace Paper.Media.Design
     /// <returns>A própria instância da entidade modificada.</returns>
     public static Entity ResolveLinks(this Entity entity, string requestUri, string apiPath = "/Api/1")
     {
-      var route = new Route(requestUri).UnsetAllArgs();
-
+      var route = 
+        new Route(requestUri).UnsetAllArgsExcept("f", "in", "out");
+      
       var entities = EnumerateDescendantsAndSelf(entity);
       var links = entities.Select(x => x.Links).NonNull().SelectMany();
       foreach (var link in links)
