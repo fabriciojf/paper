@@ -12,7 +12,7 @@ namespace Paper.Media.Design.Papers
   /// <typeparam name="T">O tipo do Paper.</typeparam>
   /// <seealso cref="Media.Design.Extensions.Papers.ILinkFactory{Media.Design.Extensions.Papers.LinkToPaper{T}.Context}" />
   public class LinkToPaper<T> : ILink
-    where T : IPaperInfo
+    where T : IPaperBasics
   {
     public Link RenderLink(PaperContext ctx)
     {

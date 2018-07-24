@@ -10,7 +10,7 @@ using Paper.Media.Utils;
 using Toolset.Collections;
 using Toolset.Reflection;
 
-namespace Paper.Media.Design.Papers
+namespace Paper.Media.Design
 {
   public static class SortLinqExtensions
   {

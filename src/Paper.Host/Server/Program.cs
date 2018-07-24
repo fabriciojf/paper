@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Paper.Media.Service;
 using Toolset;
 
-namespace Paper.WebApp.Server
+namespace Paper.Host.Server
 {
   class Program
   {

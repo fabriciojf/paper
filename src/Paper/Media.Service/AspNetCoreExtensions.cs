@@ -54,6 +54,7 @@ namespace Paper.Media.Service
     {
       var paperRegistry = new PaperRegistry();
       paperRegistry.AddExposedTypes();
+      paperRegistry.PrintInfo();
 
       services.AddSingleton<IPaperRegistry>(paperRegistry);
 

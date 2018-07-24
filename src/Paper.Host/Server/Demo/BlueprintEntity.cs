@@ -8,7 +8,7 @@ using Paper.Media.Design;
 using Paper.Media.Design.Papers;
 using Toolset;
 
-namespace Paper.WebApp.Server.Demo
+namespace Paper.Host.Server.Demo
 {
   [Paper("/Blueprint")]
   public class BlueprintEntity : Entity
@@ -42,7 +42,7 @@ namespace Paper.WebApp.Server.Demo
       = new LinkCollection
       {
         new Link{ Rel = "index", Title = "Menu", Href = "/Menu" },
-        new Link{ Rel = "index", Title = "SampleEntity", Href = "/Paper/WebApp/Server/Demo/Sample" },
+        new Link{ Rel = "index", Title = "SampleEntity", Href = "/Paper/Host/Server/Demo/Sample" },
       };
   }
 }

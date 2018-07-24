@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Paper.Media.Design.Papers
+namespace Paper.Media.Design
 {
   internal class SortableQueryable<T> : ISortableQueryable<T>
   {

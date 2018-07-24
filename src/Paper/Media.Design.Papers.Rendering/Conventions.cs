@@ -12,18 +12,18 @@ namespace Paper.Media.Design.Papers.Rendering
 {
   public static class Conventions
   {
-    public static string MakeFieldName(DataColumn column)
+    public static string MakeName(DataColumn column)
     {
       var name = column.Caption ?? column.ColumnName ?? ("Col" + column.Ordinal);
-      return MakeFieldName(name);
+      return MakeName(name);
     }
 
-    public static string MakeFieldName(PropertyInfo property)
+    public static string MakeName(PropertyInfo property)
     {
-      return MakeFieldName(property.Name);
+      return MakeName(property.Name);
     }
 
-    public static string MakeFieldName(string name)
+    public static string MakeName(string name)
     {
       name = name.Split("|").First();
       if (name.StartsWithIgnoreCase("DF"))
@@ -34,13 +34,25 @@ namespace Paper.Media.Design.Papers.Rendering
       return name;
     }
 
-    public static string MakeFieldTitle(DataColumn column)
+    public static string MakeName(object typeOrObject)
     {
-      var name = column.Caption ?? column.ColumnName ?? ("Col" + column.Ordinal);
-      return MakeFieldTitle(name);
+      if (typeOrObject == null)
+        return null;
+
+      var type = (typeOrObject is Type) ? (Type)typeOrObject : typeOrObject.GetType();
+      if (type.FullName.Contains("AnonymousType"))
+        return null;
+
+      return type.FullName;
     }
 
-    public static string MakeFieldTitle(PropertyInfo property)
+    public static string MakeTitle(DataColumn column)
+    {
+      var name = column.Caption ?? column.ColumnName ?? ("Col" + column.Ordinal);
+      return MakeTitle(name);
+    }
+
+    public static string MakeTitle(PropertyInfo property)
     {
       var attr = 
         property
@@ -49,10 +61,10 @@ namespace Paper.Media.Design.Papers.Rendering
           .FirstOrDefault();
 
       var name = attr?.DisplayName ?? property.Name;
-      return MakeFieldTitle(name);
+      return MakeTitle(name);
     }
 
-    public static string MakeFieldTitle(string name)
+    public static string MakeTitle(string name)
     {
       if (name.Contains("|"))
       {
@@ -67,29 +79,7 @@ namespace Paper.Media.Design.Papers.Rendering
       return name;
     }
 
-    public static string MakeFieldType(DataColumn col)
-    {
-      return DataTypeNames.GetDataTypeName(col.DataType) ?? DataTypeNames.Text;
-    }
-
-    public static string MakeFieldType(Type type)
-    {
-      return DataTypeNames.GetDataTypeName(type) ?? DataTypeNames.Text;
-    }
-
-    public static string MakeClassName(object typeOrObject)
-    {
-      if (typeOrObject == null)
-        return null;
-
-      var type = (typeOrObject is Type) ? (Type)typeOrObject : typeOrObject.GetType();
-      if (type.FullName.Contains("AnonymousType"))
-        return null;
-
-      return type.FullName;
-    }
-
-    public static string MakeClassTitle(object typeOrObject)
+    public static string MakeTitle(object typeOrObject)
     {
       if (typeOrObject == null)
         return null;
@@ -103,6 +93,21 @@ namespace Paper.Media.Design.Papers.Rendering
           .Replace("Entity", "")
           .ChangeCase(TextCase.ProperCase);
       return name;
+    }
+
+    public static string MakeDataType(DataColumn col)
+    {
+      return DataTypeNames.GetDataTypeName(col.DataType) ?? DataTypeNames.Text;
+    }
+
+    public static string MakeDataType(Type type)
+    {
+      return DataTypeNames.GetDataTypeName(type) ?? DataTypeNames.Text;
+    }
+
+    public static string MakeDataType(PropertyInfo property)
+    {
+      return DataTypeNames.GetDataTypeName(property.PropertyType) ?? DataTypeNames.Text;
     }
   }
 }

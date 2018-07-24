@@ -63,7 +63,7 @@ namespace Paper.Media.Design.Papers.Rendering
       //
       if (entity.Title == null)
       {
-        entity.Title = Conventions.MakeClassTitle(paper.GetType());
+        entity.Title = Conventions.MakeTitle(paper.GetType());
       }
     }
 
@@ -84,7 +84,7 @@ namespace Paper.Media.Design.Papers.Rendering
           DataRow row = dataTable.Rows[0];
           foreach (DataColumn col in dataTable.Columns)
           {
-            var key = Conventions.MakeFieldName(col);
+            var key = Conventions.MakeName(col);
             var value = row[col];
             entity.AddProperty(key, value);
           }

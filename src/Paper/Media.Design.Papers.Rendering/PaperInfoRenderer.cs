@@ -13,7 +13,7 @@ namespace Paper.Media.Design.Papers.Rendering
       this.serviceProvider = serviceProvider;
     }
 
-    public void RenderEntity(IPaperInfo paper, Entity entity)
+    public void RenderEntity(IPaperBasics paper, Entity entity)
     {
     }
   }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Paper.Media.Design.Papers
 {
-  public interface IPaperInfo : IPaper
+  public interface IPaperBasics : IPaper
   {
     string GetTitle();
 

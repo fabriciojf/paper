@@ -6,7 +6,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <RuntimeIdentifiers>win10-x64;ubuntu.16.10-x64</RuntimeIdentifiers>
-    <StartupObject>Paper.WebApp.Server.Program</StartupObject>
+    <StartupObject>Paper.Host.Server.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -36,6 +36,7 @@
     <Compile Include="Server\Demo\BlueprintEntity.cs" />
     <Compile Include="Server\Demo\MenuPaper.cs" />
     <Compile Include="Server\Demo\SampleEntity.cs" />
+    <Compile Include="Server\Demo\UsersPaper.cs" />
   </ItemGroup>
 
   <ItemGroup>

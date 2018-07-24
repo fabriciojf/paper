@@ -39,6 +39,8 @@ namespace Paper.Media.Design.Papers.Rendering
       if (rows == null)
         return;
 
+      entity.AddClass(Class.Rows);
+
       AddRowsAndLinks(paper, entity, ctx, rows);
       AddRowHeaders(paper, entity, ctx, rows);
     }
@@ -65,8 +67,9 @@ namespace Paper.Media.Design.Papers.Rendering
             var link = linkRenderer.RenderLink(ctx);
             if (link != null)
             {
-              link.Rel.Remove(RelNames.Link);
-              if (!link.Rel.Contains(RelNames.Self))
+              link.Rel?.Remove(RelNames.Link);
+              var isSelf = (link.Rel?.Contains(RelNames.Self) == true);
+              if (!isSelf)
               {
                 link.AddRel(RelNames.RowLink);
               }
@@ -133,19 +136,29 @@ namespace Paper.Media.Design.Papers.Rendering
       var field = sort.GetSortedField(headerInfo.Name);
       if (isSortable)
       {
-        headerInfo.Order = field?.Order;
+        var order = field?.Order ?? SortOrder.Unordered;
 
-        // O link será o inverso da ordem atual, para permitir essa inversão
-        var canAscend = (field?.Order != SortOrder.Ascending);
+        //
+        // Registrando a ordenação atual do campo
+        //
+        headerInfo.Order = order;
+
+        //
+        // Criando um link para ordernar este o campo
+        //
+
+        // Se o campo estiver em ordem ascendente o link será descendente
+        // senao, o link ser ascendente
+        var isDescend = (order == SortOrder.Ascending);
 
         var fieldName = headerInfo.Name.ChangeCase(TextCase.CamelCase);
-        var sortValue = canAscend ? fieldName : $"{fieldName}:desc";
-        var sortTitle = canAscend ? "Ordenar Crescente" : "Ordenar Decrescente";
+        var sortValue = isDescend ? $"{fieldName}:desc" : fieldName;
+        var sortTitle = isDescend ? "Ordenar Decrescente" : "Ordenar Crescente";
 
-        var route = 
-          new Route(ctx.RequestUri)
-            .UnsetArgs("sort", "sort[]").SetArg("sort[]", sortValue);
-
+        var route = new Route(ctx.RequestUri)
+          .UnsetArgs("sort", "sort[]")
+          .SetArg("sort[]", sortValue);
+        
         headerEntity.AddLink(route, sortTitle, Rel.HeaderLink);
       }
     }

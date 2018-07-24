@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Paper.Media.Design.Papers
+namespace Paper.Media.Design
 {
   public interface IFilter
   {

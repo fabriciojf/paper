@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Paper.Media.Design
 {
-  public enum SortOrder
+  public class Filter<T> : Filter
   {
-    Descending = -1,
-    Unordered = 0,
-    Ascending = 1
+    public Filter()
+    {
+      this.AddFieldsFrom<T>();
+    }
   }
 }

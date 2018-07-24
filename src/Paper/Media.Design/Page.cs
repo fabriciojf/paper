@@ -10,14 +10,16 @@ namespace Paper.Media.Design
 {
   public class Page
   {
-    private int count = 50;
-    private int index = 0;
+    private int count;
+    private int index;
 
     private bool _isOffsetSet;
     private bool _isLimitSet;
 
     public Page()
     {
+      this.Size = 50;
+      this.Number = 1;
     }
 
     public int Limit

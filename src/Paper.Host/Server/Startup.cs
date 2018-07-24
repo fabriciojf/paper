@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Paper.Media.Service;
 
-namespace Paper.WebApp.Server
+namespace Paper.Host.Server
 {
   public class Startup
   {

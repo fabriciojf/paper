@@ -39,6 +39,8 @@ namespace Paper.Media.Design.Papers.Rendering
       if (data == null)
         return;
 
+      entity.AddClass(Class.Data);
+
       AddData(paper, entity, ctx, data);
       AddDataHeaders(paper, entity, ctx, data);
       AddDataLinks(paper, entity, ctx, data);

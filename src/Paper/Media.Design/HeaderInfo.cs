@@ -78,21 +78,11 @@ namespace Paper.Media.Design
       get
       {
         var order = Get<int?>(nameof(Order));
-        if (order == 1) return SortOrder.Ascending;
-        if (order == -1) return SortOrder.Descending;
-        return null;
+        return (SortOrder)order;
       }
       set
       {
-        int? order = null;
-        if (value == SortOrder.Ascending)
-        {
-          order = 1;
-        }
-        else if (value == SortOrder.Descending)
-        {
-          order = -1;
-        }
+        var order = (int?)value;
         Set(nameof(Order), order);
       }
     }

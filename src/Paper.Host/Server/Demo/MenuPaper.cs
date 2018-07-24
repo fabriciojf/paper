@@ -10,14 +10,13 @@ using System.Threading.Tasks;
 using Toolset;
 using Toolset.Reflection;
 
-namespace Paper.WebApp.Server.Demo
+namespace Paper.Host.Server.Demo
 {
   [Paper("/Menu")]
-  public class MenuPaper : IPaperInfo, IPaperRows<ILink>
+  public class MenuPaper : IPaperBasics, IPaperRows<ILink>
   {
     public Page RowsPage { get; }
     public Sort RowsSort { get; }
-    public IFilter RowFilter { get; }
 
     public string GetTitle()
       => "Menu";
@@ -35,11 +34,13 @@ namespace Paper.WebApp.Server.Demo
       => null;
 
     public IEnumerable<ILink> GetRows()
-      => new[]
+      => new ILink[]
       {
         new LinkSelf{ Title = "Blueprint", Href = "/Blueprint" },
         new LinkSelf{ Title = "Google.com", Href = "google.com" },
-        new LinkSelf{ Title = "Menu", Href = "/Menu" }
+        new LinkSelf{ Title = "Menu", Href = "/Menu" },
+        new LinkTo{ Title = "SampleEntity", Href = "/Paper/Host/Server/Demo/Sample" },
+        new LinkTo{ Title = "Users", Href = "/Paper/Host/Server/Demo/Users" }
       };
 
     public IEnumerable<HeaderInfo> GetRowHeaders(IEnumerable<ILink> rows)

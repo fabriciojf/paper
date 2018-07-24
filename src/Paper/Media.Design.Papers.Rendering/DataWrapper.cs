@@ -120,7 +120,7 @@ namespace Paper.Media.Design.Papers.Rendering
         {
           foreach (DataColumn column in table.Columns)
           {
-            yield return Conventions.MakeFieldName(column);
+            yield return Conventions.MakeName(column);
           }
         }
       }
@@ -132,9 +132,9 @@ namespace Paper.Media.Design.Papers.Rendering
 
         var column = table.Columns[key];
         var header = new HeaderInfo();
-        header.Name = Conventions.MakeFieldName(column);
-        header.Title = Conventions.MakeFieldTitle(column);
-        header.DataType = Conventions.MakeFieldType(column);
+        header.Name = Conventions.MakeName(column);
+        header.Title = Conventions.MakeTitle(column);
+        header.DataType = Conventions.MakeDataType(column);
         header.Hidden = header.Name.StartsWith("_");
         return header;
       }
@@ -177,8 +177,8 @@ namespace Paper.Media.Design.Papers.Rendering
           return null;
 
         var header = new HeaderInfo();
-        header.Name = Conventions.MakeFieldName(key);
-        header.Title = Conventions.MakeFieldTitle(key);
+        header.Name = Conventions.MakeName(key);
+        header.Title = Conventions.MakeTitle(key);
         header.DataType = DataTypeNames.GetDataTypeName(dictionary[key]);
         header.Hidden = header.Name.StartsWith("_");
         return header;
@@ -220,8 +220,8 @@ namespace Paper.Media.Design.Papers.Rendering
 
         var property = data._GetPropertyInfo(key);
         var header = new HeaderInfo();
-        header.Name = Conventions.MakeFieldName(property);
-        header.Title = Conventions.MakeFieldTitle(property);
+        header.Name = Conventions.MakeName(property);
+        header.Title = Conventions.MakeTitle(property);
         header.DataType = DataTypeNames.GetDataTypeName(property.PropertyType);
         header.Hidden = header.Name.StartsWith("_");
         return header;

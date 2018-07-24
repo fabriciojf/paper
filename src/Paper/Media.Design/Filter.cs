@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Paper.Media.Design.Widgets;
 
-namespace Paper.Media.Design.Papers
+namespace Paper.Media.Design
 {
   public class Filter : EntityAction, IFilter
   {
     public Filter()
     {
-      this.Name = "Filtro";
-      this.Method = MethodNames.Get;
-      this.Href = ".";
+      base.Name = "Filtro";
+      base.Method = MethodNames.Get;
+      base.Href = ".";
     }
   }
 }

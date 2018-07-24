@@ -8,7 +8,7 @@ using Paper.Media.Design;
 using Paper.Media.Design.Papers;
 using Toolset;
 
-namespace Paper.WebApp.Server.Demo
+namespace Paper.Host.Server.Demo
 {
   [Paper]
   public class SampleEntity : Entity

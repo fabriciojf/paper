@@ -10,17 +10,23 @@ namespace Paper.Media.Design.Widgets.Mapping
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public class WidgetAttribute : Attribute
   {
-    private string _type;
+    private static volatile int orderGenerator;
 
-    public WidgetAttribute()
-    {
-    }
+    private string _type;
 
     protected WidgetAttribute(string dataType, string htmlInputType = null)
     {
-      DataType = dataType;
       _type = htmlInputType;
+
+      DataType = dataType;
+      Order = orderGenerator++;
     }
+
+    /// <summary>
+    /// Ordem do campo.
+    /// Opcional. Por padrão o campo é ordenado pela sua ordem de declaração.
+    /// </summary>
+    public virtual int Order { get; set; }
 
     /// <summary>
     /// Nome do campo.

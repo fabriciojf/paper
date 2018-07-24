@@ -59,21 +59,25 @@ namespace Paper.Media.Service
 
     private Ret<Entity> RenderEntity(HttpContext httpContext, IServiceProvider serviceProvider, Type paperType)
     {
+      object paper = null;
       try
       {
-        var requestUri = httpContext.Request.GetRequestUri();
+        paper = serviceProvider.CreateInstance(paperType);
 
-        var paper = serviceProvider.CreateInstance(paperType);
+        var requestUri = httpContext.Request.GetRequestUri();
         var paperContext = new PaperContext(paper, registry, requestUri);
         var paperRenderer = new PaperRenderer(serviceProvider);
 
         var ret = paperRenderer.RenderEntity(paperContext);
-
         return ret;
       }
       catch (Exception ex)
       {
         return ex;
+      }
+      finally
+      {
+        (paper as IDisposable)?.Dispose();
       }
     }
   }
