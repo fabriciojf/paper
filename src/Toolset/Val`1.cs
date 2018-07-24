@@ -9,6 +9,11 @@ namespace Toolset
 {
   public class Val<T> : Val
   {
+    public Val()
+      : base(default(T))
+    {
+    }
+
     public Val(object value)
       : base(MakeCompatibleValue<T>(value))
     {

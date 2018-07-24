@@ -28,14 +28,14 @@ namespace Paper.Media
     /// Sempre defina o tipo primário antes dos tipos alternativos.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 3)]
-    public NameCollection Class { get; set; }
+    public virtual NameCollection Class { get; set; }
 
     /// <summary>
     /// Nome do campo.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 7)]
     [CaseVariantString]
-    public string Name { get; set; }
+    public virtual string Name { get; set; }
 
     /// <summary>
     /// Tipo do componente de edição do campo.
@@ -64,7 +64,7 @@ namespace Paper.Media
     /// A lista completa está definida na classe FieldTypeNames.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 10)]
-    public string Type
+    public virtual string Type
     {
       get { return _type ?? FieldTypeNames.GetFieldTypeFromDataType(DataType); }
       set { _type = value; }
@@ -87,7 +87,7 @@ namespace Paper.Media
     /// A lista completa está definida na classe FieldDataTypeNames.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 15)]
-    public string DataType
+    public virtual string DataType
     {
       get { return _dataType ?? DataTypeNames.Text; }
       set { _dataType = value; }
@@ -97,7 +97,7 @@ namespace Paper.Media
     /// Título do campo. Opcional.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 20)]
-    public string Title
+    public virtual string Title
     {
       get => _title ?? (Name ?? "").ChangeCase(TextCase.ProperCase);
       set => _title = value;
@@ -113,7 +113,13 @@ namespace Paper.Media
     /// Nome da categoria do campo para criação de agrupamentos.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 30)]
-    public string Category { get; set; }
+    public virtual string Category { get; set; }
+
+    /// <summary>
+    /// Url do provedor de dados do campo.
+    /// </summary>
+    [DataMember(EmitDefaultValue = false, Order = 35)]
+    public virtual string Provider { get; set; }
 
     /// <summary>
     /// Valor do campo. Opcional.
@@ -121,31 +127,31 @@ namespace Paper.Media
     /// FieldValueCollection.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 40)]
-    public object Value { get; set; }
+    public virtual object Value { get; set; }
 
     /// <summary>
     /// Ativa ou desativa a obrigatoriedade de preenchimento do campo.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 70)]
-    public bool? Required { get; set; }
+    public virtual bool? Required { get; set; }
 
     /// <summary>
     /// Torna o campo editável ou somente leitura.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 80)]
-    public bool? ReadOnly { get; set; }
+    public virtual bool? ReadOnly { get; set; }
 
     /// <summary>
     /// Tamanho mínimo para um texto ou menor valor para um número.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 100)]
-    public int? MinLength { get; set; }
+    public virtual int? MinLength { get; set; }
 
     /// <summary>
     /// Tamanho máximo para um texto ou maior valor para um número.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 200)]
-    public int? MaxLength { get; set; }
+    public virtual int? MaxLength { get; set; }
 
     /// <summary>
     /// Expressão regular para validação do conteúdo de um campo texto.
@@ -156,32 +162,32 @@ namespace Paper.Media
     /// - http://www.xmlschemareference.com/regularExpression.html
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 250)]
-    public string Pattern { get; set; }
+    public virtual string Pattern { get; set; }
 
     /// <summary>
     /// Ativa ou desativa a edição em múltiplas linhas, geralmente para campos texto.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 200)]
-    public bool? Multiline { get; set; }
+    public virtual bool? Multiline { get; set; }
 
     /// <summary>
     /// Ativa ou desativa a múltipla seleção de valores para o campo.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 300)]
-    public bool? AllowMany { get; set; }
+    public virtual bool? AllowMany { get; set; }
 
     /// <summary>
     /// Ativa ou desativa o suporte a intervalo, na forma "{ min=x, max=y }".
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 400)]
-    public bool? AllowRange { get; set; }
+    public virtual bool? AllowRange { get; set; }
 
     /// <summary>
     /// Ativa ou desativa o suporte aos curingas "*", para indicar qualquer texto
     /// na posição, e "?", para indicar qualquer caracter na posição.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 500)]
-    public bool? AllowWildcards { get; set; }
+    public virtual bool? AllowWildcards { get; set; }
   }
 }
 

@@ -23,6 +23,11 @@ namespace Toolset
       public object Max { get; }
     }
 
+    public Val()
+      : this(null)
+    {
+    }
+
     public Val(object value)
     {
       this.RawValue = value;
@@ -99,10 +104,21 @@ namespace Toolset
     public override string ToString()
       => RawValue?.ToString();
 
-    public static Val<T> Create<T>(T value)
-      => new Val<T>(value);
+    #region Fábricas
 
     public static Val Create(object value)
       => new Val(value);
+
+    public static Val<T> Create<T>(T value)
+      => new Val<T>(value);
+
+    public static Val<T> Create<T>(T min, T max)
+      => new Val<T>(min, max);
+
+    public static Val<T> Create<T>(IEnumerable<T> items)
+      => new Val<T>(items);
+
+    #endregion
+
   }
 }

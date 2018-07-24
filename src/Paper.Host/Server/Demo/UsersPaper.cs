@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Paper.Media;
 using Paper.Media.Design;
 using Paper.Media.Design.Mappings;
@@ -48,14 +52,16 @@ namespace Paper.Host.Server.Demo
     };
   }
 
-  class MyFilter : IFilter
+  public class MyFilter : IFilter
   {
-    [FieldTitle("#ID")]
-    public Val<int> Id { get; set; }
+    public Val<int?> Id { get; set; }
 
-    [FieldMultiline]
-    [FieldMaxLength(30)]
-    public string[] Name { get; set; }
+    public Val<string> Empresa { get; set; }
+
+    public Type GetProviderForEmpresa()
+    {
+      return null;
+    }
   }
 
   [Paper]
@@ -91,7 +97,7 @@ namespace Paper.Host.Server.Demo
     public IEnumerable<User> GetRows()
     {
       return UserDb.All
-        .FilterBy(this)
+        .FilterBy(RowFilter)
         .SortBy(RowsSort)
         .PaginateBy(RowsPage);
     }
