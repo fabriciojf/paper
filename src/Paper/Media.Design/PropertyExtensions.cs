@@ -11,7 +11,7 @@ namespace Paper.Media.Design
   /// <summary>
   /// Extensões de desenho de propriedades de objetos Entity.
   /// </summary>
-  public static class EntityPropertyExtensions
+  public static class PropertyExtensions
   {
     #region Extensões para Entity
 

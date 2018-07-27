@@ -22,6 +22,14 @@ namespace Paper.Media.Design.Papers.Rendering
       this.map = new Map<string, string>(items);
     }
 
+    public ICollection<string> Keys => map.Keys;
+
+    public string this[string key]
+    {
+      get => Get(key);
+      set => Set(key, value);
+    }
+
     /// <summary>
     /// Determina se o argumento existe.
     /// </summary>

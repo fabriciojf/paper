@@ -7,7 +7,7 @@ using System.Text;
 using Toolset;
 using Toolset.Collections;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   public class Sort<T> : Sort
   {

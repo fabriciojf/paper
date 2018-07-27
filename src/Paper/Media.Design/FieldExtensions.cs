@@ -14,6 +14,19 @@ namespace Paper.Media.Design
   public static class FieldExtensions
   {
     /// <summary>
+    /// Adiciona um texto substitudo para o campo.
+    /// Categorias são usadas como agrupadores de campos.
+    /// </summary>
+    /// <param name="field">O campo a ser modificado.</param>
+    /// <param name="placeholder">O valor do campo.</param>
+    /// <returns>A própria instância do campo modificado.</returns>
+    public static Field AddPlaceholder(this Field field, string placeholder)
+    {
+      field.Placeholder = placeholder;
+      return field;
+    }
+
+    /// <summary>
     /// Adiciona uma categoria ao campo.
     /// Categorias são usadas como agrupadores de campos.
     /// </summary>
@@ -167,6 +180,41 @@ namespace Paper.Media.Design
     public static Field AddPattern(this Field field, string pattern)
     {
       field.Pattern = pattern;
+      return field;
+    }
+
+    /// <summary>
+    /// Víncula um provedor de dados para o campo.
+    /// </summary>
+    /// <param name="field">O campo a ser modificado.</param>
+    /// <param name="href">A rota do provedor de dados.</param>
+    /// <param name="keys">Nomes dos campos chaves.</param>
+    /// <returns>A própria instância do campo modificado.</returns>
+    public static Field AddProvider(this Field field, string href, params string[] keys)
+    {
+      field.Provider = new FieldProvider();
+      field.Provider.Href = href;
+      field.Provider.Keys = new NameCollection(keys);
+      return field;
+    }
+
+    /// <summary>
+    /// Víncula um provedor de dados para o campo.
+    /// </summary>
+    /// <param name="field">O campo a ser modificado.</param>
+    /// <param name="href">A rota do provedor de dados.</param>
+    /// <param name="keys">Nomes dos campos chaves.</param>
+    /// <returns>A própria instância do campo modificado.</returns>
+    public static Field AddProvider(this Field field, string href, IEnumerable<string> keys)
+    {
+      if (keys == null)
+      {
+        keys = Enumerable.Empty<string>();
+      }
+
+      field.Provider = new FieldProvider();
+      field.Provider.Href = href;
+      field.Provider.Keys = new NameCollection(keys);
       return field;
     }
   }

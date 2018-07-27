@@ -8,7 +8,7 @@ using System.Text;
 using Paper.Media;
 using Toolset;
 
-namespace Paper.Media.Design.Papers.Rendering
+namespace Paper.Media.Design
 {
   public static class Conventions
   {

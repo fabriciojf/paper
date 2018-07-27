@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   internal class SortableEnumerable<T> : ISortableEnumerable<T>
   {

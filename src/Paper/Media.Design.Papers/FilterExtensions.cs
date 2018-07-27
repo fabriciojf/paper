@@ -5,13 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using Paper.Media.Design.Papers.Rendering;
 using Paper.Media.Utils;
 using Toolset;
 using Toolset.Collections;
 using Toolset.Reflection;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   public static class FilterExtensions
   {
@@ -19,25 +18,25 @@ namespace Paper.Media.Design
 
     public static Filter AddField<T>(this Filter filter, Expression<Func<T, object>> keySelector, Action<Field> builder = null)
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddField<T>(filter, keySelector, builder);
     }
 
     public static Filter AddField<T>(this Filter filter, Expression<Func<T, object>> keySelector, string title)
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddField<T>(filter, keySelector, title);
     }
 
     public static Filter AddFieldMulti<T>(this Filter filter, Expression<Func<T, object>> keySelector, Action<Field> builder = null)
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldMulti<T>(filter, keySelector, builder);
     }
 
     public static Filter AddFieldMulti<T>(this Filter filter, Expression<Func<T, object>> keySelector, string title)
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldMulti<T>(filter, keySelector, title);
     }
 
@@ -47,13 +46,13 @@ namespace Paper.Media.Design
 
     public static Filter AddFieldsFrom<T>(this Filter filter)
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldsFrom<T>(filter);
     }
 
     public static Filter AddFieldsMultiFrom<T>(this Filter filter)
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldsMultiFrom<T>(filter);
     }
 
@@ -68,7 +67,7 @@ namespace Paper.Media.Design
       , string title = null
       )
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddField(filter, name, dataType, title);
     }
 
@@ -79,7 +78,7 @@ namespace Paper.Media.Design
       , string title = null
       )
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddField(filter, name, dataType, title);
     }
 
@@ -89,7 +88,7 @@ namespace Paper.Media.Design
       , Action<Field> builder
       )
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddField(filter, name, builder);
     }
 
@@ -100,7 +99,7 @@ namespace Paper.Media.Design
       , string title = null
       )
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldMulti(filter, name, dataType, title);
     }
 
@@ -111,7 +110,7 @@ namespace Paper.Media.Design
       , string title = null
       )
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldMulti(filter, name, dataType, title);
     }
 
@@ -121,7 +120,7 @@ namespace Paper.Media.Design
       , Action<Field> builder
       )
     {
-      return (Filter)EntityActionFieldsExtensions
+      return (Filter)EntityActionExtensions
         .AddFieldMulti(filter, name, builder);
     }
 

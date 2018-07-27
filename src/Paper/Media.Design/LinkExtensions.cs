@@ -11,8 +11,21 @@ namespace Paper.Media.Design
   /// <summary>
   /// Extensões de desenho de links de objetos Entity.
   /// </summary>
-  public static class EntityLinkExtensions
+  public static class LinkExtensions
   {
+    /// <summary>
+    /// Define o tipo (MimeType) do documento retornado pelo link.
+    /// Como "text/xml", "application/pdf", etc.
+    /// </summary>
+    /// <param name="link">O link a ser modificado.</param>
+    /// <param name="mediaType">O mime type do link.</param>
+    /// <returns>A própria instância do link modificado.</returns>
+    public static Link AddMimeType(this Link link, string mediaType)
+    {
+      link.Type = mediaType;
+      return link;
+    }
+
     #region Extensões de Entity
 
     /// <summary>
@@ -154,7 +167,7 @@ namespace Paper.Media.Design
       entity.Links.Add(link);
       return entity;
     }
-    
+
     /// <summary>
     /// Adiciona um link para a própria entidade.
     /// O link para a própria entidade, ou "self", refere-se à URL de acesso
@@ -178,23 +191,6 @@ namespace Paper.Media.Design
 
       entity.Links.Add(link);
       return entity;
-    }
-
-    #endregion
-
-    #region Extensões de Link
-
-    /// <summary>
-    /// Define o tipo (MimeType) do documento retornado pelo link.
-    /// Como "text/xml", "application/pdf", etc.
-    /// </summary>
-    /// <param name="link">O link a ser modificado.</param>
-    /// <param name="mediaType">O mime type do link.</param>
-    /// <returns>A própria instância do link modificado.</returns>
-    public static Link AddMimeType(this Link link, string mediaType)
-    {
-      link.Type = mediaType;
-      return link;
     }
 
     #endregion

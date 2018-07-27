@@ -154,6 +154,15 @@ namespace Toolset.Reflection
         return;
       }
 
+      // Tratamento especial para o tipo Any do Toolset.
+      if (typeof(Any).IsAssignableFrom(property.PropertyType))
+      {
+        if (!(value is Any))
+        {
+          value = Activator.CreateInstance(property.PropertyType, value);
+        }
+      }
+
       if (property.PropertyType.IsAssignableFrom(value.GetType()))
       {
         property.SetValue(target, value);

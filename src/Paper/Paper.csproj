@@ -8,8 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Media.Design.Widgets.Mapping\**" />
+    <Compile Remove="Media.Design.Widgets\**" />
     <Compile Remove="Obsolete.Media.Design\**" />
+    <EmbeddedResource Remove="Media.Design.Widgets.Mapping\**" />
+    <EmbeddedResource Remove="Media.Design.Widgets\**" />
     <EmbeddedResource Remove="Obsolete.Media.Design\**" />
+    <None Remove="Media.Design.Widgets.Mapping\**" />
+    <None Remove="Media.Design.Widgets\**" />
     <None Remove="Obsolete.Media.Design\**" />
   </ItemGroup>
 
@@ -18,26 +24,6 @@
     <Compile Remove="Media.Design.Papers.Rendering\QueryPathBuilder.cs" />
     <Compile Remove="Media.Design.Papers.Rendering\QueryRenderer.cs" />
     <Compile Remove="Media.Design.Papers.Rendering\RenderContext.cs" />
-    <Compile Remove="Media.Design.Papers.Rendering\RenderOfFilter.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\BitWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\DateTimeWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\DateWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\DecimalWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\HiddenAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\IgnoreAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\IntWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\PasswordWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\Sample.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\TextWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\TimeWidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\WidgetAttribute.cs" />
-    <Compile Remove="Media.Design.Widgets.Mapping\WidgetOptions.cs" />
-    <Compile Remove="Media.Service.Proxies\Proxy.cs" />
-    <Compile Remove="Media.Service.Proxies\TimedProxyNotificationService.cs" />
-    <Compile Remove="Media.Service.Utilities\HttpNegotiation.cs" />
-    <Compile Remove="Media.Service.Utilities\PathIndex.cs" />
-    <Compile Remove="Media.Service.Utilities\PathIndex`1.cs" />
-    <Compile Remove="Media.Service\PaperRendererRegistry.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,12 +36,6 @@
     <ProjectReference Include="..\Toolset.Serialization\Toolset.Serialization.csproj" />
     <ProjectReference Include="..\Toolset.Text.Template\Toolset.Text.Template.csproj" />
     <ProjectReference Include="..\Toolset\Toolset.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Media.Design.Widgets.Mapping\" />
-    <Folder Include="Media.Service.Proxies\" />
-    <Folder Include="Media.Service.Utilities\" />
   </ItemGroup>
 
 </Project>

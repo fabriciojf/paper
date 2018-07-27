@@ -1,67 +1,66 @@
 ﻿using System;
 using System.Linq;
 using Paper.Media.Design;
-using Paper.Media.Design;
 using Toolset;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design.Papers.Rendering
 {
-  static class RenderOfRowsPage
+  static class RenderOfPage
   {
     public static void SetArgs(IPaper paper, PaperContext ctx)
     {
-      if (!paper._Has("RowsPage"))
+      if (!paper._Has("Page"))
         return;
 
-      var pagination = paper._Get<Page>("RowsPage");
-      if (pagination == null)
+      var page = paper._Get<Page>("Page");
+      if (page == null)
       {
-        if (!paper._CanWrite("RowsPage"))
+        if (!paper._CanWrite("Page"))
           return;
 
-        pagination = pagination._SetNew<Page>("RowsPage");
+        page = page._SetNew<Page>("Page");
       }
 
-      pagination.CopyFromUri(ctx.RequestUri);
+      page.CopyFromUri(ctx.RequestUri);
 
-      ctx.Cache.Set(CacheKeys.RowsPage, pagination);
+      ctx.Cache.Set(CacheKeys.Page, page);
     }
 
     /// <summary>
     /// Forçando a consulta de um item a mais para detectar mais dados
     /// disponiveis no lado do servidor
     /// </summary>
-    public static void PreCacheRows(IPaper paper, PaperContext ctx)
+    public static void PreCache(IPaper paper, PaperContext ctx)
     {
-      var pagination = ctx.Cache.Get<Page>(CacheKeys.RowsPage);
-      if (pagination == null)
+      var page = ctx.Cache.Get<Page>(CacheKeys.Page);
+      if (page == null)
         return;
 
-      pagination.SetLimitOrSize(pagination.Limit + 1);
+      page.SetLimitOrSize(page.Limit + 1);
     }
 
     /// <summary>
     /// Detectando o registro excedente.
     /// Se existir, então, temos mais registros no lado do servidor.
     /// </summary>
-    public static void PosCacheRows(IPaper paper, PaperContext ctx)
+    public static void PostCache(IPaper paper, PaperContext ctx)
     {
-      var pagination = ctx.Cache.Get<Page>(CacheKeys.RowsPage);
-      if (pagination == null)
+      var hasMoreData = false;
+
+      var page = ctx.Cache.Get<Page>(CacheKeys.Page);
+      if (page == null)
         return;
 
-      var overSize = pagination.Limit;
-      var hasMoreRows = false;
-
+      var overSize = page.Limit;
       // Voltando o tamanho da página para o original.
-      pagination.SetLimitOrSize(pagination.Limit - 1);
+      page.SetLimitOrSize(page.Limit - 1);
 
       var rows = ctx.Cache.Get<DataWrapperEnumerable>(CacheKeys.Rows);
       if (rows != null)
       {
-        hasMoreRows = (rows.Count == overSize);
-        if (hasMoreRows)
+        hasMoreData = (rows.Count == overSize);
+        if (hasMoreData)
         {
           // Reduzindo a quantidade de registros que deve ser lidos
           // para provocar o descarte do excedente.
@@ -69,13 +68,13 @@ namespace Paper.Media.Design.Papers.Rendering
         }
       }
 
-      ctx.Cache.Set(CacheKeys.HasMoreRows, hasMoreRows);
+      ctx.Cache.Set(CacheKeys.HasMoreData, hasMoreData);
     }
 
     public static void Render(IPaper paper, Entity entity, PaperContext ctx)
     {
-      var pagination = ctx.Cache.Get<Page>(CacheKeys.RowsPage);
-      var hasMoreRows = ctx.Cache.Get<bool>(CacheKeys.HasMoreRows);
+      var pagination = ctx.Cache.Get<Page>(CacheKeys.Page);
+      var hasMoreRows = ctx.Cache.Get<bool>(CacheKeys.HasMoreData);
 
       if (pagination == null)
         return;

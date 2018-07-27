@@ -7,7 +7,7 @@ using System.Text;
 using Toolset;
 using Toolset.Collections;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   public class Sort
   {
@@ -110,7 +110,7 @@ namespace Paper.Media.Design
 
     #endregion
 
-    public void CopyFromUri(string uri, string argName)
+    public void CopyFromUri(string uri)
     {
       ClearSortedFields();
 
@@ -132,7 +132,7 @@ namespace Paper.Media.Design
         let parts = token.Split('=')
         where parts.Length == 2
         let key = parts.First()
-        where key.EqualsAnyIgnoreCase(argName, $"{argName}[]")
+        where key.EqualsAnyIgnoreCase("sort", $"sort[]")
         let field = parts.Last()
         where !string.IsNullOrWhiteSpace(field)
         let specs = field.Split(':')
@@ -153,18 +153,18 @@ namespace Paper.Media.Design
       }
     }
 
-    public string CopyToUri(string uri, string argName)
+    public string CopyToUri(string uri)
     {
       var route = new Route(uri);
       foreach (var field in SortedFields)
       {
         if (field.Order == SortOrder.Descending)
         {
-          route = route.SetArg($"{argName}[]", $"{field.Name}:desc");
+          route = route.SetArg($"sort[]", $"{field.Name}:desc");
         }
         else
         {
-          route = route.SetArg($"{argName}[]", $"{field.Name}");
+          route = route.SetArg($"sort[]", $"{field.Name}");
         }
       }
       return route;

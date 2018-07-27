@@ -13,6 +13,8 @@ namespace Paper.Media.Design
   /// </summary>
   public static class EntityExtensions
   {
+    #region Básicos
+
     /// <summary>
     /// Define o título da entidade.
     /// </summary>
@@ -217,6 +219,10 @@ namespace Paper.Media.Design
       return entity;
     }
 
+    #endregion
+
+    #region Operações especiais
+
     /// <summary>
     /// Resolve os links relativos segundo o padrão de URLs do Paper:
     /// -   /Path, corresponde a um caminho relativo à API
@@ -242,7 +248,7 @@ namespace Paper.Media.Design
       var route = 
         new Route(requestUri).UnsetAllArgsExcept("f", "in", "out");
       
-      var entities = EnumerateDescendantsAndSelf(entity);
+      var entities = DescendantsAndSelf(entity);
       var links = entities.Select(x => x.Links).NonNull().SelectMany();
       foreach (var link in links)
       {
@@ -264,16 +270,31 @@ namespace Paper.Media.Design
       return entity;
     }
 
-    private static IEnumerable<Entity> EnumerateDescendantsAndSelf(Entity entity)
+    /// <summary>
+    /// Enumera recursivamente todos os filhos da entidade.
+    /// </summary>
+    /// <param name="entity">A entidade analisada.</param>
+    /// <returns>Todos os filhos da entidade recursivamente.</returns>
+    public static IEnumerable<Entity> Descendants(this Entity entity)
     {
-      yield return entity;
-      if (entity != null && entity.Entities != null)
-      {
-        foreach (var child in entity.Entities.SelectMany(EnumerateDescendantsAndSelf))
-        {
-          yield return child;
-        }
-      }
+      return
+        entity?.Entities?.SelectMany(e => Descendants(e).Append(e))
+        ?? Enumerable.Empty<Entity>();
     }
+
+    /// <summary>
+    /// Enumera recursivamente todos os filhos da entidade e a própria entidade.
+    /// </summary>
+    /// <param name="entity">A entidade analisada.</param>
+    /// <returns>Todos os filhos da entidade recursivamente e a própria entidade.</returns>
+    public static IEnumerable<Entity> DescendantsAndSelf(this Entity entity)
+    {
+      return
+        entity?.Entities?.SelectMany(e => DescendantsAndSelf(e)).Append(entity)
+        ?? entity.AsSingle();
+    }
+
+    #endregion
+
   }
 }

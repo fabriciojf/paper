@@ -54,16 +54,17 @@ namespace Paper.Media.Design.Papers.Rendering
       //
       RenderOfBasics.SetArgs(paper, ctx.QueryArgs);
       RenderOfBasics.SetArgs(paper, ctx.PathArgs);
-      RenderOfRowsPage.SetArgs(paper, ctx);
-      RenderOfRowsSort.SetArgs(paper, ctx);
+      RenderOfPage.SetArgs(paper, ctx);
+      RenderOfSort.SetArgs(paper, ctx);
+      RenderOfFilter.SetArgs(paper, ctx);
 
       //
       // Fase 3: Consultando dados
       //
-      RenderOfRowsPage.PreCacheRows(paper, ctx);
+      RenderOfPage.PreCache(paper, ctx);
       RenderOfData.CacheData(paper, ctx.Cache);
       RenderOfRows.CacheData(paper, ctx.Cache);
-      RenderOfRowsPage.PosCacheRows(paper, ctx);
+      RenderOfPage.PostCache(paper, ctx);
 
       //
       // Fase 4: Renderizando entidade
@@ -71,8 +72,9 @@ namespace Paper.Media.Design.Papers.Rendering
       RenderOfBasics.Render(paper, entity, ctx);
       RenderOfData.Render(paper, entity, ctx);
       RenderOfRows.Render(paper, entity, ctx);
-      RenderOfRowsPage.Render(paper, entity, ctx);
-      RenderOfRowsSort.Render(paper, entity, ctx);
+      RenderOfPage.Render(paper, entity, ctx);
+      RenderOfSort.Render(paper, entity, ctx);
+      RenderOfFilter.Render(paper, entity, ctx);
     }
   }
 }

@@ -5,14 +5,13 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Paper.Media.Design;
-using Paper.Media.Design.Papers.Rendering;
 using Paper.Media.Utils;
 using Toolset.Collections;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design
 {
-  public static class PageLinqExtensions
+  public static class PageExtensions
   {
     public static IQueryable<T> PaginateBy<T>(this IQueryable<T> items, Page page)
     {

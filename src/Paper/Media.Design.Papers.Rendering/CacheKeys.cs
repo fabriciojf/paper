@@ -22,11 +22,11 @@ namespace Paper.Media.Design.Papers.Rendering
     /// <summary>
     /// Determina se ainda existem mais páginas de registro no lado do servidor.
     /// </summary>
-    public const string HasMoreRows = "HasMoreRows";
+    public const string HasMoreData = "HasMoreData";
 
     /// <summary>
     /// Instância do paginador de registros caso exista.
     /// </summary>
-    public const string RowsPage = "RowsPage";
+    public const string Page = "RowsPage";
   }
 }

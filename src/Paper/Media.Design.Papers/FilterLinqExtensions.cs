@@ -5,12 +5,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Paper.Media.Design;
-using Paper.Media.Design.Papers.Rendering;
 using Paper.Media.Utils;
 using Toolset.Collections;
 using Toolset.Reflection;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   public static class FilterLinqExtensions
   {

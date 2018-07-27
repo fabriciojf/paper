@@ -397,14 +397,14 @@ namespace Toolset.Sequel
     /// <returns>A condição que substituirá o template.</returns>
     private static string CreateCriteria(Sql sql, string parameter, object value)
     {
-      if (value == null || (value as Val)?.IsNull == true)
+      if (value == null || (value as Any)?.IsNull == true)
       {
         return null;
       }
 
-      if ((value as Val)?.IsValue == true)
+      if ((value as Any)?.IsRaw == true)
       {
-        value = ((Val)value).Value;
+        value = ((Any)value).Raw;
       }
 
       string criteria = null;
@@ -438,16 +438,16 @@ namespace Toolset.Sequel
 
         criteria = "{0} in (" + innerText + ")";
       }
-      else if ((value as Val)?.IsArray == true)
+      else if ((value as Any)?.IsList == true)
       {
         var items = Commander.CreateSqlCompatibleValue(value);
         var values = string.Join(",", items);
 
         criteria = "{0} in (" + values + ")";
       }
-      else if ((value as Val)?.IsRange == true)
+      else if ((value as Any)?.IsRange == true)
       {
-        var range = (Val)value;
+        var range = ((Any)value).Range;
         if (range.Min != null && range.Max != null)
         {
           var min = sql.KeyGen.Rename(parameter);
@@ -475,18 +475,18 @@ namespace Toolset.Sequel
           sql[parameter] = value;
         }
       }
-      else if ((value as Val)?.IsText == true)
+      else if ((value as Any)?.IsText == true)
       {
-        var text = (Val)value;
-        if (text.HasWildcard)
+        var any = (Any)value;
+        if (any.TextHasWildcard)
         {
           criteria = "{0} like @" + parameter;
-          sql[parameter] = text.Text;
+          sql[parameter] = any.Text;
         }
         else
         {
           criteria = "{0} = @" + parameter;
-          sql[parameter] = text.Text;
+          sql[parameter] = any.Text;
         }
       }
       else

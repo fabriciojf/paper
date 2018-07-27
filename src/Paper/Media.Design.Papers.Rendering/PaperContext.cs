@@ -108,10 +108,8 @@ namespace Paper.Media.Design.Papers.Rendering
     /// <returns>Os argumentos extraídos da URL.</returns>
     private static ArgCollection CollectQueryArgs(string requestUri)
     {
-      var queryString = requestUri.Split('?').LastOrDefault() ?? "";
-
       var entries =
-        from arg in queryString.Split('&')
+        from arg in requestUri.Split('&')
         where arg.Contains("=")
         let tokens = arg.Split('=')
         let key = tokens.First()
@@ -124,9 +122,8 @@ namespace Paper.Media.Design.Papers.Rendering
           keyName,
           isArray
             ? string.Join(",", g)
-            : g.Select(x => x.key).First()
+            : g.Select(x => x.value).First()
         );
-
       var args = new ArgCollection(entries);
       return args;
     }

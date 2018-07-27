@@ -5,7 +5,7 @@ Habilita uma caixa de pesquisa combinada por consulta no servidor.
 
 - - -
 
-O campo tem a propriedade "__provider" com a estrutura:
+O campo tem a propriedade "provider" com a estrutura:
 
     {
       ...
@@ -14,7 +14,7 @@ O campo tem a propriedade "__provider" com a estrutura:
           "fields": [
             {
               ...
-              "__provider": {
+              "provider": {
                 "href": "http://localhost/api/1/users/current/empresas",
                 "keys": [ "id" ]
               }

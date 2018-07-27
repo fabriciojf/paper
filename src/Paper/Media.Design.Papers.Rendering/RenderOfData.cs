@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using Paper.Media.Design;
-using Paper.Media.Design;
 using Toolset;
 using Toolset.Reflection;
 

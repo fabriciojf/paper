@@ -12,7 +12,6 @@ using Paper.Media;
 using Paper.Media.Design;
 using Paper.Media.Design.Mappings;
 using Paper.Media.Design.Papers;
-using Paper.Media.Design.Widgets;
 using Toolset;
 
 namespace Paper.Host.Server.Demo
@@ -54,30 +53,19 @@ namespace Paper.Host.Server.Demo
 
   public class MyFilter : IFilter
   {
-    public Val<int?> Id { get; set; }
+    public Any<int?> Id { get; set; }
 
-    public Val<string> Empresa { get; set; }
-
-    public Type GetProviderForEmpresa()
-    {
-      return null;
-    }
+    public Any<string> Empresa { get; set; }
   }
 
   [Paper]
   public class UsersPaper : IPaperBasics, IPaperRows<User>
   {
-    public Page RowsPage { get; } = new Page();
+    public Page Page { get; } = new Page();
 
-    public Sort RowsSort { get; } = new Sort<User>();
+    public Sort Sort { get; } = new Sort<User>();
 
-    //public IFilter RowFilter { get; } = new Filter()
-    //  //.AddFieldsMultiFrom<User>()
-    //  .AddFieldMulti<User>(x => x.Id)
-    //  .AddFieldMulti("Name", DataType.Text)
-    //  ;
-
-    public IFilter RowFilter { get; } = new MyFilter();
+    public IFilter Filter { get; } = new MyFilter();
 
     public string GetTitle()
       => "Users Page";
@@ -97,9 +85,9 @@ namespace Paper.Host.Server.Demo
     public IEnumerable<User> GetRows()
     {
       return UserDb.All
-        .FilterBy(RowFilter)
-        .SortBy(RowsSort)
-        .PaginateBy(RowsPage);
+        .FilterBy(Filter)
+        .SortBy(Sort)
+        .PaginateBy(Page);
     }
 
     public IEnumerable<HeaderInfo> GetRowHeaders(IEnumerable<User> rows)

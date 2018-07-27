@@ -8,11 +8,11 @@ namespace Paper.Media.Design.Papers
 {
   public interface IPaperRows<TRow> : IPaper
   {
-    Page RowsPage { get; }
+    Page Page { get; }
 
-    Sort RowsSort { get; }
+    Sort Sort { get; }
 
-    IFilter RowFilter { get; }
+    IFilter Filter { get; }
 
     string GetTitle();
 

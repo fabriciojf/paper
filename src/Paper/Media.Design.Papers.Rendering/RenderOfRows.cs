@@ -115,7 +115,7 @@ namespace Paper.Media.Design.Papers.Rendering
 
       // Adicionando informação de ordenação
       //
-      var sort = paper._Get<Sort>("RowsSort");
+      var sort = paper._Get<Sort>("Sort");
       if (sort != null)
       {
         entity.ForEachRowHeader((e, h) =>

@@ -9,7 +9,7 @@ using Paper.Media.Design;
 using Toolset;
 using Toolset.Reflection;
 
-namespace Paper.Media.Design.Papers.Rendering
+namespace Paper.Media.Design.Papers
 {
   /// <summary>
   /// Utilitário de inspeção de propriedades de um objeto.

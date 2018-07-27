@@ -15,8 +15,9 @@ namespace Paper.Host.Server.Demo
   [Paper("/Menu")]
   public class MenuPaper : IPaperBasics, IPaperRows<ILink>
   {
-    public Page RowsPage { get; }
-    public Sort RowsSort { get; }
+    public Page Page { get; }
+    public Sort Sort { get; }
+    public IFilter Filter { get; }
 
     public string GetTitle()
       => "Menu";

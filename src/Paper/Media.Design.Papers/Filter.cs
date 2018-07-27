@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Paper.Media.Design.Widgets;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   public class Filter : EntityAction, IFilter
   {

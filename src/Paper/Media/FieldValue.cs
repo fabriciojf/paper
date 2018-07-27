@@ -19,12 +19,6 @@ namespace Paper.Media
     public string Title { get; set; }
 
     /// <summary>
-    /// Texto adicional com uma breve instrução de uso do widget.
-    /// </summary>
-    [DataMember(EmitDefaultValue = false, Order = 15)]
-    public string Placeholder { get; set; }
-
-    /// <summary>
     /// Valor do item.
     /// </summary>
     [DataMember(EmitDefaultValue = false, Order = 20)]

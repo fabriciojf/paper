@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Paper.Media.Design
+namespace Paper.Media.Design.Papers
 {
   public struct SortedField
   {

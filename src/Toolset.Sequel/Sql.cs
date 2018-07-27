@@ -46,7 +46,7 @@ namespace Toolset.Sequel
     public object this[string parameterName]
     {
       get => ParameterCollection[parameterName];
-      set => ParameterCollection[parameterName] = Val.Create(value);
+      set => ParameterCollection[parameterName] = new Any(value);
     }
 
     public Sql Unset(string parameterName)
