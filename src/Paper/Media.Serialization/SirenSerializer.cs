@@ -14,6 +14,8 @@ using Toolset.Serialization;
 using Toolset.Serialization.Json;
 using Toolset.Reflection;
 using System.Globalization;
+using System.Runtime.Serialization;
+using Paper.Media.Design;
 
 namespace Paper.Media.Serialization
 {
@@ -332,8 +334,17 @@ namespace Paper.Media.Serialization
     {
       if (value is CaseVariantString)
       {
-        value = MakeCompatibleName(value.ToString());
         // apenas ajusta o valor de acordo com a caixa e prossegue...
+        value = MakeCompatibleName(value.ToString());
+      }
+
+      if (value is Any)
+      {
+        // var any = (Any)value;
+        // // apenas extrai o valor real de Any e prossegue...
+        // if (any.IsText) value = any.Text;
+        // if (any.
+        value = ((Any)value).Value;
       }
 
       if (IsNull(value))
@@ -460,7 +471,7 @@ namespace Paper.Media.Serialization
           }
         }
 
-        var propertyName = MakeCompatibleName(property.Name);
+        var propertyName = MakeCompatibleName(property);
 
         WriteProperty(writer, propertyName, propertyValue, ref propertyCount);
       }
@@ -504,6 +515,13 @@ namespace Paper.Media.Serialization
       }
 
       return false;
+    }
+
+    private string MakeCompatibleName(PropertyInfo property)
+    {
+      var attr = property._GetAttr<DataMemberAttribute>();
+      var name = attr?.Name ?? property.Name;
+      return MakeCompatibleName(name);
     }
 
     private string MakeCompatibleName(string originalName)

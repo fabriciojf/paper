@@ -14,11 +14,14 @@ namespace Paper.Media.Design.Papers.Rendering
     /// Repassa os argumentos indicados para as propriedades na instância de IPaper.
     /// </summary>
     /// <param name="paper">A instância de IPaper que será modificada.</param>
-    /// <param name="pathArgs">A coleção dos argumentos atribuídos.</param>
-    public static void SetArgs(IPaper paper, ArgCollection pathArgs)
+    /// <param name="args">A coleção dos argumentos atribuídos.</param>
+    public static void SetArgs(IPaper paper, ArgMap args)
     {
-      foreach (var arg in pathArgs)
+      foreach (var arg in args)
       {
+        if (arg.Value is ArgMap)
+          continue;
+
         paper._TrySet(arg.Key, arg.Value);
       }
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Paper.Media;
 using Toolset;
 
-namespace Paper.Media.Utils
+namespace Paper.Media.Service
 {
   public static class HttpEntity
   {

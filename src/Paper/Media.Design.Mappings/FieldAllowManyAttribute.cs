@@ -9,19 +9,19 @@ using System.Reflection;
 
 namespace Paper.Media.Design.Mappings
 {
-  [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-  public class FieldAllowWildcardsAttribute : FieldAttribute
+  [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+  public class FieldAllowManyAttribute : FieldAttribute
   {
     public bool Allow { get; }
 
-    public FieldAllowWildcardsAttribute(bool allow = true)
+    public FieldAllowManyAttribute(bool allow = true)
     {
       Allow = allow;
     }
 
     internal override void RenderField(Field field, PropertyInfo property, object host, PaperContext ctx)
     {
-      field.AddAllowWildcards(Allow);
+      field.AddAllowMany(Allow);
     }
   }
 }

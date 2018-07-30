@@ -3,22 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Toolset.Collections;
+using Paper.Media.Design.Papers;
+using Paper.Media.Design.Papers.Rendering;
+using System.Reflection;
 
 namespace Paper.Media.Design.Mappings
 {
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-  public class FieldDataTypeAttribute : Attribute
+  public class FieldDataTypeAttribute : FieldAttribute
   {
-    public string[] DataTypes { get; }
+    public string Value { get; }
 
-    public FieldDataTypeAttribute(DataType dataType, params DataType[] otherDataTypes)
+    public FieldDataTypeAttribute(DataType dataType)
     {
-      DataTypes = dataType.AsSingle().Union(otherDataTypes).Select(x => x.GetName()).ToArray();
+      this.Value = dataType.GetName();
     }
 
-    public FieldDataTypeAttribute(string dataType, params string[] otherDataTypes)
+    public FieldDataTypeAttribute(string dataType)
     {
-      DataTypes = dataType.AsSingle().Union(otherDataTypes).ToArray();
+      this.Value = dataType;
+    }
+
+    internal override void RenderField(Field field, PropertyInfo property, object host, PaperContext ctx)
+    {
+      field.AddDataType(Value);
     }
   }
 }

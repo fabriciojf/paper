@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Toolset.Collections;
+using Paper.Media.Design.Papers;
+using Paper.Media.Design.Papers.Rendering;
+using System.Reflection;
 
 namespace Paper.Media.Design.Mappings
 {
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-  public class FieldRelAttribute : Attribute
+  public class FieldRelAttribute : FieldAttribute
   {
     public string[] Rels { get; }
 
@@ -19,6 +22,11 @@ namespace Paper.Media.Design.Mappings
     public FieldRelAttribute(string rel, params string[] otherRels)
     {
       Rels = rel.AsSingle().Union(otherRels).ToArray();
+    }
+
+    internal override void RenderField(Field field, PropertyInfo property, object host, PaperContext ctx)
+    {
+      field.AddRel(Rels);
     }
   }
 }

@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Paper.Media;
 using Toolset;
-using Paper.Media.Utils;
 using Paper.Media.Design.Papers.Rendering;
 
 namespace Paper.Media.Service

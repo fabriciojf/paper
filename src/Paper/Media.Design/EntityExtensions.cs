@@ -245,29 +245,62 @@ namespace Paper.Media.Design
     /// <returns>A própria instância da entidade modificada.</returns>
     public static Entity ResolveLinks(this Entity entity, string requestUri, string apiPath = "/Api/1")
     {
-      var route = 
-        new Route(requestUri).UnsetAllArgsExcept("f", "in", "out");
-      
+      var route = new Route(requestUri).UnsetAllArgsExcept("f", "in", "out");
+
       var entities = DescendantsAndSelf(entity);
       var links = entities.Select(x => x.Links).NonNull().SelectMany();
+      var actions = entities.Select(x => x.Actions).NonNull().SelectMany();
+
       foreach (var link in links)
       {
-        if (link.Href.StartsWith("^/"))
-        {
-          link.Href = route.Combine(link.Href.Substring(1));
-        }
-        else if (link.Href.StartsWith("/"))
-        {
-          link.Href = route.Combine(apiPath).Append(link.Href);
-        }
-        else if (link.Href == ""
-              || link.Href.StartsWith(".")
-              || link.Href.StartsWith("?"))
-        {
-          link.Href = route.Combine(link.Href);
-        }
+        link.Href = ResolveLink(link.Href, route, apiPath);
       }
+
+      foreach (var action in actions)
+      {
+        action.Href = ResolveLink(action.Href, route, apiPath);
+      }
+
       return entity;
+    }
+
+    /// <summary>
+    /// Resolve os links relativos segundo o padrão de URLs do Paper:
+    /// -   /Path, corresponde a um caminho relativo à API
+    ///     Como em:
+    ///         http://localhost/Api/1/Path
+    /// -   ^/Path, corresponde a um caminho relativo à raiz da URI
+    ///     Como em:
+    ///         http://localhost/Path
+    /// -   ./Path ou ../Path, corresponde a um caminho relativo à URI atual
+    ///     Como em:
+    ///         http://localhost/Api/1/Meu/Site/Path
+    /// </summary>
+    /// <param name="href">A URI a ser resolvida.</param>
+    /// <param name="currentUri">A URI representando a rota corrente.</param>
+    /// <param name="apiPath">
+    /// O caminho considerado como caminho da API.
+    /// Geralmente "/Api/VERSAO", sendo versão o número de versão de API do Paper.
+    /// Por padrão: "/Api/1"
+    /// </param>
+    /// <returns>A URI resolvida.</returns>
+    private static string ResolveLink(string href, Route currentUri, string apiPath)
+    {
+      if (href.StartsWith("^/"))
+      {
+        href = currentUri.Combine(href.Substring(1));
+      }
+      else if (href.StartsWith("/"))
+      {
+        href = currentUri.Combine(apiPath).Append(href);
+      }
+      else if (href == ""
+            || href.StartsWith(".")
+            || href.StartsWith("?"))
+      {
+        href = currentUri.Combine(href);
+      }
+      return href;
     }
 
     /// <summary>

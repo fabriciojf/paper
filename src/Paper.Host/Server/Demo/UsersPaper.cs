@@ -29,6 +29,15 @@ namespace Paper.Host.Server.Demo
     public DateTime? Since { get; set; }
   }
 
+  public class UserFilter : IFilter
+  {
+    [FieldPlaceholder("Escolha os itens...")]
+    public Any<int?> Id { get; set; }
+
+    [FieldPlaceholder("Escolha as empresas...")]
+    public Any<string> Empresa { get; set; }
+  }
+
   public static class UserDb
   {
     private static Random rnd = new Random(0);
@@ -51,13 +60,6 @@ namespace Paper.Host.Server.Demo
     };
   }
 
-  public class MyFilter : IFilter
-  {
-    public Any<int?> Id { get; set; }
-
-    public Any<string> Empresa { get; set; }
-  }
-
   [Paper]
   public class UsersPaper : IPaperBasics, IPaperRows<User>
   {
@@ -65,7 +67,7 @@ namespace Paper.Host.Server.Demo
 
     public Sort Sort { get; } = new Sort<User>();
 
-    public IFilter Filter { get; } = new MyFilter();
+    public IFilter Filter { get; } = new UserFilter();
 
     public string GetTitle()
       => "Users Page";

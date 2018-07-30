@@ -25,5 +25,10 @@ namespace Toolset
     {
       return new Range<T>(Change.To<T>(Min), Change.To<T>(Max));
     }
+
+    public override string ToString()
+    {
+      return $"{{{Min ?? "*"}, {Max ?? "*"}}}";
+    }
   }
 }

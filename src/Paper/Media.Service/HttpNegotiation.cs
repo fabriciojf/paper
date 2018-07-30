@@ -8,7 +8,7 @@ using Microsoft.Net.Http.Headers;
 using Paper.Media;
 using Toolset;
 
-namespace Paper.Media.Utils
+namespace Paper.Media.Service
 {
   public static class HttpNegotiation
   {

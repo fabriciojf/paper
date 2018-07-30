@@ -10,18 +10,18 @@ using System.Reflection;
 namespace Paper.Media.Design.Mappings
 {
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-  public class FieldAllowWildcardsAttribute : FieldAttribute
+  public class FieldPlaceholderAttribute : FieldAttribute
   {
-    public bool Allow { get; }
+    public string Value { get; }
 
-    public FieldAllowWildcardsAttribute(bool allow = true)
+    public FieldPlaceholderAttribute(string text)
     {
-      Allow = allow;
+      Value = text;
     }
 
     internal override void RenderField(Field field, PropertyInfo property, object host, PaperContext ctx)
     {
-      field.AddAllowWildcards(Allow);
+      field.AddPlaceholder(Value);
     }
   }
 }

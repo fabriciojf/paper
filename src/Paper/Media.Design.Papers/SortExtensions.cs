@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Paper.Media.Utils;
+using Paper.Media.Utilities;
 using Toolset.Collections;
 using Toolset.Reflection;
 

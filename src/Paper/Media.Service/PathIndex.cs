@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Toolset;
 
-namespace Paper.Media.Utils
+namespace Paper.Media.Service
 {
   public class PathIndex : PathIndex<string>
   {

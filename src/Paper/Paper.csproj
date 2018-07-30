@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Media.Design.Papers.Rendering\ArgCollection.cs" />
     <Compile Remove="Media.Design.Papers.Rendering\LinkRenderer.cs" />
     <Compile Remove="Media.Design.Papers.Rendering\QueryPathBuilder.cs" />
     <Compile Remove="Media.Design.Papers.Rendering\QueryRenderer.cs" />

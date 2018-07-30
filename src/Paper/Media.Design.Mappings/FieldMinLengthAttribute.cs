@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Toolset.Collections;
+using Paper.Media.Design.Papers;
+using Paper.Media.Design.Papers.Rendering;
+using System.Reflection;
 
 namespace Paper.Media.Design.Mappings
 {
   [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
-  public class FieldMinLengthAttribute : Attribute
+  public class FieldMinLengthAttribute : FieldAttribute
   {
-    public int MinLength { get; }
+    public int Value { get; }
 
     public FieldMinLengthAttribute(int minLength)
     {
-      MinLength = minLength;
+      Value = minLength;
+    }
+
+    internal override void RenderField(Field field, PropertyInfo property, object host, PaperContext ctx)
+    {
+      field.AddMinLength(Value);
     }
   }
 }

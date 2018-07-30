@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Paper.Media.Utils
+namespace Paper.Media.Utilities
 {
   internal class Expressions
   {

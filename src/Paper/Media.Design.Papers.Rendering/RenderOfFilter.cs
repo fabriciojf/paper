@@ -23,19 +23,30 @@ namespace Paper.Media.Design.Papers.Rendering
         filter = filter._SetNew<IFilter>("Filter");
       }
       
-      foreach (var key in ctx.QueryArgs.Keys)
+      foreach (var arg in ctx.PathArgs)
       {
-        if (filter._Has(key))
+        if (filter._Has(arg.Key))
         {
-          var value = ctx.QueryArgs[key];
-          var argValue = value;//TODO: fazer o parse
-          filter._Set(key, argValue);
+          filter._Set(arg.Key, arg.Value);
         }
       }
     }
 
     internal static void Render(IPaper paper, Entity entity, PaperContext ctx)
     {
+      if (!paper._Has("Filter"))
+        return;
+
+      var filter = paper._Get<IFilter>("Filter");
+      if (filter == null)
+        return;
+
+      var action = EntityActionConverter.ConvertToEntityAction(filter, ctx);
+      action.Name = "__filter";
+      action.Title = "Filtro";
+      action.Method = MethodNames.Get;
+      action.Href = ".";
+      entity.AddAction(action);
     }
 
     //public static void SetFilter(RenderContext ctx)

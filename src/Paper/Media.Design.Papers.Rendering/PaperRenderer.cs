@@ -52,7 +52,6 @@ namespace Paper.Media.Design.Papers.Rendering
       //
       // Fase 2: Repassando parametros
       //
-      RenderOfBasics.SetArgs(paper, ctx.QueryArgs);
       RenderOfBasics.SetArgs(paper, ctx.PathArgs);
       RenderOfPage.SetArgs(paper, ctx);
       RenderOfSort.SetArgs(paper, ctx);

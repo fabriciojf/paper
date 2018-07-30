@@ -78,5 +78,14 @@ namespace Toolset
     public Range Range { get; }
 
     public object Raw { get; }
+
+    public static Type GetUnderlyingType(Type type)
+    {
+      if (!typeof(Any).IsAssignableFrom(type))
+        return null;
+
+      var classType = type.GetGenericArguments().FirstOrDefault();
+      return classType ?? typeof(object);
+    }
   }
 }

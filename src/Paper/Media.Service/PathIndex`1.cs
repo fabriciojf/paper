@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Toolset;
 using Toolset.Collections;
 
-namespace Paper.Media.Utils
+namespace Paper.Media.Service
 {
   public class PathIndex<TValue>
     where TValue : class
