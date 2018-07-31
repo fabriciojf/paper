@@ -11,9 +11,17 @@ namespace Toolset.Data
 {
   public static class DataExtensions
   {
-    public static bool IsNull(this object target)
+    /// <summary>
+    /// Diz se um valor pode ser considerado nulo.
+    /// O método considera o tipo DBNull como um valor nulo.
+    /// </summary>
+    /// <param name="value">O valor a ser verificado.</param>
+    /// <returns>Verdadeiro se o valor pode ser considerado nulo.</returns>
+    public static bool IsNull(this object value)
     {
-      return target == null || target is DBNull;
+      return (value == null)
+          || (value == DBNull.Value)
+          || (((value as Any)?.IsNull) == true);
     }
 
     public static DbProviderFactory GetFactory(string provider)

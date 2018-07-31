@@ -7,6 +7,7 @@ using Toolset;
 using System.Reflection;
 using System.Xml.Linq;
 using Toolset.Xml;
+using Toolset.Data;
 
 namespace Toolset.Sequel
 {

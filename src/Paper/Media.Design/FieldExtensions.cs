@@ -52,6 +52,18 @@ namespace Paper.Media.Design
     }
 
     /// <summary>
+    /// Define o tipo de dado do campo.
+    /// </summary>
+    /// <param name="field">O campo a ser modificado.</param>
+    /// <param name="dataType">A categoria do campo.</param>
+    /// <returns>A própria instância do campo modificado.</returns>
+    public static Field AddDataType(this Field field, DataType dataType)
+    {
+      field.DataType = dataType.GetName();
+      return field;
+    }
+
+    /// <summary>
     /// Marca ou desmarca o campo como somente leitura.
     /// </summary>
     /// <param name="field">O campo a ser modificado.</param>

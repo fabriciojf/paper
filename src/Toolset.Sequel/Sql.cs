@@ -45,8 +45,21 @@ namespace Toolset.Sequel
 
     public object this[string parameterName]
     {
-      get => ParameterCollection[parameterName];
-      set => ParameterCollection[parameterName] = new Any(value);
+      get
+      {
+        parameterName =
+          ParameterCollection.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
+          ?? parameterName;
+        var value = ParameterCollection[parameterName];
+        return value;
+      }
+      set
+      {
+        parameterName =
+          ParameterCollection.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
+          ?? parameterName;
+        ParameterCollection[parameterName] = value as Any ?? new Any(value);
+      }
     }
 
     public Sql Unset(string parameterName)

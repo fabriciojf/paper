@@ -29,11 +29,27 @@ namespace Toolset.Sequel
       builder.AppendLine("  Args {");
       foreach (var parameter in sql.ParameterNames)
       {
-        var value = Commander.CreateSqlCompatibleValue(sql[parameter]);
         builder.Append("    ");
         builder.Append(parameter);
         builder.Append(" := ");
-        builder.AppendLine(value is DBNull ? "(null)" : $"\"{value}\"");
+
+        var value = sql[parameter];
+        var any = value as Any;
+        if (any?.IsRange == true)
+        {
+          builder.AppendLine($"{any.Range}");
+        }
+        else if(any?.IsList == true)
+        {
+          value = Commander.CreateSqlCompatibleValue(value);
+          builder.AppendLine($"{{ {value} }}");
+        }
+        else
+        {
+          value = Commander.CreateSqlCompatibleValue(value);
+          builder.AppendLine(value is DBNull ? "(null)" : $"\"{value}\"");
+        }
+
       }
       builder.AppendLine("  }");
       builder.AppendLine("}");

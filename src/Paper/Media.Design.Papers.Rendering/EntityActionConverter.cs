@@ -14,18 +14,27 @@ namespace Paper.Media.Design.Papers.Rendering
   {
     public static EntityAction ConvertToEntityAction(object graph, PaperContext ctx)
     {
-      if (graph is EntityAction)
-        return (EntityAction)graph;
-
-      var action = new EntityAction();
-      action.Fields = new FieldCollection();
-
-      foreach (var key in graph._GetPropertyNames())
+      var action = graph as EntityAction;
+      if (action == null)
       {
-        var field = CreateField(graph, key, ctx);
-        action.Fields.Add(field);
-      }
+        action = new EntityAction();
+        action.Fields = new FieldCollection();
 
+        var fields = graph as IEnumerable<Field>;
+        if (fields != null)
+        {
+          action.Fields.AddRange(fields);
+        }
+        else
+        {
+          // Cada proprieade do objeto será mapeada como um campo de filtro
+          foreach (var key in graph._GetPropertyNames())
+          {
+            var field = CreateField(graph, key, ctx);
+            action.Fields.Add(field);
+          }
+        }
+      }
       return action;
     }
 

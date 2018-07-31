@@ -29,14 +29,24 @@ namespace Toolset
 
     protected Any(object value, Func<object, object> caster)
     {
-      Value = value;
+      while (value is Any)
+      {
+        value = ((Any)value).Value;
+      }
+
+      this.Value = value;
+
+      if (value.IsNull())
+      {
+        return;
+      }
 
       if (value is string)
       {
         Text = (string)value;
         TextPattern =
           (Text.Contains("%") || Text.Contains("_"))
-            ? $"^{Regex.Escape(Text).Replace("%", ".*").Replace("_", ".")}$"
+            ? CreateTextPattern(Text)
             : null;
       }
       else if (value is IEnumerable)
@@ -79,6 +89,17 @@ namespace Toolset
 
     public object Raw { get; }
 
+    public override string ToString()
+    {
+      if (IsList)
+        return string.Join(", ", List);
+
+      if (IsRange)
+        return Range.ToString();
+
+      return Value?.ToString();
+    }
+
     public static Type GetUnderlyingType(Type type)
     {
       if (!typeof(Any).IsAssignableFrom(type))
@@ -86,6 +107,13 @@ namespace Toolset
 
       var classType = type.GetGenericArguments().FirstOrDefault();
       return classType ?? typeof(object);
+    }
+
+    public static string CreateTextPattern(string text)
+    {
+      return (text != null)
+        ? $"^{Regex.Escape(text).Replace("%", ".*").Replace("_", ".")}$"
+        : "";
     }
   }
 }

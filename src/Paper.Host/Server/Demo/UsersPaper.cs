@@ -31,11 +31,8 @@ namespace Paper.Host.Server.Demo
 
   public class UserFilter : IFilter
   {
-    [FieldPlaceholder("Escolha os itens...")]
-    public Any<int?> Id { get; set; }
-
-    [FieldPlaceholder("Escolha as empresas...")]
-    public Any<string> Empresa { get; set; }
+    [FieldPlaceholder("Escolha os usuários...")]
+    public Any<string> Name { get; set; }
   }
 
   public static class UserDb

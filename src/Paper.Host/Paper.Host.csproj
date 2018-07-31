@@ -36,6 +36,7 @@
     <Compile Include="Server\Demo\BlueprintEntity.cs" />
     <Compile Include="Server\Demo\MenuPaper.cs" />
     <Compile Include="Server\Demo\SampleEntity.cs" />
+    <Compile Include="Server\Demo\PostsPaper.cs" />
     <Compile Include="Server\Demo\UsersPaper.cs" />
   </ItemGroup>
 

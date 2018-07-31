@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Toolset.Sequel\Toolset.Sequel.csproj" />
     <ProjectReference Include="..\Toolset.Serialization\Toolset.Serialization.csproj" />
     <ProjectReference Include="..\Toolset.Text.Template\Toolset.Text.Template.csproj" />
     <ProjectReference Include="..\Toolset\Toolset.csproj" />

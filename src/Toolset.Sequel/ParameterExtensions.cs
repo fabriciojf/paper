@@ -43,11 +43,11 @@ namespace Toolset.Sequel
     /// A mesma instância da SQL obtida como parâmetro para encadeamento
     /// de operações.
     /// </returns>
-    public static Sql Set(this Sql sql, IDictionary<string, object> parameters)
+    public static Sql Set(this Sql sql, IEnumerable<KeyValuePair<string, object>> parameters)
     {
-      foreach (var key in parameters.Keys)
+      foreach (var parameter in parameters)
       {
-        sql[key] = parameters[key];
+        sql[parameter.Key] = parameter.Value;
       }
       return sql;
     }

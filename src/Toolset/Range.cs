@@ -21,14 +21,29 @@ namespace Toolset
       this.Max = max;
     }
 
-    public Range<T> Cast<T>()
+    public Range<T> As<T>()
     {
       return new Range<T>(Change.To<T>(Min), Change.To<T>(Max));
     }
 
     public override string ToString()
     {
-      return $"{{{Min ?? "*"}, {Max ?? "*"}}}";
+      if (Min != null && Max != null)
+        return $"{{ {Min} <= x <= {Max} }}";
+
+      if (Min != null)
+        return $"{{ >= {Min} }}";
+
+      if (Max != null)
+        return $"{{ <= {Min} }}";
+
+      return "{}";
     }
+
+    public static Range<T> Create<T>(object min, object max)
+      => new Range<T>(min, max);
+
+    public static Range<T> Create<T>(T min, T max)
+      => new Range<T>(min, max);
   }
 }

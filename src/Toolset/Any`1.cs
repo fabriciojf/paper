@@ -51,5 +51,30 @@ namespace Toolset
         return _range;
       }
     }
+
+    public static implicit operator T(Any<T> any)
+    {
+      return any.IsRaw ? any.Raw : default(T);
+    }
+
+    public static implicit operator Any<T>(T value)
+    {
+      return new Any<T>(value);
+    }
+
+    public static implicit operator Any<T>(T[] value)
+    {
+      return new Any<T>(value);
+    }
+
+    public static implicit operator Any<T>(List<T> value)
+    {
+      return new Any<T>(value);
+    }
+
+    public static implicit operator Any<T>(Range<T> value)
+    {
+      return new Any<T>(value);
+    }
   }
 }

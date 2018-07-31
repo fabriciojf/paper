@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Toolset;
+using Toolset.Data;
 using Toolset.Xml;
 
 namespace Toolset.Sequel
@@ -13,17 +14,6 @@ namespace Toolset.Sequel
   /// </summary>
   public static class ObjectExtensions
   {
-    /// <summary>
-    /// Diz se um valor pode ser considerado nulo.
-    /// O método considera o tipo DBNull como um valor nulo.
-    /// </summary>
-    /// <param name="value">O valor a ser verificado.</param>
-    /// <returns>Verdadeiro se o valor pode ser considerado nulo.</returns>
-    public static bool IsNull(this object value)
-    {
-      return (value == null) || (value == DBNull.Value);
-    }
-
     /// <summary>
     /// Converte o valor para o tipo indicado.
     /// Nulo é convertido para o valor padrão do tipo.

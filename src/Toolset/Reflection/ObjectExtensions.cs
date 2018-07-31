@@ -8,31 +8,29 @@ namespace Toolset.Reflection
 {
   public static class ObjectExtensions
   {
-    private readonly static BindingFlags CaseInsensitiveFlags = 
-      BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance;
+    private readonly static BindingFlags Flags =
+      BindingFlags.Public | BindingFlags.Instance;
 
-    private readonly static BindingFlags CaseSensitiveFlags =
-      BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance;
+    private readonly static BindingFlags CaseInsensitiveFlags = 
+      BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
 
     public static PropertyInfo _GetPropertyInfo(this object typeOrObject, string propertyName)
     {
       var type = (typeOrObject is Type) ? (Type)typeOrObject : typeOrObject.GetType();
-      return type.GetProperty(propertyName, CaseSensitiveFlags);
+      var property =
+        type
+          .GetProperties(Flags)
+          .Where(x => x.Name.EqualsAnyIgnoreCase(propertyName))
+          .FirstOrDefault();
+      return property;
     }
 
-    public static PropertyInfo _GetPropertyInfoIgnoreCase(this object typeOrObject, string propertyName)
+    public static Type _GetPropertyType(this object typeOrObject, string propertyName)
     {
-      var type = (typeOrObject is Type) ? (Type)typeOrObject : typeOrObject.GetType();
-      return type.GetProperty(propertyName, CaseInsensitiveFlags);
+      return _GetPropertyInfo(typeOrObject, propertyName)?.PropertyType;
     }
 
     public static MethodInfo _GetMethodInfo(this object typeOrObject, string methodName, Type[] argTypes = null)
-    {
-      var type = (typeOrObject is Type) ? (Type)typeOrObject : typeOrObject.GetType();
-      return LocateMethod(type, methodName, CaseSensitiveFlags, argTypes, leniente: false);
-    }
-
-    public static MethodInfo _GetMethodInfoIgnoreCase(this object typeOrObject, string methodName, Type[] argTypes = null)
     {
       var type = (typeOrObject is Type) ? (Type)typeOrObject : typeOrObject.GetType();
       return LocateMethod(type, methodName, CaseInsensitiveFlags, argTypes, leniente: false);
@@ -115,33 +113,33 @@ namespace Toolset.Reflection
 
     public static bool _CanWrite(this object target, string propertyName)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property?.CanWrite == true;
     }
 
     public static bool _CanWrite(this object target, string propertyName, Type propertyType)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property?.CanWrite == true
           && propertyType.IsAssignableFrom(property.PropertyType);
     }
 
     public static bool _CanWrite<T>(this object target, string propertyName)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property?.CanWrite == true
           && typeof(T).IsAssignableFrom(property.PropertyType);
     }
 
     public static object _Get(this object target, string propertyName)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property?.GetValue(target);
     }
 
     public static T _Get<T>(this object target, string propertyName)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       var value = property?.GetValue(target);
       if (value == null)
         return default(T);
@@ -164,7 +162,7 @@ namespace Toolset.Reflection
 
     public static void _Set(this object target, string propertyName, object value)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       if (property == null)
         throw new NullReferenceException($"A propriedade não existe: {target.GetType().FullName}.{propertyName}");
       if (!property.CanWrite)
@@ -206,7 +204,7 @@ namespace Toolset.Reflection
 
     public static object _SetNew(this object target, string propertyName, params object[] args)
     {
-      var type = _GetPropertyInfoIgnoreCase(target, propertyName)?.PropertyType;
+      var type = _GetPropertyInfo(target, propertyName)?.PropertyType;
       if (type == null)
         throw new NullReferenceException($"A propriedade não existe: {target.GetType().FullName}.{propertyName}");
 
@@ -268,20 +266,20 @@ namespace Toolset.Reflection
 
     public static bool _HasProperty(this object target, string propertyName)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property != null;
     }
 
     public static bool _HasProperty(this object target, string propertyName, Type propertyType)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property != null
           && propertyType.IsAssignableFrom(property.PropertyType);
     }
 
     public static bool _HasProperty<T>(this object target, string propertyName)
     {
-      var property = _GetPropertyInfoIgnoreCase(target, propertyName);
+      var property = _GetPropertyInfo(target, propertyName);
       return property != null
           && typeof(T).IsAssignableFrom(property.PropertyType);
     }
@@ -315,7 +313,7 @@ namespace Toolset.Reflection
 
       foreach (var sourceProperty in source.GetType().GetProperties())
       {
-        var targetProperty = _GetPropertyInfoIgnoreCase(target, sourceProperty.Name);
+        var targetProperty = _GetPropertyInfo(target, sourceProperty.Name);
         if (targetProperty != null)
         {
           object sourceValue = sourceProperty.GetValue(source);

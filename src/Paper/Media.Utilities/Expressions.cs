@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -9,11 +10,16 @@ namespace Paper.Media.Utilities
   {
     public static MemberExpression FindMemberExpression(Expression expression)
     {
+      return FindMemberExpressions(expression).FirstOrDefault();
+    }
+
+    public static IEnumerable<MemberExpression> FindMemberExpressions(Expression expression)
+    {
       while (true)
       {
         if (expression is MemberExpression)
         {
-          return (MemberExpression)expression;
+          yield return (MemberExpression)expression;
         }
 
         if (expression is LambdaExpression)
@@ -26,7 +32,7 @@ namespace Paper.Media.Utilities
         }
         else
         {
-          return null;
+          yield break;
         }
       }
     }
