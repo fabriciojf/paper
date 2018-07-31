@@ -12,7 +12,8 @@ namespace Paper.Media.Service
 {
   public class PaperRegistry : IPaperRegistry
   {
-    private readonly PathIndex<Type> typeIndex = new PathIndex<Type>();
+    private readonly PathIndex<PaperInfo> pathIndex = new PathIndex<PaperInfo>();
+    private readonly Map<Type, PaperInfo> typeIndex = new Map<Type, PaperInfo>();
 
     public PaperRegistry()
     {
@@ -23,7 +24,7 @@ namespace Paper.Media.Service
       paperTypes?.Distinct().ForEach(Add);
     }
 
-    public string[] Paths => typeIndex.Paths;
+    public string[] Paths => pathIndex.Paths;
 
     public void AddRange(IEnumerable<Type> paperTypes)
     {
@@ -34,8 +35,9 @@ namespace Paper.Media.Service
     {
       try
       {
-        var path = PaperAttribute.Extract(paperType).UriTemplate;
-        typeIndex.Add(path, paperType);
+        var info = CreatePaperInfo(paperType);
+        typeIndex.Add(info.Type, info);
+        pathIndex.Add(info.Path, info);
       }
       catch (Exception ex)
       {
@@ -52,36 +54,60 @@ namespace Paper.Media.Service
       knownTypes.ForEach(Add);
     }
 
-    public Type FindPaperType(string path)
+    public PaperInfo FindPaper<T>()
     {
-      var type = typeIndex.FindExact(path);
-      return type;
+      var info = typeIndex[typeof(T)];
+      return info;
     }
 
-    public Type FindPaperTypeByPrefix(string path)
+    public PaperInfo FindPaper(Type paperType)
     {
-      var type = typeIndex.FindByPrefix(path);
-      return type;
+      var info = typeIndex[paperType];
+      return info;
+    }
+
+    public PaperInfo FindPaper(string path)
+    {
+      var info = pathIndex.FindExact(path);
+      return info;
+    }
+
+    public PaperInfo FindPaperByPrefix(string path)
+    {
+      var info = pathIndex.FindByPrefix(path);
+      return info;
     }
 
     public void PrintInfo()
     {
       foreach (var path in Paths.OrderBy(x => x))
       {
-        var type = FindPaperType(path);
-        Debug.WriteLine($"[PAPER]MAPPED {path} -> {type.FullName}");
-        Console.WriteLine($"[PAPER]MAPPED {path} -> {type.FullName}");
+        var info = FindPaper(path);
+        Debug.WriteLine($"[PAPER]MAPPED {path} -> {info.Type.FullName}");
+        Console.WriteLine($"[PAPER]MAPPED {path} -> {info.Type.FullName}");
       }
     }
 
-    public IEnumerator<Type> GetEnumerator()
+    internal static PaperInfo CreatePaperInfo<T>()
     {
-      throw new NotImplementedException();
+      return CreatePaperInfo(typeof(T));
+    }
+
+    internal static PaperInfo CreatePaperInfo(Type paperType)
+    {
+      var path = PaperAttribute.Extract(paperType).UriTemplate;
+      var info = new PaperInfo(paperType, path);
+      return info;
+    }
+
+    public IEnumerator<PaperInfo> GetEnumerator()
+    {
+      return typeIndex.Values.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-      throw new NotImplementedException();
+      return typeIndex.Values.GetEnumerator();
     }
   }
 }

@@ -16,23 +16,49 @@ namespace Paper.Media.Design.Papers.Rendering
 
     private EntryCollection _cache;
 
-    public PaperContext(object paper, IEnumerable<Type> knownPapers, string requestUri)
+    public PaperContext(IServiceProvider serviceProvider, object paper, IEnumerable<Type> knownPapers, string requestUri)
+      : this(
+        serviceProvider,
+        paper,
+        (knownPapers != null)
+          ? new PaperRegistry(paper.GetType().AsSingle().Concat(knownPapers))
+          : new PaperRegistry(paper.GetType().AsSingle()),
+        requestUri
+      )
     {
-      IPaperRegistry registry = knownPapers as IPaperRegistry;
-      if (registry == null)
-      {
-        registry =
-          (knownPapers != null)
-            ? new PaperRegistry(paper.GetType().AsSingle().Concat(knownPapers))
-            : new PaperRegistry(paper.GetType().AsSingle());
-      }
+    }
 
+    public PaperContext(IServiceProvider serviceProvider, object paper, IPaperRegistry registry, string requestUri)
+    {
+      var template = PaperAttribute.Extract(paper).UriTemplate ?? "/";
+      var prefix = ApiPrefix ?? "";
+
+      if (!prefix.StartsWith("/"))
+        prefix = "/" + prefix;
+      while (prefix.EndsWith("/"))
+        prefix = prefix.Substring(0, prefix.Length - 1);
+
+      if (!template.StartsWith("/"))
+        template = "/" + template;
+      while (template.EndsWith("/"))
+        template = template.Substring(0, template.Length - 1);
+
+      var composedTemplate = $"{prefix}{template}";
+
+      var uriTemplate = new UriTemplate(template);
+      uriTemplate.SetArgsFromUri(requestUri);
+
+      var args = uriTemplate.CreateArgs();
+
+      this.ServiceProvider = serviceProvider;
       this.Paper = paper;
       this.PaperRegistry = registry;
       this.RequestUri = requestUri;
-      this.UriTemplate = PaperAttribute.Extract(paper).UriTemplate;
-      this.PathArgs = ArgMap.ParseFromUri(this.RequestUri, this.UriTemplate, ApiPrefix);
+      this.UriTemplate = template;
+      this.PathArgs = args;
     }
+
+    public IServiceProvider ServiceProvider { get; }
 
     public object Paper { get; }
 

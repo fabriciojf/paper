@@ -609,6 +609,19 @@ namespace Toolset
     }
 
     /// <summary>
+    /// Combina os argumentos com a instância de Route.
+    /// </summary>
+    /// <param name="argPairs">Os argumentos combiados.</param>
+    /// <returns>
+    /// Uma nova instância de <see cref="Route"/> com os argumentos combinados.
+    /// </returns>
+    public Route SetArg(IEnumerable<KeyValuePair<string, object>> argPairs)
+    {
+      var args = argPairs.SelectMany(x => new[] { x.Key, x.Value });
+      return SetArg(args);
+    }
+
+    /// <summary>
     /// Combina os pares de argumentos com os argumentos já existentes na URI.
     /// É esperado que os argumentos pares, a partir de zero, sejam nomes de argumentos, e
     /// os argumentos ímpares sejam os valores destes argumentos.

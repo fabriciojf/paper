@@ -6,13 +6,14 @@ using Paper.Media.Design;
 
 namespace Paper.Media.Design.Papers
 {
-  public interface IPaperRows<TRow> : IPaper
+  public interface IPaperRows<TFilter, TRow> : IPaper
+    where TFilter : IFilter
   {
     Page Page { get; }
 
     Sort Sort { get; }
 
-    IFilter Filter { get; }
+    TFilter Filter { get; }
 
     string GetTitle();
 

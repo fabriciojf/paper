@@ -13,7 +13,7 @@ using Toolset.Reflection;
 namespace Paper.Host.Server.Demo
 {
   [Paper("/Menu")]
-  public class MenuPaper : IPaperBasics, IPaperRows<ILink>
+  public class MenuPaper : IPaperBasics, IPaperRows<IFilter, ILink>
   {
     public Page Page { get; }
     public Sort Sort { get; }

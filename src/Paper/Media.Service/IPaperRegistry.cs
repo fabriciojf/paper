@@ -5,14 +5,18 @@ using System.Text;
 
 namespace Paper.Media.Service
 {
-  public interface IPaperRegistry : IEnumerable<Type>
+  public interface IPaperRegistry : IEnumerable<PaperInfo>
   {
     void Add(Type paperType);
 
     void AddRange(IEnumerable<Type> paperTypes);
 
-    Type FindPaperType(string path);
+    PaperInfo FindPaper<T>();
 
-    Type FindPaperTypeByPrefix(string path);
+    PaperInfo FindPaper(Type paperType);
+
+    PaperInfo FindPaper(string path);
+
+    PaperInfo FindPaperByPrefix(string path);
   }
 }

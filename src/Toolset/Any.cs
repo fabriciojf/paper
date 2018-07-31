@@ -100,6 +100,20 @@ namespace Toolset
       return Value?.ToString();
     }
 
+    public override bool Equals(object obj)
+    {
+      if (obj == null)
+        return false;
+
+      if (base.Equals(obj))
+        return true;
+
+      while (obj is Any)
+        obj = ((Any)obj).Value;
+
+      return Value.Equals(obj);
+    }
+
     public static Type GetUnderlyingType(Type type)
     {
       if (!typeof(Any).IsAssignableFrom(type))

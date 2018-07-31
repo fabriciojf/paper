@@ -31,7 +31,9 @@ namespace Paper.Host.Server.Demo
 
   public class UserFilter : IFilter
   {
-    [FieldPlaceholder("Escolha os usuários...")]
+    [FieldHidden]
+    public Any<int> Id { get; set; }
+
     public Any<string> Name { get; set; }
   }
 
@@ -55,16 +57,21 @@ namespace Paper.Host.Server.Demo
       new User{ Id = 7, Name = "Citano"   , Since = MakeDate() },
       new User{ Id = 8, Name = "Perengano", Since = MakeDate() }
     };
+
+    public static User Get(int id)
+    {
+      return All.FirstOrDefault(x => x.Id == id);
+    }
   }
 
-  [Paper]
-  public class UsersPaper : IPaperBasics, IPaperRows<User>
+  [Paper("/Users")]
+  public class UsersPaper : IPaperBasics, IPaperRows<UserFilter, User>
   {
     public Page Page { get; } = new Page();
 
     public Sort Sort { get; } = new Sort<User>();
 
-    public IFilter Filter { get; } = new UserFilter();
+    public UserFilter Filter { get; } = new UserFilter();
 
     public string GetTitle()
       => "Users Page";

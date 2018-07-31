@@ -40,10 +40,22 @@ namespace Toolset
       return "{}";
     }
 
-    public static Range<T> Create<T>(object min, object max)
+    public static Range<T> Between<T>(object min, object max)
       => new Range<T>(min, max);
 
-    public static Range<T> Create<T>(T min, T max)
+    public static Range<T> Between<T>(T min, T max)
       => new Range<T>(min, max);
+
+    public static Range<T> EqualsOrLesser<T>(object max)
+      => new Range<T>(null, max);
+
+    public static Range<T> EqualsOrLesser<T>(T max)
+      => new Range<T>(null, max);
+
+    public static Range<T> EqualsOrGreater<T>(object min)
+      => new Range<T>(min, null);
+
+    public static Range<T> EqualsOrGreater<T>(T min)
+      => new Range<T>(min, null);
   }
 }

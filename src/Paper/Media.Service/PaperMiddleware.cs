@@ -31,7 +31,8 @@ namespace Paper.Media.Service
     {
       var path = httpContext.Request.Path.Value;
 
-      var paperType = registry.FindPaperType(path);
+      var paparInfo = registry.FindPaper(path);
+      var paperType = paparInfo?.Type;
       if (paperType == null)
       {
         await next(httpContext);
@@ -64,7 +65,7 @@ namespace Paper.Media.Service
         paper = serviceProvider.CreateInstance(paperType);
 
         var requestUri = httpContext.Request.GetRequestUri();
-        var paperContext = new PaperContext(paper, registry, requestUri);
+        var paperContext = new PaperContext(serviceProvider, paper, registry, requestUri);
         var paperRenderer = new PaperRenderer(serviceProvider);
 
         var ret = paperRenderer.RenderEntity(paperContext);
