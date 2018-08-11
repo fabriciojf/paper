@@ -385,14 +385,14 @@ namespace Toolset.Sequel
     private static string ReplaceBags(string text, Map<string, object> args, KeyGen keyGen)
     {
       // Aplicando a substituição da instrução:
-      //   bag [target] [not] matches ()
-      var regex = new Regex(@"[(\s]bag\s+(?:([\w]+)\s+|\[([^]]+)\]\s+)?(?:(not)\s+)?matches(?:\s+(if\s+set))?\s*?(?:([a-zA-Z_.]+)|([a-zA-Z0-9_]*[(](?>[(](?<c>)|[^()]+|[)](?<-c>))*(?(c)(?!))[)]))");
+      //   many [target] [not] matches [if set] ()
+      var regex = new Regex(@"[(\s]many\s+(?:([\w]+)\s+|\[([^]]+)\]\s+)?(?:(not)\s+)?matches(?:\s+(if\s+set))?\s*?(?:([a-zA-Z_.]+)|([a-zA-Z0-9_]*[(](?>[(](?<c>)|[^()]+|[)](?<-c>))*(?(c)(?!))[)]))");
       var matches = regex.Matches(text);
       foreach (var match in matches.Cast<Match>())
       {
         // Exemplos de textos extraidos
         //
-        // " bag matches ( ... ) "
+        // " many matches ( ... ) "
         //   [1] ""
         //   [2] ""
         //   [3] ""
@@ -400,7 +400,7 @@ namespace Toolset.Sequel
         //   -inutil-
         //   [6] "( ... )"
         //
-        // " bag [ A _ 0 ] not matches if set ( ... ) "
+        // " many [ A _ 0 ] not matches if set ( ... ) "
         //   [1] ""
         //   [2] " A _ 0 "
         //   [3] "not"
@@ -408,7 +408,7 @@ namespace Toolset.Sequel
         //   -inutil-
         //   [6] "( ... )"
         //
-        // " bag A_0 not matches if set ( ... ) "
+        // " many A_0 not matches if set ( ... ) "
         //   [1] "A_0"
         //   [2] ""
         //   [3] "not"
@@ -416,14 +416,14 @@ namespace Toolset.Sequel
         //   -inutil-
         //   [6] "( ... )"
 
-        var bagName = $"{match.Groups[1].Value}{match.Groups[2].Value}";
+        var manyName = $"{match.Groups[1].Value}{match.Groups[2].Value}";
         var isNot = (match.Groups[3].Length > 0);
         var isIfSet = (match.Groups[4].Length > 0);
 
         var body = match.Groups[6].Value;
         body = body.Substring(1, body.Length - 2);
 
-        var bag = new[] {
+        var many = new[] {
           new Map<string, object> {
             { "id", 1 },
             { "name", "one" }
@@ -434,7 +434,7 @@ namespace Toolset.Sequel
           }
         };
 
-        if (bag?.Any() == false)
+        if (many?.Any() == false)
         {
           var newSentence = isNot
             ? (isIfSet ? "1=0" : "1=1")
@@ -445,13 +445,13 @@ namespace Toolset.Sequel
         else
         {
           var sentences = new List<string>();
-          foreach (var set in bag)
+          foreach (var set in many)
           {
-            var sentence = $"( {ApplyExtendedTemplate(body, set, keyGen)} )";
+            var sentence = $"{(isNot ? " not " : "")}( {ApplyExtendedTemplate(body, set, keyGen)} )";
             sentences.Add(sentence);
           }
 
-          var newSentence = $"{(isNot ? " not " : "")}( {string.Join(" or ", sentences)} )";
+          var newSentence = $"( {string.Join(" or ", sentences)} )";
           text = text.Replace(match.Value, newSentence);
         }
       }
