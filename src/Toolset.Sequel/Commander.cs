@@ -82,6 +82,20 @@ namespace Toolset.Sequel
       if ((value as Any)?.IsList == true)
       {
         var list = ((Any)value).List;
+
+        if (!list.Any())
+        {
+          return DBNull.Value;
+        }
+
+        if (list.First() is byte)
+        {
+          // Temos um array de bytes.
+          // Array de bytes ├⌐ usado para dados bin├írios.
+          // Deve ser repassado como est├í.
+          return list.Cast<byte>().ToArray();
+        }
+
         var sample = list.FirstOrDefault();
         if (sample is string)
         {

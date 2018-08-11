@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Toolset.Collections;
 
 namespace Toolset.Sequel
 {
@@ -98,7 +99,7 @@ namespace Toolset.Sequel
       if (SequelSettings.StandardTemplateEnabled && sql.Text.Contains("@{"))
         SqlTemplate.ApplyStandardTemplate(sql);
 
-      if (SequelSettings.ExtendedTemplateEnabled && sql.Text.Contains("matches"))
+      if (SequelSettings.ExtendedTemplateEnabled)
         SqlTemplate.ApplyExtendedTemplate(sql);
 
       return sql;
@@ -351,20 +352,114 @@ namespace Toolset.Sequel
     /// <param name="sql">A SQL a ser processada.</param>
     public static void ApplyExtendedTemplate(Sql sql)
     {
-      var extendedParameters = ExtractKnownExtendedParameters(sql.Text).ToArray();
+      sql.Text = ApplyExtendedTemplate(sql.Text, sql.ParameterMap, sql.KeyGen);
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="text">O texto que sofrerá a substituição.</param>
+    /// <param name="args">Argumentos disponíveis.</param>
+    /// <param name="keyGen">Algoritmo de geração de nomes de parâmetros.</param>
+    /// <returns></returns>
+    private static string ApplyExtendedTemplate(string text, Map<string, object> args, KeyGen keyGen)
+    {
+      text = ReplaceBags(text, args, keyGen);
+
+      var extendedParameters = ExtractKnownExtendedParameters(text).ToArray();
       var names =
         from name in extendedParameters
         orderby name.Length descending, name
         select name;
       foreach (var name in names)
       {
-        var value = sql[name];
-        var criteria = CreateCriteria(sql, name, value);
-        var text = ReplaceTemplate(sql, name, criteria);
-
-        sql.Text = text;
+        var value = args[name];
+        var criteria = CreateCriteria(name, value, args, keyGen);
+        text = ReplaceTemplate(text, name, criteria);
       }
+      return text;
     }
+
+
+
+    // TODO: em andamento....
+    private static string ReplaceBags(string text, Map<string, object> args, KeyGen keyGen)
+    {
+      // Aplicando a substituição da instrução:
+      //   bag [target] [not] matches ()
+      var regex = new Regex(@"[(\s]bag\s+(?:([\w]+)\s+|\[([^]]+)\]\s+)?(?:(not)\s+)?matches(?:\s+(if\s+set))?\s*?(?:([a-zA-Z_.]+)|([a-zA-Z0-9_]*[(](?>[(](?<c>)|[^()]+|[)](?<-c>))*(?(c)(?!))[)]))");
+      var matches = regex.Matches(text);
+      foreach (var match in matches.Cast<Match>())
+      {
+        // Exemplos de textos extraidos
+        //
+        // " bag matches ( ... ) "
+        //   [1] ""
+        //   [2] ""
+        //   [3] ""
+        //   [4] ""
+        //   -inutil-
+        //   [6] "( ... )"
+        //
+        // " bag [ A _ 0 ] not matches if set ( ... ) "
+        //   [1] ""
+        //   [2] " A _ 0 "
+        //   [3] "not"
+        //   [4] "if set"
+        //   -inutil-
+        //   [6] "( ... )"
+        //
+        // " bag A_0 not matches if set ( ... ) "
+        //   [1] "A_0"
+        //   [2] ""
+        //   [3] "not"
+        //   [4] "if set"
+        //   -inutil-
+        //   [6] "( ... )"
+
+        var bagName = $"{match.Groups[1].Value}{match.Groups[2].Value}";
+        var isNot = (match.Groups[3].Length > 0);
+        var isIfSet = (match.Groups[4].Length > 0);
+
+        var body = match.Groups[6].Value;
+        body = body.Substring(1, body.Length - 2);
+
+        var bag = new[] {
+          new Map<string, object> {
+            { "id", 1 },
+            { "name", "one" }
+          },
+          new Map<string, object> {
+            { "id", 2 },
+            { "name", "two" }
+          }
+        };
+
+        if (bag?.Any() == false)
+        {
+          var newSentence = isNot
+            ? (isIfSet ? "1=0" : "1=1")
+            : (isIfSet ? "1=1" : "1=0");
+          text = text.Replace(match.Value, newSentence);
+          continue;
+        }
+        else
+        {
+          var sentences = new List<string>();
+          foreach (var set in bag)
+          {
+            var sentence = $"( {ApplyExtendedTemplate(body, set, keyGen)} )";
+            sentences.Add(sentence);
+          }
+
+          var newSentence = $"{(isNot ? " not " : "")}( {string.Join(" or ", sentences)} )";
+          text = text.Replace(match.Value, newSentence);
+        }
+      }
+      return text;
+    }
+
+
+
 
     /// <summary>
     /// Constrói a condição que substituirá o template baseado na instrução:
@@ -390,12 +485,10 @@ namespace Toolset.Sequel
     /// </summary>
     /// <param name="parameter">Nome do parâmetro que será substituído.</param>
     /// <param name="value">Valor atribuído ao parâmetro.</param>
-    /// <param name="newParameters">
-    /// Coleção dos parâmetros conhecidos.
-    /// Novos parâmetros podem ser criados nesta coleção para suporte ao critério criado.
-    /// </param>
+    /// <param name="args">Argumentos disponíveis.</param>
+    /// <param name="keyGen">Algoritmo de geração de nomes de parâmetros.</param>
     /// <returns>A condição que substituirá o template.</returns>
-    private static string CreateCriteria(Sql sql, string parameter, object value)
+    private static string CreateCriteria(string parameter, object value, Map<string, object> args, KeyGen keyGen)
     {
       if (value == null || (value as Any)?.IsNull == true)
       {
@@ -420,9 +513,9 @@ namespace Toolset.Sequel
         // que já existem na instância de Sql.
         foreach (var parameterName in innerSql.ParameterNames)
         {
-          var localName = sql.KeyGen.Rename(parameterName);
+          var localName = keyGen.Rename(parameterName);
 
-          sql[localName] = innerSql[parameterName];
+          args[localName] = innerSql[parameterName];
 
           string pattern;
           string replacement;
@@ -450,29 +543,29 @@ namespace Toolset.Sequel
         var range = ((Any)value).Range;
         if (range.Min != null && range.Max != null)
         {
-          var min = sql.KeyGen.Rename(parameter);
-          var max = sql.KeyGen.Rename(parameter);
+          var min = keyGen.Rename(parameter);
+          var max = keyGen.Rename(parameter);
 
           criteria = "{0} between @" + min + " and @" + max;
-          sql[min] = range.Min;
-          sql[max] = range.Max;
+          args[min] = range.Min;
+          args[max] = range.Max;
         }
         else if (range.Min != null)
         {
-          var name = sql.KeyGen.Rename(parameter);
+          var name = keyGen.Rename(parameter);
           criteria = "{0} >= @" + name;
-          sql[name] = range.Min;
+          args[name] = range.Min;
         }
         else if (range.Max != null)
         {
-          var name = sql.KeyGen.Rename(parameter);
+          var name = keyGen.Rename(parameter);
           criteria = "{0} <= @" + name;
-          sql[name] = range.Max;
+          args[name] = range.Max;
         }
         else
         {
           criteria = "{0} = @" + parameter;
-          sql[parameter] = value;
+          args[parameter] = value;
         }
       }
       else if ((value as Any)?.IsText == true)
@@ -481,18 +574,18 @@ namespace Toolset.Sequel
         if (any.TextHasWildcard)
         {
           criteria = "{0} like @" + parameter;
-          sql[parameter] = any.Text;
+          args[parameter] = any.Text;
         }
         else
         {
           criteria = "{0} = @" + parameter;
-          sql[parameter] = any.Text;
+          args[parameter] = any.Text;
         }
       }
       else
       {
         criteria = "{0} = @" + parameter;
-        sql[parameter] = value;
+        args[parameter] = value;
       }
 
       return criteria;
@@ -516,12 +609,10 @@ namespace Toolset.Sequel
     /// <param name="parameter">Nome do parametro procurado.</param>
     /// <param name="replacement">Texto que substituirá o padrão "campo = {parametro}"</param>
     /// <returns>O texto com a substituição efetuada.</returns>
-    private static string ReplaceTemplate(Sql sql, string parameter, string replacement)
+    private static string ReplaceTemplate(string text, string parameter, string replacement)
     {
       Regex regex;
       MatchCollection matches;
-
-      var text = sql.ToString();
 
       // Aplicando a substituição da instrução:
       //   @param is [not] set

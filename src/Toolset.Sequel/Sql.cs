@@ -38,43 +38,43 @@ namespace Toolset.Sequel
     public string Text { get; set; }
 
     public int ParameterCount
-      => ParameterCollection.Count;
+      => ParameterMap.Count;
 
     public ICollection<string> ParameterNames
-      => ParameterCollection.Keys;
+      => ParameterMap.Keys;
 
     public object this[string parameterName]
     {
       get
       {
         parameterName =
-          ParameterCollection.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
+          ParameterMap.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
           ?? parameterName;
-        var value = ParameterCollection[parameterName];
+        var value = ParameterMap[parameterName];
         return value;
       }
       set
       {
         parameterName =
-          ParameterCollection.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
+          ParameterMap.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
           ?? parameterName;
-        ParameterCollection[parameterName] = value as Any ?? new Any(value);
+        ParameterMap[parameterName] = value as Any ?? new Any(value);
       }
     }
 
     public Sql Unset(string parameterName)
     {
-      ParameterCollection.Remove(parameterName);
+      ParameterMap.Remove(parameterName);
       return this;
     }
 
     public Sql UnsetAll()
     {
-      ParameterCollection.Clear();
+      ParameterMap.Clear();
       return this;
     }
 
-    private Map<string, object> ParameterCollection
+    internal Map<string, object> ParameterMap
       => parameters ?? (parameters = new Map<string, object>());
 
     public override int GetHashCode()
@@ -103,10 +103,10 @@ namespace Toolset.Sequel
     {
       var clone = new Sql();
       clone.Text = this.Text;
-      foreach (var key in this.ParameterCollection.Keys)
+      foreach (var key in this.ParameterMap.Keys)
       {
-        var value = this.ParameterCollection[key];
-        clone.ParameterCollection.Add(key, value);
+        var value = this.ParameterMap[key];
+        clone.ParameterMap.Add(key, value);
       }
       return clone;
     }

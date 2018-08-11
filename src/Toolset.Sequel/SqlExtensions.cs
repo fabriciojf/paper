@@ -336,6 +336,7 @@ namespace Toolset.Sequel
     /// Prefira encapsular o uso do IResult em um bloco using.
     /// </returns>
     public static IResult<T> TrySelectGraph<T>(this Sql sql)
+      where T : class
     {
       try { return SelectGraph<T>(sql); }
       catch { return Result<T>.Empty; }
@@ -356,6 +357,7 @@ namespace Toolset.Sequel
     /// Prefira encapsular o uso do IResult em um bloco using.
     /// </returns>
     public static IResult<T> SelectGraph<T>(this Sql sql)
+      where T : class
     {
       var cn = sql.Connection;
       var result = new Result<T>(
@@ -414,6 +416,104 @@ namespace Toolset.Sequel
 
     #endregion
 
+    #region Select As GraphArray
+
+    /// <summary>
+    /// Obt├⌐m um Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    ///
+    /// Como todo m├⌐todo Try* este m├⌐todo n├úo lan├ºa exce├º├úo.
+    /// Se uma falha ocorrer uma cole├º├úo vazia ser├í retornada.
+    /// </summary>
+    /// <typeparam name="T">Tipo do resultado desejado.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// </returns>
+    public static T[] TrySelectGraphArray<T>(this Sql sql)
+      where T : class
+    {
+      try { return SelectGraphArray<T>(sql); }
+      catch { return new T[0]; }
+    }
+
+    /// <summary>
+    /// Obt├⌐m um Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T">Tipo do resultado desejado.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// </returns>
+    public static T[] SelectGraphArray<T>(this Sql sql)
+      where T : class
+    {
+      var cn = SequelConnectionScope.GetScopedConnection();
+      var result = new Result<T>(
+        () => Commander.CreateCommand(cn, sql),
+        Graph.CreateGraph<T>
+      );
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    /// <summary>
+    /// Obt├⌐m um Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    ///
+    /// Como todo m├⌐todo Try* este m├⌐todo n├úo lan├ºa exce├º├úo.
+    /// Se uma falha ocorrer uma cole├º├úo vazia ser├í retornada.
+    /// </summary>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <param name="type">Tipo do resultado desejado.</param>
+    /// <returns>
+    /// Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// </returns>
+    public static object[] TrySelectGraphArray(this Sql sql, Type type)
+    {
+      try { return SelectGraphArray(sql, type); }
+      catch { return new object[0]; }
+    }
+
+    /// <summary>
+    /// Obt├⌐m um Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <param name="type">Tipo do resultado desejado.</param>
+    /// <returns>
+    /// Array contendo objetos constru├¡dos pela correspond├¬ncia de nomes
+    /// entre os campos do registro e as propriedades declaradas no objeto.
+    /// </returns>
+    public static object[] SelectGraphArray(this Sql sql, Type type)
+    {
+      var cn = SequelConnectionScope.GetScopedConnection();
+      var result = new Result<object>(
+        () => Commander.CreateCommand(cn, sql),
+        reader => Graph.CreateGraph(reader, type)
+      );
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    #endregion
+
     #region SelectOne As Graph
 
     /// <summary>
@@ -432,6 +532,7 @@ namespace Toolset.Sequel
     /// Se não houverem registros nulo será retornado.
     /// </returns>
     public static T TrySelectOneGraph<T>(this Sql sql)
+      where T : class
     {
       try { return (T)SelectOneGraph(sql, typeof(T)); }
       catch { return default(T); }
@@ -450,6 +551,7 @@ namespace Toolset.Sequel
     /// Se não houverem registros nulo será retornado.
     /// </returns>
     public static T SelectOneGraph<T>(this Sql sql)
+      where T : class
     {
       return (T)SelectOneGraph(sql, typeof(T));
     }
@@ -526,7 +628,7 @@ namespace Toolset.Sequel
     /// </returns>
     public static
       TupleResult<T1, T2>
-      TrySelectArray<T1, T2>(this Sql sql)
+      TrySelect<T1, T2>(this Sql sql)
     {
       try { return Select<T1, T2>(sql); }
       catch { return TupleResult<T1, T2>.Empty; }
@@ -577,7 +679,7 @@ namespace Toolset.Sequel
     /// </returns>
     public static
       TupleResult<T1, T2, T3>
-      TrySelectArray<T1, T2, T3>(this Sql sql)
+      TrySelect<T1, T2, T3>(this Sql sql)
     {
       try { return Select<T1, T2, T3>(sql); }
       catch { return TupleResult<T1, T2, T3>.Empty; }
@@ -630,7 +732,7 @@ namespace Toolset.Sequel
     /// </returns>
     public static
       TupleResult<T1, T2, T3, T4>
-      TrySelectArray<T1, T2, T3, T4>(this Sql sql)
+      TrySelect<T1, T2, T3, T4>(this Sql sql)
     {
       try { return Select<T1, T2, T3, T4>(sql); }
       catch { return TupleResult<T1, T2, T3, T4>.Empty; }
@@ -685,7 +787,7 @@ namespace Toolset.Sequel
     /// </returns>
     public static
       TupleResult<T1, T2, T3, T4, T5>
-      TrySelectArray<T1, T2, T3, T4, T5>(this Sql sql)
+      TrySelect<T1, T2, T3, T4, T5>(this Sql sql)
     {
       try { return Select<T1, T2, T3, T4, T5>(sql); }
       catch { return TupleResult<T1, T2, T3, T4, T5>.Empty; }
@@ -742,7 +844,7 @@ namespace Toolset.Sequel
     /// </returns>
     public static
       TupleResult<T1, T2, T3, T4, T5, T6>
-      TrySelectArray<T1, T2, T3, T4, T5, T6>(this Sql sql)
+      TrySelect<T1, T2, T3, T4, T5, T6>(this Sql sql)
     {
       try { return Select<T1, T2, T3, T4, T5, T6>(sql); }
       catch { return TupleResult<T1, T2, T3, T4, T5, T6>.Empty; }
@@ -801,7 +903,7 @@ namespace Toolset.Sequel
     /// </returns>
     public static
       TupleResult<T1, T2, T3, T4, T5, T6, T7>
-      TrySelectArray<T1, T2, T3, T4, T5, T6, T7>(this Sql sql)
+      TrySelect<T1, T2, T3, T4, T5, T6, T7>(this Sql sql)
     {
       try { return Select<T1, T2, T3, T4, T5, T6, T7>(sql); }
       catch { return TupleResult<T1, T2, T3, T4, T5, T6, T7>.Empty; }
@@ -834,6 +936,358 @@ namespace Toolset.Sequel
       var cn = sql.Connection;
       var result = new TupleResult<T1, T2, T3, T4, T5, T6, T7>(() => Commander.CreateCommand(cn, sql));
       return result;
+    }
+
+    #endregion
+
+    #region Select As Array de Tuple
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// 
+    /// Como todo método Try* este método não lança exceção.
+    /// Se uma falha ocorrer uma coleção vazia será retornada.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2>[]
+      TrySelectArray<T1, T2>(this Sql sql)
+    {
+      try { return SelectArray<T1, T2>(sql); }
+      catch { return new Tuple<T1, T2>[0]; }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2>[]
+      SelectArray<T1, T2>(this Sql sql)
+    {
+      var cn = sql.Connection;
+      var result = new TupleResult<T1, T2>(() => Commander.CreateCommand(cn, sql));
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// 
+    /// Como todo método Try* este método não lança exceção.
+    /// Se uma falha ocorrer uma coleção vazia será retornada.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3>[]
+      TrySelectArray<T1, T2, T3>(this Sql sql)
+    {
+      try { return SelectArray<T1, T2, T3>(sql); }
+      catch { return new Tuple<T1, T2, T3>[0]; }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3>[]
+      SelectArray<T1, T2, T3>(this Sql sql)
+    {
+      var cn = sql.Connection;
+      var result = new TupleResult<T1, T2, T3>(() => Commander.CreateCommand(cn, sql));
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// 
+    /// Como todo método Try* este método não lança exceção.
+    /// Se uma falha ocorrer uma coleção vazia será retornada.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4>[]
+      TrySelectArray<T1, T2, T3, T4>(this Sql sql)
+    {
+      try { return SelectArray<T1, T2, T3, T4>(sql); }
+      catch { return new Tuple<T1, T2, T3, T4>[0]; }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4>[]
+      SelectArray<T1, T2, T3, T4>(this Sql sql)
+    {
+      var cn = sql.Connection;
+      var result = new TupleResult<T1, T2, T3, T4>(() => Commander.CreateCommand(cn, sql));
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// 
+    /// Como todo método Try* este método não lança exceção.
+    /// Se uma falha ocorrer uma coleção vazia será retornada.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <typeparam name="T5">Tipo da quinta coluna, retorna na tupla como Item5.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4, T5>[]
+      TrySelectArray<T1, T2, T3, T4, T5>(this Sql sql)
+    {
+      try { return SelectArray<T1, T2, T3, T4, T5>(sql); }
+      catch { return new Tuple<T1, T2, T3, T4, T5>[0]; }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <typeparam name="T5">Tipo da quinta coluna, retorna na tupla como Item5.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4, T5>[]
+      SelectArray<T1, T2, T3, T4, T5>(this Sql sql)
+    {
+      var cn = sql.Connection;
+      var result = new TupleResult<T1, T2, T3, T4, T5>(() => Commander.CreateCommand(cn, sql));
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// 
+    /// Como todo método Try* este método não lança exceção.
+    /// Se uma falha ocorrer uma coleção vazia será retornada.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <typeparam name="T5">Tipo da quinta coluna, retorna na tupla como Item5.</typeparam>
+    /// <typeparam name="T6">Tipo da sexta coluna, retorna na tupla como Item6.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4, T5, T6>[]
+      TrySelectArray<T1, T2, T3, T4, T5, T6>(this Sql sql)
+    {
+      try { return SelectArray<T1, T2, T3, T4, T5, T6>(sql); }
+      catch { return new Tuple<T1, T2, T3, T4, T5, T6>[0]; }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <typeparam name="T5">Tipo da quinta coluna, retorna na tupla como Item5.</typeparam>
+    /// <typeparam name="T6">Tipo da sexta coluna, retorna na tupla como Item6.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4, T5, T6>[]
+      SelectArray<T1, T2, T3, T4, T5, T6>(this Sql sql)
+    {
+      var cn = sql.Connection;
+      var result = new TupleResult<T1, T2, T3, T4, T5, T6>(() => Commander.CreateCommand(cn, sql));
+      using (result)
+      {
+        return result.ToArray();
+      }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// 
+    /// Como todo método Try* este método não lança exceção.
+    /// Se uma falha ocorrer uma coleção vazia será retornada.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <typeparam name="T5">Tipo da quinta coluna, retorna na tupla como Item5.</typeparam>
+    /// <typeparam name="T6">Tipo da sexta coluna, retorna na tupla como Item6.</typeparam>
+    /// <typeparam name="T7">Tipo da sétima coluna, retorna na tupla como Item7.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4, T5, T6, T7>[]
+      TrySelectArray<T1, T2, T3, T4, T5, T6, T7>(this Sql sql)
+    {
+      try { return SelectArray<T1, T2, T3, T4, T5, T6, T7>(sql); }
+      catch { return new Tuple<T1, T2, T3, T4, T5, T6, T7>[0]; }
+    }
+
+    /// <summary>
+    /// Obtém um IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </summary>
+    /// <typeparam name="T1">Tipo da primeira coluna, retorna na tupla como Item1.</typeparam>
+    /// <typeparam name="T2">Tipo da segunda coluna, retorna na tupla como Item2.</typeparam>
+    /// <typeparam name="T3">Tipo da terceira coluna, retorna na tupla como Item3.</typeparam>
+    /// <typeparam name="T4">Tipo da quarta coluna, retorna na tupla como Item4.</typeparam>
+    /// <typeparam name="T5">Tipo da quinta coluna, retorna na tupla como Item5.</typeparam>
+    /// <typeparam name="T6">Tipo da sexta coluna, retorna na tupla como Item6.</typeparam>
+    /// <typeparam name="T7">Tipo da sétima coluna, retorna na tupla como Item7.</typeparam>
+    /// <param name="sql">A SQL a ser executada.</param>
+    /// <returns>
+    /// O IResult contendo em cada registro uma tupla que mapeia
+    /// os campos para os tipos indicados.
+    /// Todo objeto IResult deve ser fechado depois do uso.
+    /// Prefira encapsular o uso do IResult em um bloco using.
+    /// </returns>
+    public static
+      Tuple<T1, T2, T3, T4, T5, T6, T7>[]
+      SelectArray<T1, T2, T3, T4, T5, T6, T7>(this Sql sql)
+    {
+      var cn = sql.Connection;
+      var result = new TupleResult<T1, T2, T3, T4, T5, T6, T7>(() => Commander.CreateCommand(cn, sql));
+      using (result)
+      {
+        return result.ToArray();
+      }
     }
 
     #endregion
@@ -1287,6 +1741,403 @@ namespace Toolset.Sequel
           yield return convertedValue;
         }
       } while (reader.NextResult());
+    }
+
+    #endregion
+
+    #region Select Anonymous
+
+    public static IResult<TItem> TrySelect<T1, TItem>(this Sql sql,
+      Func<T1, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, TItem>(this Sql sql,
+      Func<T1, TItem> builder)
+    {
+      var reader = sql.Select<T1>();
+      return new ResultWrapper<
+        IResult<T1>
+      , T1
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x)
+      );
+    }
+
+    public static IResult<TItem> TrySelect<T1, T2, TItem>(this Sql sql,
+      Func<T1, T2, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, T2, TItem>(this Sql sql,
+      Func<T1, T2, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2>();
+      return new ResultWrapper<
+        TupleResult<T1, T2>
+      , Tuple<T1, T2>
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x.Item1, x.Item2)
+      );
+    }
+
+    public static IResult<TItem> TrySelect<T1, T2, T3, TItem>(this Sql sql,
+      Func<T1, T2, T3, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, T2, T3, TItem>(this Sql sql,
+      Func<T1, T2, T3, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3>();
+      return new ResultWrapper<
+        TupleResult<T1, T2, T3>
+      , Tuple<T1, T2, T3>
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x.Item1, x.Item2, x.Item3)
+      );
+    }
+
+    public static IResult<TItem> TrySelect<T1, T2, T3, T4, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, T2, T3, T4, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4>();
+      return new ResultWrapper<
+        TupleResult<T1, T2, T3, T4>
+      , Tuple<T1, T2, T3, T4>
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4)
+      );
+    }
+
+    public static IResult<TItem> TrySelect<T1, T2, T3, T4, T5, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, T2, T3, T4, T5, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4, T5>();
+      return new ResultWrapper<
+        TupleResult<T1, T2, T3, T4, T5>
+      , Tuple<T1, T2, T3, T4, T5>
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5)
+      );
+    }
+
+    public static IResult<TItem> TrySelect<T1, T2, T3, T4, T5, T6, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, T2, T3, T4, T5, T6, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4, T5, T6>();
+      return new ResultWrapper<
+        TupleResult<T1, T2, T3, T4, T5, T6>
+      , Tuple<T1, T2, T3, T4, T5, T6>
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6)
+      );
+    }
+
+    public static IResult<TItem> TrySelect<T1, T2, T3, T4, T5, T6, T7, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, T7, TItem> builder)
+    {
+      try { return Select(sql, builder); }
+      catch { return Result<TItem>.Empty; }
+    }
+
+    public static IResult<TItem> Select<T1, T2, T3, T4, T5, T6, T7, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, T7, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4, T5, T6, T7>();
+      return new ResultWrapper<
+        TupleResult<T1, T2, T3, T4, T5, T6, T7>
+      , Tuple<T1, T2, T3, T4, T5, T6, T7>
+      , TItem>
+      (
+        reader,
+        x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7)
+      );
+    }
+
+    #endregion
+
+    #region SelectArray Anonymous
+
+    public static TItem[] TrySelectArray<T1, TItem>(this Sql sql,
+      Func<T1, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, TItem>(this Sql sql,
+      Func<T1, TItem> builder)
+    {
+      var reader = sql.Select<T1>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x))
+          .ToArray();
+        return array;
+      }
+    }
+
+    public static TItem[] TrySelectArray<T1, T2, TItem>(this Sql sql,
+      Func<T1, T2, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, T2, TItem>(this Sql sql,
+      Func<T1, T2, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x.Item1, x.Item2))
+          .ToArray();
+        return array;
+      }
+    }
+
+    public static TItem[] TrySelectArray<T1, T2, T3, TItem>(this Sql sql,
+      Func<T1, T2, T3, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, T2, T3, TItem>(this Sql sql,
+      Func<T1, T2, T3, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x.Item1, x.Item2, x.Item3))
+          .ToArray();
+        return array;
+      }
+    }
+
+    public static TItem[] TrySelectArray<T1, T2, T3, T4, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, T2, T3, T4, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4))
+          .ToArray();
+        return array;
+      }
+    }
+
+    public static TItem[] TrySelectArray<T1, T2, T3, T4, T5, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, T2, T3, T4, T5, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4, T5>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5))
+          .ToArray();
+        return array;
+      }
+    }
+
+    public static TItem[] TrySelectArray<T1, T2, T3, T4, T5, T6, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, T2, T3, T4, T5, T6, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4, T5, T6>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6))
+          .ToArray();
+        return array;
+      }
+    }
+
+    public static TItem[] TrySelectArray<T1, T2, T3, T4, T5, T6, T7, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, T7, TItem> builder)
+    {
+      try { return SelectArray(sql, builder); }
+      catch { return new TItem[0]; }
+    }
+
+    public static TItem[] SelectArray<T1, T2, T3, T4, T5, T6, T7, TItem>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, T7, TItem> builder)
+    {
+      var reader = sql.Select<T1, T2, T3, T4, T5, T6, T7>();
+      using (reader)
+      {
+        var array = reader
+          .Select(x => builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7))
+          .ToArray();
+        return array;
+      }
+    }
+
+    #endregion
+
+    #region SelectOne Anonymous
+
+    public static TResult TrySelectOne<T1, TResult>(this Sql sql,
+      Func<T1, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, TResult>(this Sql sql,
+      Func<T1, TResult> builder)
+    {
+      var x = sql.SelectOne<T1>();
+      return builder.Invoke(x);
+    }
+
+    public static TResult TrySelectOne<T1, T2, TResult>(this Sql sql,
+      Func<T1, T2, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, T2, TResult>(this Sql sql,
+      Func<T1, T2, TResult> builder)
+    {
+      var x = sql.SelectOne<T1, T2>();
+      return builder.Invoke(x.Item1, x.Item2);
+    }
+
+    public static TResult TrySelectOne<T1, T2, T3, TResult>(this Sql sql,
+      Func<T1, T2, T3, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, T2, T3, TResult>(this Sql sql,
+      Func<T1, T2, T3, TResult> builder)
+    {
+      var x = sql.SelectOne<T1, T2, T3>();
+      return builder.Invoke(x.Item1, x.Item2, x.Item3);
+    }
+
+    public static TResult TrySelectOne<T1, T2, T3, T4, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, T2, T3, T4, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, TResult> builder)
+    {
+      var x = sql.SelectOne<T1, T2, T3, T4>();
+      return builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4);
+    }
+
+    public static TResult TrySelectOne<T1, T2, T3, T4, T5, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, T2, T3, T4, T5, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, TResult> builder)
+    {
+      var x = sql.SelectOne<T1, T2, T3, T4, T5>();
+      return builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+    }
+
+    public static TResult TrySelectOne<T1, T2, T3, T4, T5, T6, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, T2, T3, T4, T5, T6, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, TResult> builder)
+    {
+      var x = sql.SelectOne<T1, T2, T3, T4, T5, T6>();
+      return builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+    }
+
+    public static TResult TrySelectOne<T1, T2, T3, T4, T5, T6, T7, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, T7, TResult> builder)
+    {
+      try { return SelectOne(sql, builder); }
+      catch { return default(TResult); }
+    }
+
+    public static TResult SelectOne<T1, T2, T3, T4, T5, T6, T7, TResult>(this Sql sql,
+      Func<T1, T2, T3, T4, T5, T6, T7, TResult> builder)
+    {
+      var x = sql.SelectOne<T1, T2, T3, T4, T5, T6, T7>();
+      return builder.Invoke(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
     }
 
     #endregion
