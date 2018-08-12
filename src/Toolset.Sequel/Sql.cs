@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Toolset.Collections;
+using Toolset.Reflection;
 
 namespace Toolset.Sequel
 {
-  public class Sql : ICloneable
+  public class Sql : IParameterMap, ICloneable
   {
     private readonly SequelScope scope;
 
@@ -22,36 +24,52 @@ namespace Toolset.Sequel
       this.scope = sequelScope;
     }
 
-    internal DbConnection Connection
-      => scope?.Connection ?? SequelConnectionScope.GetScopedConnection();
+    internal DbConnection Connection => scope?.Connection ?? SequelConnectionScope.GetScopedConnection();
 
     public string Text { get; set; }
 
-    internal HashMap Parameters
-      => _parameters ?? (_parameters = new HashMap ());
+    internal HashMap Parameters => _parameters ?? (_parameters = new HashMap());
 
-    public int ParameterCount
-      => Parameters.Count;
+    IDictionary<string, object> IParameterMap.Parameters => Parameters;
 
-    public ICollection<string> ParameterNames
-      => Parameters.Keys;
+    public int ParameterCount => Parameters.Count;
 
-    public object this[string parameterName]
+    public ICollection<string> ParameterNames => Parameters.Keys;
+
+    public object this[string name]
     {
       get
       {
-        parameterName =
-          Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
-          ?? parameterName;
-        var value = Parameters[parameterName];
+        name =
+          Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(name))
+          ?? name;
+        var value = Parameters[name];
         return value;
       }
       set
       {
-        parameterName =
-          Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
-          ?? parameterName;
-        Parameters[parameterName] = value as Any ?? new Any(value);
+        name = Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(name)) ?? name;
+
+        if (!value.IsSimpleValue())
+        {
+          if (value.IsEnumerable())
+          {
+            // Lista de objetos devem ser remapeados como lista de dicionarios
+            //
+            var list = ((IEnumerable)value).Cast<object>();
+            var hasGraph = list.Any(x => x.IsGraph());
+            if (hasGraph)
+            {
+              value = list.Select(item => item.IsGraph() ? item.UnwrapGraph() : item).ToArray();
+            }
+          }
+          else if (value.IsGraph())
+          {
+            value = value.UnwrapGraph();
+          }
+        }
+
+        Parameters[name] = value.IsSimpleValue() ? value : (value as Any ?? new Any(value));
       }
     }
 
@@ -68,7 +86,9 @@ namespace Toolset.Sequel
     }
 
     public override int GetHashCode()
-      => (Text != null) ? Text.GetHashCode() : string.Empty.GetHashCode();
+    {
+      return (Text != null) ? Text.GetHashCode() : string.Empty.GetHashCode();
+    }
 
     public override bool Equals(object obj)
     {
@@ -86,8 +106,7 @@ namespace Toolset.Sequel
       return false;
     }
 
-    public override string ToString()
-      => Text;
+    public override string ToString() => Text;
 
     public Sql Clone()
     {
@@ -101,10 +120,8 @@ namespace Toolset.Sequel
       return clone;
     }
 
-    object ICloneable.Clone()
-      => this.Clone();
+    object ICloneable.Clone() => this.Clone();
 
-    public static implicit operator string(Sql sql)
-      => sql.Text;
+    public static implicit operator string(Sql sql) => sql.Text;
   }
 }

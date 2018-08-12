@@ -37,5 +37,17 @@ namespace Toolset.Collections
     {
       return dictionary.ContainsKey(key) ? dictionary[key] : defaultValue;
     }
+
+    /// <summary>
+    /// Acrescenta vários itens ao mapa.
+    /// </summary>
+    /// <typeparam name="TKey">O tipo da chave.</typeparam>
+    /// <typeparam name="TValue">O tipo do valor.</typeparam>
+    /// <param name="dictionary">O mapa a ser modificado.</param>
+    /// <param name="items">Os itens a serem inseridos.</param>
+    public static void AddMany<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IEnumerable<KeyValuePair<TKey, TValue>> items)
+    {
+      items.ForEach(item => dictionary[item.Key] = item.Value);
+    }
   }
 }

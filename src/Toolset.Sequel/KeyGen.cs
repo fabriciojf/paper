@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Toolset.Sequel
@@ -18,16 +19,49 @@ namespace Toolset.Sequel
       /// <summary>
       /// O nome do escopo corrente.
       /// </summary>
-      private char current = 'a';
+      private readonly List<char> sequence = new List<char> { 'a' };
+
+      public string Current => new string(sequence.ToArray());
 
       /// <summary>
       /// Aprofunda o escopo produzindo um novo caracter único de identificação de escopo.
       /// </summary>
-      public char Deepen() => current++;
+      public Deeper Deepen()
+      {
+        var iterator = Enumerable.Range(0, sequence.Count).GetEnumerator();
+        for (int currIndex = sequence.Count - 1; currIndex >= 0; currIndex--)
+        {
+          var prevIndex = currIndex - 1;
+
+          var curr = sequence[currIndex];
+          var prev = (prevIndex >= 0) ? sequence[prevIndex] : (char)0;
+
+          if (curr < 'z')
+          {
+            sequence[currIndex]++;
+            break;
+          }
+
+          if (prev > 0 && prev < 'z')
+          {
+            sequence[prevIndex]++;
+            sequence[currIndex] = 'a';
+            break;
+          }
+
+          if ((currIndex + 1) == sequence.Count)
+          {
+            sequence.Clear();
+            sequence.AddRange(Enumerable.Range(0, currIndex + 2).Select(x => 'a'));
+            break;
+          }
+        }
+        return this;
+      }
     }
 
     private readonly Deeper deeper;
-    private char scope;
+    private string scope;
     private int index;
 
     public KeyGen()
@@ -38,7 +72,7 @@ namespace Toolset.Sequel
     private KeyGen(Deeper deeper)
     {
       this.deeper = deeper;
-      this.scope = deeper.Deepen();
+      this.scope = deeper.Current;
     }
 
     /// <summary>
@@ -49,7 +83,7 @@ namespace Toolset.Sequel
     /// <returns>O KeyGen derivado.</returns>
     public KeyGen Derive()
     {
-      return new KeyGen(deeper);
+      return new KeyGen(deeper.Deepen());
     }
 
     /// <summary>

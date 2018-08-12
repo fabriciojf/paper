@@ -493,7 +493,7 @@ namespace Toolset.Sequel
             sentences.Add(sentence);
           }
 
-          replacement = $" ({string.Join(" or ", sentences)})";
+          replacement = $" ({string.Join(" or ", sentences.Distinct())})";
         }
 
         text = text.Stuff(match.Index, match.Length, $" {replacement}");

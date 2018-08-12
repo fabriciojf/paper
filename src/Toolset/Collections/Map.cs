@@ -5,93 +5,127 @@ using System.Text;
 
 namespace Toolset.Collections
 {
-  public class Map<TKey, TValue> : IDictionary<TKey, TValue>
+  public class Map<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
     where TValue : class
   {
-    private readonly Dictionary<TKey, TValue> items;
+    private readonly Dictionary<TKey, TValue> map;
 
     public Map()
     {
-      items = new Dictionary<TKey, TValue>();
+      map = new Dictionary<TKey, TValue>();
     }
 
     public Map(int capacity)
     {
-      items = new Dictionary<TKey, TValue>(capacity);
+      map = new Dictionary<TKey, TValue>(capacity);
     }
 
     public Map(IEnumerable<KeyValuePair<TKey, TValue>> entries)
     {
-      items = new Dictionary<TKey, TValue>(entries);
+      map = new Dictionary<TKey, TValue>(entries);
     }
 
     public TValue this[TKey key]
     {
-      get => items.ContainsKey(key) ? items[key] : null;
-      set => items[key] = value;
+      get => map.ContainsKey(key) ? map[key] : null;
+      set => map[key] = value;
     }
 
-    public ICollection<TKey> Keys => ((IDictionary<TKey, TValue>)items).Keys;
+    public int Count => map.Count;
 
-    public ICollection<TValue> Values => ((IDictionary<TKey, TValue>)items).Values;
+    public ICollection<TKey> Keys => map.Keys;
 
-    public int Count => items.Count;
-
-    public bool IsReadOnly => ((IDictionary<TKey, TValue>)items).IsReadOnly;
+    public ICollection<TValue> Values => map.Values;
 
     public void Add(TKey key, TValue value)
     {
-      items.Add(key, value);
+      map[key] = value;
     }
 
     public void Add(KeyValuePair<TKey, TValue> item)
     {
-      ((IDictionary<TKey, TValue>)items).Add(item);
+      map[item.Key] = item.Value;
+    }
+
+    public void AddMany(IEnumerable<KeyValuePair<TKey, TValue>> items)
+    {
+      items.ForEach(item => map[item.Key] = item.Value);
     }
 
     public void Clear()
     {
-      items.Clear();
+      map.Clear();
     }
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
     {
-      return ((IDictionary<TKey, TValue>)items).Contains(item);
+      return ((IDictionary<TKey, TValue>)map).Contains(item);
     }
 
     public bool ContainsKey(TKey key)
     {
-      return items.ContainsKey(key);
+      return map.ContainsKey(key);
     }
 
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-      ((IDictionary<TKey, TValue>)items).CopyTo(array, arrayIndex);
+      ((IDictionary<TKey, TValue>)map).CopyTo(array, arrayIndex);
     }
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
-      return ((IDictionary<TKey, TValue>)items).GetEnumerator();
+      return ((IDictionary<TKey, TValue>)map).GetEnumerator();
     }
 
     public bool Remove(TKey key)
     {
-      return items.Remove(key);
+      return map.Remove(key);
     }
 
     public bool Remove(KeyValuePair<TKey, TValue> item)
     {
-      return ((IDictionary<TKey, TValue>)items).Remove(item);
+      return ((IDictionary<TKey, TValue>)map).Remove(item);
     }
 
     public bool TryGetValue(TKey key, out TValue value)
     {
-      return items.TryGetValue(key, out value);
+      return map.TryGetValue(key, out value);
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
+    public bool IsReadOnly => ((IDictionary)map).IsReadOnly;
+
+    #region Implementação explícita
+
+    object IDictionary.this[object key]
     {
-      return ((IDictionary<TKey, TValue>)items).GetEnumerator();
+      get => ((IDictionary)this)[key];
+      set => ((IDictionary)this)[key] = value;
     }
+
+    bool IDictionary.IsFixedSize => ((IDictionary)map).IsFixedSize;
+
+    ICollection IDictionary.Keys => ((IDictionary)map).Keys;
+
+    ICollection IDictionary.Values => ((IDictionary)map).Values;
+
+    bool ICollection.IsSynchronized => ((IDictionary)map).IsSynchronized;
+
+    object ICollection.SyncRoot => ((IDictionary)map).SyncRoot;
+
+    void IDictionary.Add(object key, object value) => ((IDictionary)map).Add(key, value);
+
+    void IDictionary.Clear() => ((IDictionary)map).Clear();
+
+    bool IDictionary.Contains(object key) => ((IDictionary)map).Contains(key);
+
+    void ICollection.CopyTo(Array array, int index) => ((IDictionary)map).CopyTo(array, index);
+
+    IEnumerator IEnumerable.GetEnumerator() => ((IDictionary)map).GetEnumerator();
+
+    IDictionaryEnumerator IDictionary.GetEnumerator() => ((IDictionary)map).GetEnumerator();
+
+    void IDictionary.Remove(object key) => ((IDictionary)map).Remove(key);
+
+    #endregion
   }
 }

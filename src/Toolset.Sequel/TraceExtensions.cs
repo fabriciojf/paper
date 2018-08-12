@@ -43,7 +43,7 @@ namespace Toolset.Sequel
         else if (any?.IsList == true)
         {
           var item = any.List.FirstOrDefault();
-          var isMany = (item is IEnumerable) && !(item is string);
+          var isMany = item.IsEnumerable();
           var isBinary = item is byte;
           var isEmpty = !any.List.Any();
 
