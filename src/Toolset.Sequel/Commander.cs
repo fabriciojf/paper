@@ -39,7 +39,7 @@ namespace Toolset.Sequel
 
       if (SequelSettings.TraceQueries)
       {
-        var message = "---\n" + sql.Text.Beautify() + "\n---\n";
+        var message = "---\n" + sql.Beautify() + "\n---\n";
         System.Diagnostics.Trace.WriteLine(message);
       }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Toolset.Collections;
 
 namespace Toolset.Sequel
 {
@@ -10,6 +11,18 @@ namespace Toolset.Sequel
   /// </summary>
   public static class FormatExtensions
   {
+    /// <summary>
+    /// Remove a formatação e a identação da SQL.
+    /// </summary>
+    /// <param name="sql">A SQL a ser processada.</param>
+    /// <returns>A SQL indentada.</returns>
+    public static Sql Uglify(this Sql sql)
+    {
+      var lines = sql.Text.Split('\n').NonWhitespace().Select(x => x.Trim());
+      sql.Text = string.Join(" ", lines).Trim();
+      return sql;
+    }
+    
     /// <summary>
     /// Formata e indenta uma SQL.
     /// A SQL deve ser escrita na conveção do Sequel para um
@@ -26,27 +39,8 @@ namespace Toolset.Sequel
     /// <returns>A SQL indentada.</returns>
     public static Sql Beautify(this Sql sql)
     {
-      var text = Beautify(sql.ToString());
-      sql.Text = text;
-      return sql;
-    }
+      var lines = sql.Text.Split('\n');
 
-    /// <summary>
-    /// Formata e indenta uma string.
-    /// A string deve ser escrita na conveção do Sequel para um
-    /// resultado otimizado:
-    /// 
-    ///   var sql =
-    ///     @"select *
-    ///         from tabela
-    ///        where campo = valor"
-    ///       .Beautify();
-    /// </summary>
-    /// <param name="sql">A SQL a ser processada.</param>
-    /// <returns>A SQL indentada.</returns>
-    public static string Beautify(this string sql)
-    {
-      var lines = sql.Split('\n');
       var indentSize = (
         from line in lines.Skip(1)
         where !string.IsNullOrWhiteSpace(line)
@@ -62,8 +56,8 @@ namespace Toolset.Sequel
             : line
         );
 
-      var text = string.Join("\n", indentedLines).Trim();
-      return text;
+      sql.Text = string.Join("\n", indentedLines).Trim();
+      return sql;
     }
   }
 }

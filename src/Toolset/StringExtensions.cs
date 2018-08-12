@@ -292,6 +292,20 @@ namespace Toolset
       return System.Text.RegularExpressions.Regex.Replace(text, regex, replacement, flags);
     }
 
+    /// <summary>
+    /// Substitui um invervalo de caracteres pelo texto indicado.
+    /// </summary>
+    /// <param name="text">O texto a ser modificado.</param>
+    /// <param name="index">A posição inicial para mudança.</param>
+    /// <param name="length">A quantidade de caracteres no invervalo.</param>
+    /// <param name="replacement">O texto que será posto no lugar do invervalo.</param>
+    /// <returns>O texto modificado.</returns>
+    public static string Stuff(this string text, int index, int length, string replacement)
+    {
+      text = text.Substring(0, index) + replacement + text.Substring(index + length);
+      return text;
+    }
+
     #endregion
 
     #region Comparisons

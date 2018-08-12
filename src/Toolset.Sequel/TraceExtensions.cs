@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Toolset.Sequel
       if (SequelSettings.QueryTemplateEnabled)
         sql.ApplyTemplate();
 
-      var text = sql.ToString().Beautify();
+      var text = sql.Beautify().ToString();
       var lines = text.Split('\n', '\r').Where(x => !string.IsNullOrWhiteSpace(x));
 
       var builder = new StringBuilder();
@@ -30,7 +31,7 @@ namespace Toolset.Sequel
       foreach (var parameter in sql.ParameterNames)
       {
         builder.Append("    ");
-        builder.Append(parameter);
+        builder.Append(string.IsNullOrEmpty(parameter) ? "{many}" : parameter);
         builder.Append(" := ");
 
         var value = sql[parameter];
@@ -39,10 +40,30 @@ namespace Toolset.Sequel
         {
           builder.AppendLine($"{any.Range}");
         }
-        else if(any?.IsList == true)
+        else if (any?.IsList == true)
         {
-          value = Commander.CreateSqlCompatibleValue(value);
-          builder.AppendLine($"{{ {value} }}");
+          var item = any.List.FirstOrDefault();
+          var isMany = (item is IEnumerable) && !(item is string);
+          var isBinary = item is byte;
+          var isEmpty = !any.List.Any();
+
+          if (isEmpty)
+          {
+            builder.AppendLine("null");
+          }
+          else if (isMany)
+          {
+            builder.AppendLine("{ ... }");
+          }
+          else if (isBinary)
+          {
+            builder.AppendLine("binary");
+          }
+          else
+          {
+            value = Commander.CreateSqlCompatibleValue(value);
+            builder.AppendLine($"{{ {value} }}");
+          }
         }
         else
         {

@@ -11,9 +11,7 @@ namespace Toolset.Sequel
   {
     private readonly SequelScope scope;
 
-    private KeyGen _keyGen;
-    
-    private Map<string, object> parameters;
+    private HashMap _parameters;
 
     public Sql()
     {
@@ -27,55 +25,47 @@ namespace Toolset.Sequel
     internal DbConnection Connection
       => scope?.Connection ?? SequelConnectionScope.GetScopedConnection();
 
-    /// <summary>
-    /// Gera uma chave única para ser adicionada à nome de parâmetros
-    /// criados dinamicamente.
-    /// </summary>
-    /// <returns>A próxima chave para diferenciação de parâmetros dinâsmicos.</returns>
-    internal KeyGen KeyGen
-      => _keyGen ?? (_keyGen = new Toolset.Sequel.KeyGen());
-
     public string Text { get; set; }
 
+    internal HashMap Parameters
+      => _parameters ?? (_parameters = new HashMap ());
+
     public int ParameterCount
-      => ParameterMap.Count;
+      => Parameters.Count;
 
     public ICollection<string> ParameterNames
-      => ParameterMap.Keys;
+      => Parameters.Keys;
 
     public object this[string parameterName]
     {
       get
       {
         parameterName =
-          ParameterMap.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
+          Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
           ?? parameterName;
-        var value = ParameterMap[parameterName];
+        var value = Parameters[parameterName];
         return value;
       }
       set
       {
         parameterName =
-          ParameterMap.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
+          Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(parameterName))
           ?? parameterName;
-        ParameterMap[parameterName] = value as Any ?? new Any(value);
+        Parameters[parameterName] = value as Any ?? new Any(value);
       }
     }
 
     public Sql Unset(string parameterName)
     {
-      ParameterMap.Remove(parameterName);
+      Parameters.Remove(parameterName);
       return this;
     }
 
     public Sql UnsetAll()
     {
-      ParameterMap.Clear();
+      Parameters.Clear();
       return this;
     }
-
-    internal Map<string, object> ParameterMap
-      => parameters ?? (parameters = new Map<string, object>());
 
     public override int GetHashCode()
       => (Text != null) ? Text.GetHashCode() : string.Empty.GetHashCode();
@@ -103,10 +93,10 @@ namespace Toolset.Sequel
     {
       var clone = new Sql();
       clone.Text = this.Text;
-      foreach (var key in this.ParameterMap.Keys)
+      foreach (var key in this.Parameters.Keys)
       {
-        var value = this.ParameterMap[key];
-        clone.ParameterMap.Add(key, value);
+        var value = this.Parameters[key];
+        clone.Parameters.Add(key, value);
       }
       return clone;
     }
