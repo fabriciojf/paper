@@ -6,7 +6,6 @@ using System.Text;
 namespace Toolset.Collections
 {
   public class Map<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary
-    where TValue : class
   {
     private readonly Dictionary<TKey, TValue> map;
 
@@ -27,7 +26,7 @@ namespace Toolset.Collections
 
     public TValue this[TKey key]
     {
-      get => map.ContainsKey(key) ? map[key] : null;
+      get => map.ContainsKey(key) ? map[key] : default(TValue);
       set => map[key] = value;
     }
 
