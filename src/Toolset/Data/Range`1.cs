@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Toolset.Structures
+namespace Toolset.Data
 {
   public struct Range<T>
     where T : struct

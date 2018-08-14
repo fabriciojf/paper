@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Toolset;
+using Toolset.Data;
+using Toolset.Reflection;
 
 namespace Paper.Media
 {
@@ -75,7 +77,7 @@ namespace Paper.Media
 
       var type = (typeOrInstance is Type) ? (Type)typeOrInstance : typeOrInstance.GetType();
 
-      type = Any.GetUnderlyingType(type) ?? type;
+      type = Var.GetUnderlyingType(type) ?? type;
       type = Nullable.GetUnderlyingType(type) ?? type;
 
       var isList = false;

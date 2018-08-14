@@ -13,6 +13,7 @@ using Paper.Media.Design;
 using Paper.Media.Design.Mappings;
 using Paper.Media.Design.Papers;
 using Toolset;
+using Toolset.Data;
 
 namespace Paper.Host.Server.Demo
 {
@@ -31,9 +32,9 @@ namespace Paper.Host.Server.Demo
 
   public class PostFilter : IFilter
   {
-    public Any<int?> UserId { get; set; }
+    public Var<int> UserId { get; set; }
 
-    public Any<string> Title { get; set; }
+    public VarString Title { get; set; }
   }
 
   public static class PostDb

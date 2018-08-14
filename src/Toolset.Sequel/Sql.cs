@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Toolset.Collections;
+using Toolset.Data;
 using Toolset.Reflection;
 
 namespace Toolset.Sequel
@@ -69,7 +70,7 @@ namespace Toolset.Sequel
           }
         }
 
-        Parameters[name] = value.IsPrimitive() ? value : (value as Any ?? new Any(value));
+        Parameters[name] = value.IsPrimitive() ? value : (value as IVar ?? new VarAny(value));
       }
     }
 

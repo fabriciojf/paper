@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Toolset.Collections;
+using Toolset.Data;
 
 namespace Toolset.Sequel
 {
@@ -454,7 +455,7 @@ namespace Toolset.Sequel
         body = body.Substring(1, body.Length - 2);
 
         var candidate = args.Get(bagName);
-        var enumerable = (candidate as IEnumerable) ?? ((candidate as Any)?.Value as IEnumerable);
+        var enumerable = (candidate as IEnumerable) ?? ((candidate as IVar)?.Value as IEnumerable);
         var bags = enumerable?.OfType<IDictionary<string, object>>();
         if (bags?.Any() != true)
         {
@@ -530,17 +531,37 @@ namespace Toolset.Sequel
     /// <returns>A condição que substituirá o template.</returns>
     private static string CreateCriteria(string parameter, object value, IDictionary<string, object> args, KeyGen keyGen)
     {
-      if (value == null)
+      var var = value as IVar;
+      var raw = (var != null) ? var.Value : value;
+
+      if (raw == null)
       {
         return null;
       }
 
-      var any = value as Any;
-      var raw = (any != null) ? any.Raw : value;
+      if (raw.GetType().IsPrimitive)
+      {
+        args[parameter] = var.Value;
+        return "{0} = @" + parameter;
+      }
+
+      if (raw is string)
+      {
+        if (Var.HasWildcards(raw as string))
+        {
+          args[parameter] = raw;
+          return "{0} like @" + parameter;
+        }
+        else
+        {
+          args[parameter] = raw;
+          return "{0} = @" + parameter;
+        }
+      }
 
       if (raw is Sql)
       {
-        var nestSql = (value as Sql) ?? (any?.Value as Sql);
+        var nestSql = (value as Sql) ?? (var?.Value as Sql);
         var nestGen = keyGen.Derive();
         var nestArgs = nestSql.Parameters;
         var nestText = nestSql.Text + "\n";
@@ -567,32 +588,19 @@ namespace Toolset.Sequel
           }
         }
 
-        return "{0} in (" + nestText  + ")";
+        return "{0} in (" + nestText + ")";
       }
 
-      if (raw != null)
+      if (var?.Kind == VarKinds.List)
       {
-        if (raw.GetType().IsValueType || raw is string)
-        {
-          args[parameter] = value;
-          return "{0} = @" + parameter;
-        }
-        else
-        {
-          return null;
-        }
-      }
-
-      if (any.IsList)
-      {
-        var items = Commander.CreateSqlCompatibleValue(any.List);
+        var items = Commander.CreateSqlCompatibleValue(var.List);
         var values = string.Join(",", (IEnumerable)items);
         return "{0} in (" + values + ")";
       }
 
-      if (any.IsRange)
+      if (var?.Kind == VarKinds.Range)
       {
-        var range = any.Range;
+        var range = var.Range;
 
         if (range.Min != null && range.Max != null)
         {
@@ -621,21 +629,7 @@ namespace Toolset.Sequel
         return "{0} = @" + parameter;
       }
 
-      if (any.IsText == true)
-      {
-        if (any.TextHasWildcard)
-        {
-          args[parameter] = any.Text;
-          return "{0} like @" + parameter;
-        }
-        else
-        {
-          args[parameter] = any.Text;
-          return "{0} = @" + parameter;
-        }
-      }
-
-      args[parameter] = any.Value;
+      args[parameter] = raw;
       return "{0} = @" + parameter;
     }
 

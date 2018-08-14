@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using Toolset.Collections;
+using Toolset.Data;
 
 namespace Toolset.Sequel
 {
@@ -138,7 +139,7 @@ namespace Toolset.Sequel
     /// <returns>A própria instância de Sql processada.</returns>
     public static Sql SetMany(this Sql sql, string bagName, NameValueCollection map, params NameValueCollection[] otherMaps)
     {
-      var bag = (sql[bagName] as Any)?.Value as List<IDictionary<string, object>>;
+      var bag = (sql[bagName] as IVar)?.Value as List<IDictionary<string, object>>;
       if (bag == null)
       {
         sql[bagName] = bag = new List<IDictionary<string, object>>();
@@ -187,7 +188,7 @@ namespace Toolset.Sequel
     /// <returns>A própria instância de Sql processada.</returns>
     public static Sql SetMany(this Sql sql, string bagName, IDictionary map, params IDictionary[] otherMaps)
     {
-      var bag = (sql[bagName] as Any)?.Value as List<IDictionary<string, object>>;
+      var bag = (sql[bagName] as IVar)?.Value as List<IDictionary<string, object>>;
       if (bag == null)
       {
         sql[bagName] = bag = new List<IDictionary<string, object>>();
@@ -246,7 +247,7 @@ namespace Toolset.Sequel
       if (invalid != null)
         throw new Exception("Todos os parâmetros deveriam ser objetos para extração de propriedads mas foi contrado: " + invalid.GetType().FullName);
 
-      var bag = (sql[bagName] as Any)?.Value as List<IDictionary<string, object>>;
+      var bag = (sql[bagName] as IVar)?.Value as List<IDictionary<string, object>>;
       if (bag == null)
       {
         sql[bagName] = bag = new List<IDictionary<string, object>>();
@@ -302,7 +303,7 @@ namespace Toolset.Sequel
     /// <returns>A própria instância de Sql processada.</returns>
     public static Sql SetMany(this Sql sql, string bagName, Action<ManyBuilder> builder, params Action<ManyBuilder>[] otherBuilder)
     {
-      var bag = (sql[bagName] as Any)?.Value as List<IDictionary<string, object>>;
+      var bag = (sql[bagName] as IVar)?.Value as List<IDictionary<string, object>>;
       if (bag == null)
       {
         sql[bagName] = bag = new List<IDictionary<string, object>>();

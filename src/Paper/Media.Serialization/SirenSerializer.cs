@@ -16,6 +16,7 @@ using Toolset.Reflection;
 using System.Globalization;
 using System.Runtime.Serialization;
 using Paper.Media.Design;
+using Toolset.Data;
 
 namespace Paper.Media.Serialization
 {
@@ -338,13 +339,13 @@ namespace Paper.Media.Serialization
         value = MakeCompatibleName(value.ToString());
       }
 
-      if (value is Any)
+      if (value is IVar)
       {
         // var any = (Any)value;
         // // apenas extrai o valor real de Any e prossegue...
         // if (any.IsText) value = any.Text;
         // if (any.
-        value = ((Any)value).Value;
+        value = ((IVar)value).Value;
       }
 
       if (IsNull(value))

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Collections;
+using Toolset.Data;
 
 namespace Toolset.Sequel
 {
@@ -48,14 +49,17 @@ namespace Toolset.Sequel
 
     public static object CreateSqlCompatibleValue(object value)
     {
-      if (value == null || (value as Any)?.IsNull == true)
+      var var = value as IVar;
+      var raw = var?.Value ?? value;
+
+      if (value.IsNull())
       {
         return DBNull.Value;
       }
 
-      if ((value as Any)?.IsRaw == true)
+      if (raw.GetType().IsValueType || raw is string)
       {
-        value = ((Any)value).Raw;
+        return value;
       }
 
       if (value is Sql)
@@ -69,19 +73,14 @@ namespace Toolset.Sequel
         return xml;
       }
 
-      if ((value as Any)?.IsText == true)
-      {
-        return ((Any)value).Text;
-      }
-
-      if ((value as Any)?.IsRange == true)
+      if ((value as IVar)?.Kind == VarKinds.Range)
       {
         return DBNull.Value;
       }
 
-      if ((value as Any)?.IsList == true)
+      if ((value as IVar)?.Kind == VarKinds.List)
       {
-        var list = ((Any)value).List;
+        var list = ((IVar)value).List.Cast<object>();
 
         if (!list.Any())
         {
@@ -105,7 +104,7 @@ namespace Toolset.Sequel
         return text;
       }
 
-      return value;
+      return DBNull.Value;
     }
   }
 }

@@ -159,7 +159,7 @@ namespace Toolset.Sequel
       foreach (var name in graph._GetPropertyNames())
       {
         var value = graph._Get(name);
-        map[name] = value.IsPrimitive() ? value : (value as Any ?? new Any(value));
+        map[name] = value.IsPrimitive() ? value : (value as IVar ?? new VarAny(value));
       }
     }
 
@@ -177,7 +177,7 @@ namespace Toolset.Sequel
     public static bool IsGraph(this object value)
     {
       if (value == null) return false;
-      return !(value is Any) && !IsPrimitive(value) && !IsEnumerable(value) && !IsRange(value);
+      return !(value is IVar) && !IsPrimitive(value) && !IsEnumerable(value) && !IsRange(value);
     }
 
     /// <summary>

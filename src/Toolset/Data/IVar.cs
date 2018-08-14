@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Toolset.Structures
+namespace Toolset.Data
 {
   public interface IVar
   {
     Type VarType { get; }
 
-    VarKind Kind { get; }
+    VarKinds Kind { get; }
+
+    bool IsNull { get; }
 
     object RawValue { get; set; }
 
@@ -19,7 +21,7 @@ namespace Toolset.Structures
 
     string TextPattern { get; }
 
-    IEnumerable List { get; set; }
+    IList List { get; set; }
 
     IEnumerable Map { get; set; }
 

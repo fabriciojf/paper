@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Toolset.Collections;
 
-namespace Toolset.Structures
+namespace Toolset.Data
 {
   public class Var<T> : IVar
     where T : struct
   {
     private object _rawValue;
 
-    public VarKind Kind => GetKind(_rawValue) ?? VarKind.Null;
+    public VarKinds Kind => GetKind(_rawValue) ?? VarKinds.Null;
 
     public object RawValue
     {
@@ -26,22 +27,22 @@ namespace Toolset.Structures
       }
     }
 
-    private VarKind? GetKind(object value)
+    private VarKinds? GetKind(object value)
     {
       if (value == null)
-        return VarKind.Null;
+        return VarKinds.Null;
 
       if (value is T)
-        return VarKind.Value;
+        return VarKinds.Primitive;
 
       if (value is IList<T>)
-        return VarKind.List;
+        return VarKinds.List;
 
       if (value is IDictionary<string, T>)
-        return VarKind.Map;
+        return VarKinds.Map;
 
       if (value is Range<T>)
-        return VarKind.Range;
+        return VarKinds.Range;
 
       return null;
     }
@@ -121,9 +122,9 @@ namespace Toolset.Structures
 
     string IVar.TextPattern => null;
 
-    IEnumerable IVar.List
+    IList IVar.List
     {
-      get => List;
+      get => (IList)List;
       set
       {
         if (value != null && !(value is IList<T>))

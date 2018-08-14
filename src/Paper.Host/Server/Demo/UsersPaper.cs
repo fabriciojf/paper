@@ -13,6 +13,7 @@ using Paper.Media.Design;
 using Paper.Media.Design.Mappings;
 using Paper.Media.Design.Papers;
 using Toolset;
+using Toolset.Data;
 
 namespace Paper.Host.Server.Demo
 {
@@ -32,9 +33,9 @@ namespace Paper.Host.Server.Demo
   public class UserFilter : IFilter
   {
     [FieldHidden]
-    public Any<int> Id { get; set; }
+    public Var<int> Id { get; set; }
 
-    public Any<string> Name { get; set; }
+    public VarString Name { get; set; }
   }
 
   public static class UserDb

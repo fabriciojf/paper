@@ -4,9 +4,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Toolset.Collections;
 
-namespace Toolset.Structures
+namespace Toolset.Data
 {
-  public class VarString : VarEx<string>
+  public class VarString : VarAny<string>
   {
     public bool HasWildcards => ((IVar)this).HasWildcards;
 

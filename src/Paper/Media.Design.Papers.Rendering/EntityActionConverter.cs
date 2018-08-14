@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Paper.Media.Design.Mappings;
 using Toolset;
+using Toolset.Data;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design.Papers.Rendering
@@ -65,8 +66,8 @@ namespace Paper.Media.Design.Papers.Rendering
           field.AddRequired();
         }
 
-        var isAny = typeof(Any).IsAssignableFrom(property.PropertyType);
-        if (isAny)
+        var isVar = typeof(IVar).IsAssignableFrom(property.PropertyType);
+        if (isVar)
         {
           field.AddAllowMany();
           field.AddAllowRange();

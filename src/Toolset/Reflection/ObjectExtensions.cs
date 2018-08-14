@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Toolset.Data;
 
 namespace Toolset.Reflection
 {
@@ -175,9 +176,9 @@ namespace Toolset.Reflection
       }
 
       // Tratamento especial para o tipo Any do Toolset.
-      if (typeof(Any).IsAssignableFrom(property.PropertyType))
+      if (typeof(IVar).IsAssignableFrom(property.PropertyType))
       {
-        if (!(value is Any))
+        if (!(value is IVar))
         {
           value = Activator.CreateInstance(property.PropertyType, value);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Toolset;
 using Toolset.Collections;
+using Toolset.Data;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design.Papers
@@ -49,9 +50,9 @@ namespace Paper.Media.Design.Papers
 
     private static object ResolveValue(object value)
     {
-      while (value is Any)
+      while (value is IVar)
       {
-        value = ((Any)value).Value;
+        value = ((IVar)value).Value;
       }
       return value;
     }

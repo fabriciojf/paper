@@ -11,6 +11,7 @@ using Paper.Media.Design;
 using Paper.Media.Utilities;
 using Toolset;
 using Toolset.Collections;
+using Toolset.Data;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design.Papers
@@ -186,14 +187,14 @@ namespace Paper.Media.Design.Papers
       if (value == null)
         return MakeConstantExpression<T>(true);
 
-      var isAny = value is Any;
+      var isAny = value is IVar;
       if (isAny)
       {
-        var any = (Any)value;
+        var any = (IVar)value;
 
         // Raramente um valor de um tipo Any pode ser outro tipo Any.
         // Neste caso vamos seguir com o valor do tipo Any mais profundo encontrado.
-        while (any.Value is Any)
+        while (any.Value is IVar)
         {
           value = any.Value;
         }
@@ -404,7 +405,7 @@ namespace Paper.Media.Design.Papers
       // Sendo
       //   PROP: O nome do campo pesquisado informado pelo parametro 'field'
       var targetType = typeof(T)._GetPropertyType(field);
-      var regexPattern = Any.CreateTextPattern(pattern);
+      var regexPattern = Var.CreateTextPattern(pattern);
 
       var param = Expression.Parameter(typeof(T));
       var lambda =

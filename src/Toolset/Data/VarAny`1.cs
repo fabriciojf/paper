@@ -5,14 +5,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Toolset.Collections;
 
-namespace Toolset.Structures
+namespace Toolset.Data
 {
-  public class VarEx<T> : IVar
-  where T : class
+  public class VarAny<T> : IVar
+    where T : class
   {
     private object _rawValue;
 
-    public VarKind Kind => GetKind(_rawValue) ?? VarKind.Null;
+    public VarKinds Kind => GetKind(_rawValue) ?? VarKinds.Null;
 
     public object RawValue
     {
@@ -27,22 +27,31 @@ namespace Toolset.Structures
       }
     }
 
-    private VarKind? GetKind(object value)
+    private VarKinds? GetKind(object value)
     {
       if (value == null)
-        return VarKind.Null;
-
-      if (value is T)
-        return VarKind.Value;
+        return VarKinds.Null;
 
       if (value is IList<T>)
-        return VarKind.List;
+        return VarKinds.List;
 
       if (value is IDictionary<string, T>)
-        return VarKind.Map;
+        return VarKinds.Map;
 
       if (value is RangeEx<T>)
-        return VarKind.Range;
+        return VarKinds.Range;
+
+      if (value is T)
+      {
+        if (value.GetType().IsValueType)
+          return VarKinds.Primitive;
+
+        if (value is string)
+          return VarKinds.Text;
+
+        else
+          return VarKinds.Graph;
+      }
 
       return null;
     }
@@ -51,7 +60,7 @@ namespace Toolset.Structures
 
     public T Value
     {
-      get => _rawValue as T;
+      get => Kind.HasFlag(VarKinds.Value) ? _rawValue as T : null;
       set => _rawValue = value;
     }
 
@@ -73,34 +82,34 @@ namespace Toolset.Structures
       set => _rawValue = value;
     }
 
-    public static implicit operator VarEx<T>(T text)
+    public static implicit operator VarAny<T>(T text)
     {
-      return new VarEx<T> { Value = text };
+      return new VarAny<T> { Value = text };
     }
 
-    public static implicit operator VarEx<T>(List<T> list)
+    public static implicit operator VarAny<T>(List<T> list)
     {
-      return new VarEx<T> { List = list };
+      return new VarAny<T> { List = list };
     }
 
-    public static implicit operator VarEx<T>(T[] list)
+    public static implicit operator VarAny<T>(T[] list)
     {
-      return new VarEx<T> { List = list };
+      return new VarAny<T> { List = list };
     }
 
-    public static implicit operator VarEx<T>(Dictionary<string, T> map)
+    public static implicit operator VarAny<T>(Dictionary<string, T> map)
     {
-      return new VarEx<T> { Map = map };
+      return new VarAny<T> { Map = map };
     }
 
-    public static implicit operator VarEx<T>(Map<string, T> map)
+    public static implicit operator VarAny<T>(Map<string, T> map)
     {
-      return new VarEx<T> { Map = map };
+      return new VarAny<T> { Map = map };
     }
 
-    public static implicit operator VarEx<T>(RangeEx<T> range)
+    public static implicit operator VarAny<T>(RangeEx<T> range)
     {
-      return new VarEx<T> { Range = range };
+      return new VarAny<T> { Range = range };
     }
 
     public override string ToString()
@@ -120,17 +129,17 @@ namespace Toolset.Structures
 
     bool IVar.HasWildcards
     {
-      get => (Value as string)?.Contains("%") == true || (Value as string)?.Contains("_") == true;
+      get => Var.HasWildcards(Value as string);
     }
 
     string IVar.TextPattern
     {
-      get => (Value is string) ? $"^{Regex.Escape(Value as string).Replace("%", ".*").Replace("_", ".")}$" : null;
+      get => (Value is string) ? Var.CreateTextPattern(Value as string) : null;
     }
 
-    IEnumerable IVar.List
+    IList IVar.List
     {
-      get => List;
+      get => (IList)List;
       set
       {
         if (value != null && !(value is IList<T>))

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Toolset.Data;
 
 namespace Toolset.Sequel
 {
@@ -35,17 +36,18 @@ namespace Toolset.Sequel
         builder.Append(" := ");
 
         var value = sql[parameter];
-        var any = value as Any;
-        if (any?.IsRange == true)
+        var var = value as IVar;
+        if (var?.Kind == VarKinds.Range)
         {
-          builder.AppendLine($"{any.Range}");
+          builder.AppendLine($"{var.Range}");
         }
-        else if (any?.IsList == true)
+        else if (var?.Kind == VarKinds.List)
         {
-          var item = any.List.FirstOrDefault();
+          var items = var.List.Cast<object>();
+          var item = items.FirstOrDefault();
           var isMany = item.IsEnumerable();
           var isBinary = item is byte;
-          var isEmpty = !any.List.Any();
+          var isEmpty = !items.Any();
 
           if (isEmpty)
           {

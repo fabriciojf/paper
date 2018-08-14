@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Toolset;
 using Toolset.Collections;
+using Toolset.Data;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design.Papers.Rendering
@@ -40,8 +41,8 @@ namespace Paper.Media.Design.Papers.Rendering
         if (value == null)
           break;
 
-        while (value is Any)
-          value = ((Any)value).Value;
+        while (value is IVar)
+          value = ((IVar)value).Value;
 
         if (value is ArgMap)
           value = ((ArgMap)value).items[token];
@@ -123,10 +124,10 @@ namespace Paper.Media.Design.Papers.Rendering
 
       if (isRange)
       {
-        var range = map.items[current] as Range2;
-        var min = isMin ? value : range?.Min;
-        var max = isMax ? value : range?.Max;
-        map.items[current] = new Range2(min, max);
+        var range = (Range)map.items[current];
+        var min = isMin ? value : range.Min;
+        var max = isMax ? value : range.Max;
+        map.items[current] = new Range(min, max);
       }
       else if (isList)
       {
