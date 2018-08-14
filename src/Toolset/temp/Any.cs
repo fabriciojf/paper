@@ -57,7 +57,7 @@ namespace Toolset
       {
         var min = caster.Invoke(value._Get("Min"));
         var max = caster.Invoke(value._Get("Max"));
-        Range = new Range(min, max);
+        Range = new Range2(min, max);
       }
       else if (!value.IsNull())
       {
@@ -85,7 +85,7 @@ namespace Toolset
 
     public IEnumerable<object> List { get; }
 
-    public Range Range { get; }
+    public Range2 Range { get; }
 
     public object Raw { get; }
 

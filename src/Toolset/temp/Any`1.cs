@@ -9,7 +9,7 @@ namespace Toolset
 {
   public class Any<T> : Any
   {
-    private Range<T> _range;
+    private Range2<T> _range;
 
     public Any()
       : base(default(T), x => Change.To<T>(x))
@@ -40,13 +40,13 @@ namespace Toolset
 
     public new T Raw => base.Raw is T ? (T)base.Raw : default(T);
 
-    public new Range<T> Range
+    public new Range2<T> Range
     {
       get
       {
         if (IsRange && _range == null)
         {
-          _range = new Range<T>((T)base.Range.Min, (T)base.Range.Max);
+          _range = new Range2<T>((T)base.Range.Min, (T)base.Range.Max);
         }
         return _range;
       }
@@ -72,7 +72,7 @@ namespace Toolset
       return new Any<T>(value);
     }
 
-    public static implicit operator Any<T>(Range<T> value)
+    public static implicit operator Any<T>(Range2<T> value)
     {
       return new Any<T>(value);
     }

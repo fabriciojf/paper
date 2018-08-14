@@ -123,10 +123,10 @@ namespace Paper.Media.Design.Papers.Rendering
 
       if (isRange)
       {
-        var range = map.items[current] as Range;
+        var range = map.items[current] as Range2;
         var min = isMin ? value : range?.Min;
         var max = isMax ? value : range?.Max;
-        map.items[current] = new Range(min, max);
+        map.items[current] = new Range2(min, max);
       }
       else if (isList)
       {

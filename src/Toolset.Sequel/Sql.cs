@@ -50,7 +50,7 @@ namespace Toolset.Sequel
       {
         name = Parameters.Keys.FirstOrDefault(x => x.EqualsIgnoreCase(name)) ?? name;
 
-        if (!value.IsSimpleValue())
+        if (!value.IsPrimitive())
         {
           if (value.IsEnumerable())
           {
@@ -69,7 +69,7 @@ namespace Toolset.Sequel
           }
         }
 
-        Parameters[name] = value.IsSimpleValue() ? value : (value as Any ?? new Any(value));
+        Parameters[name] = value.IsPrimitive() ? value : (value as Any ?? new Any(value));
       }
     }
 

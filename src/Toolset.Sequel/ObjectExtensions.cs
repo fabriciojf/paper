@@ -159,7 +159,7 @@ namespace Toolset.Sequel
       foreach (var name in graph._GetPropertyNames())
       {
         var value = graph._Get(name);
-        map[name] = value.IsSimpleValue() ? value : (value as Any ?? new Any(value));
+        map[name] = value.IsPrimitive() ? value : (value as Any ?? new Any(value));
       }
     }
 
@@ -177,7 +177,7 @@ namespace Toolset.Sequel
     public static bool IsGraph(this object value)
     {
       if (value == null) return false;
-      return !(value is Any) && !IsSimpleValue(value) && !IsEnumerable(value) && !IsRange(value);
+      return !(value is Any) && !IsPrimitive(value) && !IsEnumerable(value) && !IsRange(value);
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ namespace Toolset.Sequel
     /// <returns>
     /// Verdadeiro se o tipo for considerado simples; Falso caso contrário.
     /// </returns>
-    public static bool IsSimpleValue(this object value)
+    public static bool IsPrimitive(this object value)
     {
       if (value == null) return false;
       return (value is string) || (value?.GetType().IsValueType == true);

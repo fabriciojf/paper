@@ -8,10 +8,13 @@
   <ItemGroup>
     <Compile Remove="Application\**" />
     <Compile Remove="Composition\**" />
+    <Compile Remove="Smart\**" />
     <EmbeddedResource Remove="Application\**" />
     <EmbeddedResource Remove="Composition\**" />
+    <EmbeddedResource Remove="Smart\**" />
     <None Remove="Application\**" />
     <None Remove="Composition\**" />
+    <None Remove="Smart\**" />
   </ItemGroup>
 
   <ItemGroup>
