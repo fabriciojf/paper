@@ -21,30 +21,34 @@ export default class Grid {
 
   get validItems () {
     var entity = this.store.getters.entity
-    if (entity && entity.hasSubEntityByClass('item')) {
-      return entity.getSubEntitiesByClass('item')
+    if (entity && entity.hasSubEntityByRel('item')) {
+      return entity.getSubEntitiesByRel('item')
     }
-    if (entity && entity.hasSubEntityByClass('row')) {
-      return entity.getSubEntitiesByClass('row')
+    if (entity && entity.hasSubEntityByRel('row')) {
+      return entity.getSubEntitiesByRel('row')
     }
     return []
   }
 
   get headers () {
     var headers = []
-    var keys = this._getDiffHeaders()
-    if (keys && keys.length > 0) {
-      keys.forEach((key) => {
-        if (!key.startsWith('_')) {
-          var header = this._getHeaderProperties(key)
-          var title = header && header.title && header.title.length > 0 ? header.title : key
-          headers.push({
-            text: title,
-            align: 'left',
-            sortable: false,
-            value: key
-          })
-        }
+    var entity = this.store.getters.entity
+    if (!entity || !entity.hasSubEntityByClass('header')) {
+      return headers
+    }
+    var headersEntities = entity.getSubEntitiesByClass('header')
+    if (headersEntities && headersEntities.length > 0) {
+      headersEntities.forEach((header) => {
+        var properties = header.properties
+        var title = properties && properties.title && properties.title.length > 0
+                    ? properties.title
+                    : properties.name
+        headers.push({
+          text: title,
+          align: 'left',
+          sortable: false,
+          value: properties.name
+        })
       })
     }
     return headers
@@ -57,35 +61,6 @@ export default class Grid {
 
   setSelectedItems (items) {
     this.store.commit('selection/setSelectedItems', items)
-  }
-
-  _getHeaderProperties (headerKey) {
-    var entity = this.store.getters.entity
-    if (entity && entity.properties) {
-      var headers = entity.properties['_rowsHeaders'] || entity.properties['rowsHeaders']
-      if (headers) {
-        var header = headers.find((header) => header.name === headerKey)
-        return header
-      }
-    }
-  }
-
-  _getDiffHeaders () {
-    var entity = this.store.getters.entity
-    var flags = []
-    if (entity && entity.entities && entity.entities.length > 0) {
-      entity.entities.forEach(entity => {
-        if (entity.properties) {
-          var keys = Object.keys(entity.properties)
-          keys.forEach(key => {
-            if (!flags.includes(key)) {
-              flags.push(key)
-            }
-          })
-        }
-      })
-    }
-    return flags
   }
 
 }

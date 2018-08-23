@@ -1,2 +1,0 @@
-webpackJsonp([0],{628:function(o,e){o.exports={class:["protein"],rel:["protein"],title:"Proteinas",properties:{name:"Proteina",description:"Proteínas são macromoléculas biológicas constituídas por uma ou mais cadeias de aminoácidos."},links:[{rel:["self"],href:"/demo/15"}]}}});
-//# sourceMappingURL=0.f11ece0b566592ab55b6.js.map

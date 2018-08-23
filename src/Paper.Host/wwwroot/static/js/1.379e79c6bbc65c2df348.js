@@ -1,2 +1,0 @@
-webpackJsonp([1],{627:function(e,r){e.exports={class:["fat"],rel:["fat"],title:"Gorduras",properties:{name:"Gorduras",description:"Gordura é um termo genérico para uma classe de lipídios."},links:[{rel:["self"],href:"/demo/15"}]}}});
-//# sourceMappingURL=1.379e79c6bbc65c2df348.js.map

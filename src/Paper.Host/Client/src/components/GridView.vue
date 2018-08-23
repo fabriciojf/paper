@@ -54,6 +54,7 @@
             td(
               class="text-xs-center" 
               @click.stop=""
+              v-if="hasItemLinks(items.index)"
             )
               v-menu(
                 offset-x 
@@ -155,7 +156,10 @@
 
       itemLinks (index) {
         var entity = this.$paper.getEntity().entities[index]
-        var links = entity.links.filter((link) => !link.rel.includes('self'))
+        var links = []
+        if (entity.links && entity.links.length > 0) {
+          links = entity.links.filter(link => !link.rel.includes('self'))
+        }
         return links
       },
 
