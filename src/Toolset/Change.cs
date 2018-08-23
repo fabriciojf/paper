@@ -16,7 +16,20 @@ namespace Toolset
 
       if (value == null)
         return null;
-
+      
+      // Melhoria para tipos Nullable<T>
+      //
+      //  var type = targetType;
+      //
+      //  var isNullable = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+      //  if (isNullable)
+      //    type = Nullable.GetUnderlyingType(type);
+      //
+      //  ... conversao simples ...
+      //
+      //  if (isNullable)
+      //    value = Activator.CreateInstance(targetType, value);
+      
       if (targetType.IsAssignableFrom(sourceType))
         return value;
 
