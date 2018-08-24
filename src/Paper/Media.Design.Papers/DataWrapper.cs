@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Paper.Media.Design;
+using Paper.Media.Design.Mappings;
 using Toolset;
 using Toolset.Reflection;
 
@@ -224,6 +225,13 @@ namespace Paper.Media.Design.Papers
         header.Title = Conventions.MakeTitle(property);
         header.DataType = DataTypeNames.GetDataTypeName(property.PropertyType);
         header.Hidden = header.Name.StartsWith("_");
+
+        var fieldHidden = property.GetCustomAttributes(true).OfType<FieldHiddenAttribute>().FirstOrDefault();
+        if (fieldHidden != null)
+        {
+          header.Hidden = fieldHidden.Hidden;
+        }
+
         return header;
       }
 
