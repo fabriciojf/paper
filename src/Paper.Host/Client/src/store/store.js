@@ -27,7 +27,7 @@ const mutations = {
   },
 
   setEntityPath: (state, data) => {
-    state.pathEntity = data
+    state.pathEntity = data + '?f=json'
   },
 
   setDemoState (state, data) {

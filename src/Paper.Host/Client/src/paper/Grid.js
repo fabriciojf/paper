@@ -33,22 +33,54 @@ export default class Grid {
   get headers () {
     var headers = []
     var entity = this.store.getters.entity
-    if (!entity || !entity.hasSubEntityByClass('header')) {
+    if (entity && entity.hasSubEntityByRel('rowHeader')) {
+      headers = this._getHeadersByRowsHeaders(entity)
       return headers
     }
-    var headersEntities = entity.getSubEntitiesByClass('header')
+
+    headers = this._getHeadersByItemsKeys(entity)
+    return headers
+  }
+
+  _getHeadersByItemsKeys () {
+    var validKeys = []
+    this.validItems.forEach(item => {
+      var keys = Object.keys(item.properties)
+      keys.filter(key => {
+        if (!key.startsWith('_') && !validKeys.includes(key)) {
+          validKeys.push(key)
+        }
+      })
+    })
+    var headers = []
+    validKeys.forEach(key => {
+      headers.push({
+        text: key,
+        align: 'left',
+        sortable: false,
+        value: key
+      })
+    })
+    return headers
+  }
+
+  _getHeadersByRowsHeaders (entity) {
+    var headers = []
+    var headersEntities = entity.getSubEntitiesByRel('rowHeader')
     if (headersEntities && headersEntities.length > 0) {
       headersEntities.forEach((header) => {
         var properties = header.properties
-        var title = properties && properties.title && properties.title.length > 0
-                    ? properties.title
-                    : properties.name
-        headers.push({
-          text: title,
-          align: 'left',
-          sortable: false,
-          value: properties.name
-        })
+        if (!properties.hidden) {
+          var title = properties && properties.title && properties.title.length > 0
+                      ? properties.title
+                      : properties.name
+          headers.push({
+            text: title,
+            align: 'left',
+            sortable: false,
+            value: properties.name
+          })
+        }
       })
     }
     return headers

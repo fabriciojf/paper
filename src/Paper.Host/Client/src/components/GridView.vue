@@ -107,14 +107,16 @@
         var entireItem = this.getRowIndex(item)
         var link = entireItem.getLinkByRel('self')
         var exist = link && link.href && link.href.length > 0
-        return exist ? 'cursor: pointer' : 'cursor: default'
+        var cursor = exist ? 'cursor: pointer' : 'cursor: default'
+        return cursor
       },
 
       getColumnCursorStyle (item, column) {
         var entireItem = this.getRowIndex(item)
         var link = entireItem.getLinkByRel(column)
         var exist = link && link.href && link.href.length > 0
-        return exist ? 'cursor: pointer' : 'cursor: default'
+        var cursor = exist ? 'cursor: pointer' : ''
+        return cursor
       },
 
       columnKey (column, index, item) {

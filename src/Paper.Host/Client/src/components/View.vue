@@ -24,14 +24,14 @@
             )
               v-list(two-line)
                 v-list-tile(
-                  v-for="item in items" 
+                  v-for="item in $paper.data.items" 
                   :key="item.key"
                 )
                   v-list-tile-content
                     v-list-tile-title
                       | {{ item.value }}
                     v-list-tile-sub-title
-                      | {{ item.key }}
+                      | {{ item.title }}
 </template>
 
 <script>
@@ -42,25 +42,6 @@
 
     beforeRouteUpdate (to, from, next) {
       next()
-    },
-
-    computed: {
-      items () {
-        var data = this.$paper.getEntity()
-        var items = []
-        if (data && data.properties) {
-          var keys = Object.keys(data.properties)
-          keys.forEach((key) => {
-            if (!key.startsWith('_')) {
-              items.push({
-                key: key,
-                value: data.properties[key]
-              })
-            }
-          })
-        }
-        return items
-      }
     }
   }
 </script>

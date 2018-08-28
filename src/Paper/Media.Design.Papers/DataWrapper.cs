@@ -1,13 +1,8 @@
-﻿
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using Paper.Media.Design;
 using Paper.Media.Design.Mappings;
-using Toolset;
 using Toolset.Reflection;
 
 namespace Paper.Media.Design.Papers
@@ -132,11 +127,19 @@ namespace Paper.Media.Design.Papers
           return null;
 
         var column = table.Columns[key];
+        var property = column._GetPropertyInfo(key);
         var header = new HeaderInfo();
         header.Name = Conventions.MakeName(column);
         header.Title = Conventions.MakeTitle(column);
         header.DataType = Conventions.MakeDataType(column);
         header.Hidden = header.Name.StartsWith("_");
+
+        var fieldHidden = property.GetCustomAttributes(true).OfType<FieldHiddenAttribute>().FirstOrDefault();
+        if (fieldHidden != null)
+        {
+          header.Hidden = fieldHidden.Hidden;
+        }
+
         return header;
       }
 

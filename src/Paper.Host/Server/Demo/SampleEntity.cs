@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using Paper.Media;
-using Paper.Media.Design;
 using Paper.Media.Design.Papers;
-using Toolset;
 
 namespace Paper.Host.Server.Demo
 {

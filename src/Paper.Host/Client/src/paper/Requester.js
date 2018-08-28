@@ -13,6 +13,9 @@ export default class Requester {
 
   redirectToPage (link) {
     if (link) {
+      if (link.includes('http://localhost:5000')) {
+        link = link.split('http://localhost:5000')[1]
+      }
       if (link.startsWith('http') && !link.startsWith(window.location.origin)) {
         window.open(link, '_blank')
         return
@@ -38,7 +41,14 @@ export default class Requester {
 
   httpRequest (method, href, params) {
     var getParams = method.toLowerCase() === 'get' ? params : ''
-    var header = {'Accept': 'application/json;application/vnd.siren+json;charset=UTF-8;'}
+    var header = {
+      'Accept': 'application/json;application/vnd.siren+json;charset=UTF-8;',
+      'Access-Control-Expose-Headers': 'Access-Control-*',
+      'Access-Control-Allow-Headers': 'Access-Control-*, Origin, X-Requested-With, Content-Type, Accept',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+      'Access-Control-Allow-Origin': '*',
+      'Allow': 'GET, POST, PUT, DELETE, OPTIONS, HEAD'
+    }
     return this.axios.request({
       url: href,
       method: method,

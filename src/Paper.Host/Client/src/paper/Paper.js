@@ -12,6 +12,7 @@ import Auth from './Auth.js'
 import State from './State.js'
 import User from './User.js'
 import Filters from './Filters.js'
+import Data from './Data.js'
 
 const paper = {
   install (Vue, options) {
@@ -29,6 +30,7 @@ const paper = {
     var state = new State(options)
     var user = new User(options)
     var filters = new Filters(options, actions)
+    var data = new Data(options)
 
     var paper = {
       blueprint: blueprint,
@@ -44,17 +46,24 @@ const paper = {
       state: state,
       user: user,
       filters: filters,
+      data: data,
 
       getEntity () {
         return options.store.getters.entity
       },
 
       isPaperPage (path) {
+        if (path === null) {
+          return false
+        }
         var isPaperPage = path.match(/\/page/g) || path.match(/page/g)
         return isPaperPage
       },
 
       isFormPage (path) {
+        if (path === null) {
+          return false
+        }
         var isFormPage = path.match(/\/form/g) || path.match(/form/g)
         return isFormPage
       },
@@ -70,7 +79,7 @@ const paper = {
             return
           }
           var validRoute = options.router.options.routes.find(route => route.name === route.name)
-          var isPaperPage = this.isPaperPage(route.name)
+          var isPaperPage = this.isPaperPage(route.path)
           if (isPaperPage || !validRoute) {
             this.requester.redirectToPage(route.path)
             return
@@ -84,6 +93,8 @@ const paper = {
       },
 
       setEntityPath (path) {
+        console.log('path', path)
+        path = 'http://localhost:5000' + path
         options.store.commit('setEntityPath', path)
       }
     }
