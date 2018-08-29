@@ -428,7 +428,7 @@ namespace Toolset.Sequel
       //   many [target] [not] matches [if set] ()
       var regex = new Regex(@"[(\s]many\s+(?:@([\w]+)\s+)?(?:(not)\s+)?matches(?:\s+(if\s+set))?\s*?(?:([a-zA-Z_.]+)|([a-zA-Z0-9_]*[(](?>[(](?<c>)|[^()]+|[)](?<-c>))*(?(c)(?!))[)]))");
       var matches = regex.Matches(text);
-      foreach (Match match in matches.Reverse())
+      foreach (Match match in matches.Cast<Match>().Reverse())
       {
         string replacement = "";
 
@@ -472,7 +472,7 @@ namespace Toolset.Sequel
             foreach (var key in bag.Keys)
             {
               var matches2 = Regex.Matches(sentence, $@"@({key}\w?)");
-              foreach (Match match2 in matches2.Reverse())
+              foreach (Match match2 in matches2.Cast<Match>().Reverse())
               {
                 var matchKey = match2.Groups[1].Value;
                 if (matchKey != key)
@@ -571,7 +571,7 @@ namespace Toolset.Sequel
         foreach (var key in nestArgs.Keys)
         {
           var matches = Regex.Matches(nestText, $@"@({key}\w?)");
-          foreach (Match match in matches.Reverse())
+          foreach (Match match in matches.Cast<Match>().Reverse())
           {
             var matchKey = match.Groups[1].Value;
             if (matchKey != key)

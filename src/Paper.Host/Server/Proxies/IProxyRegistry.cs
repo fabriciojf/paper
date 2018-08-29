@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Media.Service.Proxies;
+using Paper.Core.Proxies;
 
 namespace Paper.WebApp.Server.Proxies
 {

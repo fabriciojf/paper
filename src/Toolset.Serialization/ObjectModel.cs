@@ -79,7 +79,7 @@ namespace Toolset.Serialization
 
     public string Name
     {
-      get { return (nodeValue != null) ? nodeValue.ToString() : null; }
+      get { return nodeValue?.ToString(); }
       set { nodeValue = value; }
     }
 
@@ -88,17 +88,17 @@ namespace Toolset.Serialization
       get { return properties.Count; }
     }
 
-    public IEnumerable<string> PropertyNames
+    public new IEnumerable<string> PropertyNames
     {
       get { return properties.Select(p => p.Name).Distinct(); }
     }
 
-    public PropertyModel this[string name]
+    public new PropertyModel this[string name]
     {
       get { return properties.FirstOrDefault(p => p.Name == name); }
     }
 
-    public PropertyModel this[int index]
+    public new PropertyModel this[int index]
     {
       get { return properties.ElementAtOrDefault(index); }
     }

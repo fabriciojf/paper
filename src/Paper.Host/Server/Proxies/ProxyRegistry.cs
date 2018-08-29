@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Media.Service.Proxies;
-using Media.Service.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Paper.Core.Proxies;
+using Paper.Core.Utilities;
 using Toolset;
 
 namespace Paper.WebApp.Server.Proxies

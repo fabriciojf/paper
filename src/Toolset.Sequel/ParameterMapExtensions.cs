@@ -333,7 +333,7 @@ namespace Toolset.Sequel
         var entries =
           dictionary
             .Cast<DictionaryEntry>()
-            .Select(e => KeyValuePair.Create(e.Key.ToString(), e.Value));
+            .Select(e => new KeyValuePair<string, object>(e.Key.ToString(), e.Value));
         map = new HashMap(entries);
       }
       return map;

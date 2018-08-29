@@ -1,13 +1,10 @@
-﻿using Media.Service.Papers;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
-using Paper.Media.Rendering;
-using Paper.Media.Service;
 using Paper.WebApp.Server.Proxies;
 using System;
 using System.Collections.Generic;

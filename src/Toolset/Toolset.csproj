@@ -1,24 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
     <OutputType>Library</OutputType>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\**" />
-    <Compile Remove="Composition\**" />
-    <Compile Remove="Smart\**" />
-    <EmbeddedResource Remove="Application\**" />
-    <EmbeddedResource Remove="Composition\**" />
-    <EmbeddedResource Remove="Smart\**" />
-    <None Remove="Application\**" />
-    <None Remove="Composition\**" />
-    <None Remove="Smart\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Bag.cs" />
+    <Reference Include="System.Transactions" />
   </ItemGroup>
 
   <ItemGroup>

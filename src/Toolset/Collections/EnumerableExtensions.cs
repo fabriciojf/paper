@@ -13,6 +13,17 @@ namespace Toolset.Collections
   public static class EnumerableExtensions
   {
     /// <summary>
+    /// Emite um enumerado contendo apenas o objeto referenciado.
+    /// </summary>
+    /// <typeparam name="T">O tipo do objeto.</typeparam>
+    /// <param name="single">A instância do objeto.</param>
+    /// <returns>Um enumerado contendo o objeto.</returns>
+    public static IEnumerable<T> AsSingle<T>(this T single)
+    {
+      yield return single;
+    }
+
+    /// <summary>
     /// Tenta converter o item para o tipo indicado.
     /// Uma exceção é lançada se o tipo não for conversível destino.
     /// </summary>
@@ -21,7 +32,7 @@ namespace Toolset.Collections
     /// <returns>O enumerado dos itens convertidos.</returns>
     public static IEnumerable<TType> ChangeTo<TType>(this IEnumerable enumerable)
     {
-      return enumerable.Cast<object>().Select(Change.To<TType>);
+      return enumerable.Cast<object>().Select(x => Change.To<TType>(x));
     }
 
     /// <summary>
@@ -37,15 +48,28 @@ namespace Toolset.Collections
     }
 
     /// <summary>
-    /// Emite um enumerado contendo apenas o objeto referenciado.
+    /// Adiciona um item ao início de um enumerado.
     /// </summary>
-    /// <typeparam name="T">O tipo do objeto.</typeparam>
-    /// <param name="single">A instância do objeto.</param>
-    /// <returns>Um enumerado contendo o objeto.</returns>
-    public static IEnumerable<T> AsSingle<T>(this T single)
+    /// <typeparam name="T">Tipo do enumerado.</typeparam>
+    /// <param name="instance">Instância adicionado ao início do enumerado.</param>
+    /// <returns>O enumerado contendo o item adcionado.</returns>
+    public static IEnumerable<T> Prepend<T>(this IEnumerable<T> enumerable, T instance)
     {
-      yield return single;
+      return new[] { instance }.AsEnumerable<T>().Concat(enumerable);
     }
+
+#if !NETCOREAPP2_0 && !NETCOREAPP2_1
+    /// <summary>
+    /// Adiciona um item ao fim de um enumerado.
+    /// </summary>
+    /// <typeparam name="T">Tipo do enumerado.</typeparam>
+    /// <param name="instance">Instância adicionado ao final do enumerado.</param>
+    /// <returns>O enumerado contendo o item adcionado.</returns>
+    public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, T instance)
+    {
+      return enumerable.Concat(new[] { instance });
+    }
+#endif
 
     /// <summary>
     /// Emite apenas os itens não nulos.
@@ -55,9 +79,9 @@ namespace Toolset.Collections
     /// <returns>Um enumerado contendo apenas os itens nao-nulos.</returns>
     public static IEnumerable<T> NonNull<T>(this IEnumerable<T> enumerable)
     {
-      if (enumerable == null)
-        return Enumerable.Empty<T>();
-      return enumerable.Where(x => x != null && !(x is DBNull));
+      return (enumerable == null)
+        ? Enumerable.Empty<T>()
+        : enumerable.Where(x => x != null && !(x is DBNull));
     }
 
     /// <summary>
@@ -72,16 +96,21 @@ namespace Toolset.Collections
     {
       if (enumerable == null)
         return Enumerable.Empty<T>();
-      return enumerable.Where(
-        x =>
-          (x == null || x is DBNull)
-            ? false
-            : (x is string)
-              ? !string.IsNullOrEmpty(x as string)
-              : (x is IEnumerable)
-                ? ((IEnumerable)x).GetEnumerator().MoveNext()
-                : true
-      );
+      
+      return enumerable.Where(x =>
+      {
+        if (x == null || x is DBNull)
+          return false;
+
+        if (x is string)
+          return !string.IsNullOrEmpty(x as string);
+
+        if (x is IEnumerable)
+          // MoveNext é usado para testar se existem itens no enumerado
+          return ((IEnumerable)x).GetEnumerator().MoveNext();
+
+        return true;
+      });
     }
 
     /// <summary>
@@ -97,16 +126,21 @@ namespace Toolset.Collections
     {
       if (enumerable == null)
         return Enumerable.Empty<T>();
-      return enumerable.Where(
-        x =>
-          (x == null || x is DBNull)
-            ? false
-            : (x is string)
-              ? !string.IsNullOrWhiteSpace(x as string)
-              : (x is IEnumerable)
-                ? ((IEnumerable)x).GetEnumerator().MoveNext()
-                : true
-      );
+
+      return enumerable.Where(x =>
+      {
+        if (x == null || x is DBNull)
+          return false;
+
+        if (x is string)
+          return !string.IsNullOrWhiteSpace(x as string);
+
+        if (x is IEnumerable)
+          // MoveNext é usado para testar se existem itens no enumerado
+          return ((IEnumerable)x).GetEnumerator().MoveNext();
+
+        return true;
+      });
     }
 
     /// <summary>
@@ -132,6 +166,22 @@ namespace Toolset.Collections
       foreach (var item in enumerable)
       {
         action.Invoke(item);
+      }
+    }
+
+    /// <summary>
+    /// Varre o enumerado e executa a ação para cada item encontrado, repassando como parâmetro o
+    /// item do enumerado mais o seu índice..
+    /// </summary>
+    /// <typeparam name="T">O tipo do enumerado.</typeparam>
+    /// <param name="enumerable">O enumerado dos itens.</param>
+    /// <param name="action">A ação a ser executada.</param>
+    public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T, int> action)
+    {
+      var items = enumerable.Select((element, index) => new { element, index });
+      foreach (var item in items)
+      {
+        action.Invoke(item.element, item.index);
       }
     }
   }

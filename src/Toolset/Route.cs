@@ -510,7 +510,7 @@ namespace Toolset
           from token in queryString.Split('&')
           let parts = token.Split('=')
           let name = parts.First()
-          let value = string.Join('=', parts.Skip(1))
+          let value = string.Join("=", parts.Skip(1))
           where !string.IsNullOrEmpty(value)
           select new[] { name, value }
         ).SelectMany();

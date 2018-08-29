@@ -6,12 +6,11 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Media.Service.Proxies;
-using Media.Service.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Paper.Core.Proxies;
+using Paper.Core.Service;
 using Paper.Media;
-using Paper.Media.Rendering;
 using Paper.Media.Serialization;
 using Toolset;
 

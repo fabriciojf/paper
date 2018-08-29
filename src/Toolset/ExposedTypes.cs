@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Text;
 
 namespace Toolset
@@ -29,7 +28,7 @@ namespace Toolset
           _assemblies =
             Directory
               .GetFiles(appPath, "*.dll", SearchOption.TopDirectoryOnly)
-              .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath)
+              .Select(Assembly.LoadFrom)
               .ToArray();
 
           Console.WriteLine("--assemblies--");

@@ -1,0 +1,2 @@
+webpackJsonp([10],{618:function(e,r){e.exports={class:["order"],rel:["http://x.io/rels/customer"],title:"Detalhes do Item 15",properties:{name:"KitKat",calories:518,fat:26,carbs:65,protein:7,sodium:54,calcium:"12%",iron:"6%"},links:[{rel:["self"],href:"/demo/15"}]}}});
+//# sourceMappingURL=10.8a97d6c78d61f70f5711.js.map

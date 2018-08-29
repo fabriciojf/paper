@@ -230,7 +230,7 @@ namespace Toolset.Reflection
         _Set(target, propertyName, value);
         return true;
       }
-      catch (Exception ex)
+      catch
       {
         return false;
       }

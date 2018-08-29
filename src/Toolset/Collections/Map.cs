@@ -19,9 +19,18 @@ namespace Toolset.Collections
       map = new Dictionary<TKey, TValue>(capacity);
     }
 
-    public Map(IEnumerable<KeyValuePair<TKey, TValue>> entries)
+    public Map(IDictionary<TKey, TValue> entries)
     {
       map = new Dictionary<TKey, TValue>(entries);
+    }
+
+    public Map(IEnumerable<KeyValuePair<TKey, TValue>> entries)
+    {
+      map = new Dictionary<TKey, TValue>();
+      foreach (var entry in entries)
+      {
+        map[entry.Key] = entry.Value;
+      }
     }
 
     public TValue this[TKey key]

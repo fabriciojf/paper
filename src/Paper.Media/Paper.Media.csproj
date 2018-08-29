@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CodeDom" Version="4.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Toolset\Toolset.csproj" />
+    <ProjectReference Include="..\Toolset.Sequel\Toolset.Sequel.csproj" />
+    <ProjectReference Include="..\Toolset.Serialization\Toolset.Serialization.csproj" />
+    <ProjectReference Include="..\Toolset.Text.Template\Toolset.Text.Template.csproj" />
+  </ItemGroup>
+
+</Project>
