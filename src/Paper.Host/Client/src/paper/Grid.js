@@ -71,7 +71,8 @@ export default class Grid {
   }
 
   hasHeaderLinks (headerName) {
-    return true
+    var headerLink = this.getHeaderLinks(headerName)
+    return headerLink && headerLink.length > 0
   }
 
   _getRowHeader (headerName) {

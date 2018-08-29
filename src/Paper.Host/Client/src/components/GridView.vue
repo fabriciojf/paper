@@ -28,20 +28,22 @@
             th(
               v-for="header in props.headers"
               :key="header.text"
-              @click="openPrimaryLink(header.value)"
               align="left"
             )
+
               v-tooltip(bottom)
                 span(slot="activator") 
                   v-icon(
                     v-if="header.order === -1"
                     small
+                    @click="openPrimaryLink(header.value)"
                   ) arrow_downward
                   v-icon(
                     v-if="header.order === 1"
                     small
+                    @click="openPrimaryLink(header.value)"
                   ) arrow_upward
-                  | {{ header.text }}
+                  span(@click="openPrimaryLink(header.value)") {{ header.text }}
 
                 span {{ $paper.grid.getPrimaryLink(header.value).title }}
 
@@ -50,7 +52,12 @@
                 offset-y
                 v-if="$paper.grid.hasHeaderLinks(header.value)"
               )
-                span(slot="activator") 
+                span(
+                  slot="activator"
+                  icon
+                  small
+                  z-index="100000"
+                )
                   v-icon(
                     small
                     color="grey"
@@ -58,9 +65,9 @@
 
                 v-list
                   v-list-tile(
-                    v-for="(item, i) in menuItems"
+                    v-for="(item, i) in $paper.grid.getHeaderLinks(header.value)"
                     :key="i"
-                    @click=""
+                    @click="openLink(item.href)"
                   )
                     v-list-tile-title {{ item.title }}
 
@@ -229,6 +236,12 @@
         var primaryLink = this.$paper.grid.getPrimaryLink(headerName)
         if (primaryLink) {
           this.$paper.requester.redirectToPage(primaryLink.href)
+        }
+      },
+
+      openLink (href) {
+        if (href) {
+          this.$paper.requester.redirectToPage(href)
         }
       }
     },
