@@ -79,7 +79,7 @@ namespace Paper.Media.Design.Papers.Rendering
       if (pagination == null)
         return;
 
-      var hasFirst = pagination.Number > 2;
+      var hasFirst = pagination.Number > 1;
       var hasPrev = pagination.Number > 1;
       var hasNext = hasMoreRows;
 

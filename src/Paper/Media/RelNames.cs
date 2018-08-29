@@ -92,6 +92,11 @@ namespace Paper.Media
     /// </summary>
     public const string RowLink = "RowLink";
 
+    /// <summary>
+    /// Representação de um link primário, numa coleção de links
+    /// </summary>
+    public const string PrimaryLink = "PrimaryLink";
+
     #endregion
   }
 }

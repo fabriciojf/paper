@@ -159,7 +159,7 @@ namespace Paper.Media.Design.Papers.Rendering
           .UnsetArgs("sort", "sort[]")
           .SetArg("sort[]", sortValue);
         
-        headerEntity.AddLink(route, sortTitle, Rel.HeaderLink);
+        headerEntity.AddLink(route, sortTitle, Rel.HeaderLink, Rel.PrimaryLink);
       }
     }
   }

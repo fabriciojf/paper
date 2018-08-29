@@ -19,6 +19,51 @@
         :select-all="$paper.grid.hasActions()"
         no-data-text="Não existem dados para exibir"
       )
+
+        template(
+          slot="headers" 
+          slot-scope="props"
+        )
+          tr
+            th(
+              v-for="header in props.headers"
+              :key="header.text"
+              @click="openPrimaryLink(header.value)"
+              align="left"
+            )
+              v-tooltip(bottom)
+                span(slot="activator") 
+                  v-icon(
+                    v-if="header.order === -1"
+                    small
+                  ) arrow_downward
+                  v-icon(
+                    v-if="header.order === 1"
+                    small
+                  ) arrow_upward
+                  | {{ header.text }}
+
+                span {{ $paper.grid.getPrimaryLink(header.value).title }}
+
+              v-menu(
+                bottom
+                offset-y
+                v-if="$paper.grid.hasHeaderLinks(header.value)"
+              )
+                span(slot="activator") 
+                  v-icon(
+                    small
+                    color="grey"
+                  ) more_vert
+
+                v-list
+                  v-list-tile(
+                    v-for="(item, i) in menuItems"
+                    :key="i"
+                    @click=""
+                  )
+                    v-list-tile-title {{ item.title }}
+
         template(
           slot="items" 
           slot-scope="items"
@@ -90,7 +135,13 @@
     },
 
     data: () => ({
-      selected: []
+      selected: [],
+      menuItems: [
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me 2' }
+      ]
     }),
 
     created () {
@@ -172,6 +223,13 @@
 
       getRowIndex (item) {
         return this.$paper.grid.validItems[item._indexRowItemTable]
+      },
+
+      openPrimaryLink (headerName) {
+        var primaryLink = this.$paper.grid.getPrimaryLink(headerName)
+        if (primaryLink) {
+          this.$paper.requester.redirectToPage(primaryLink.href)
+        }
       }
     },
 

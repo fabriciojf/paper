@@ -34,12 +34,52 @@ export default class Grid {
     var headers = []
     var entity = this.store.getters.entity
     if (entity && entity.hasSubEntityByRel('rowHeader')) {
-      headers = this._getHeadersByRowsHeaders(entity)
+      headers = this._getHeadersByRowsHeaders()
       return headers
     }
 
-    headers = this._getHeadersByItemsKeys(entity)
+    headers = this._getHeadersByItemsKeys()
     return headers
+  }
+
+  getHeaderLinks (headerName) {
+    var rowHeader = this._getRowHeader(headerName)
+    if (rowHeader) {
+      var links = rowHeader.links.filter(link => !link.rel.includes('primaryLink'))
+      return links
+    }
+  }
+
+  getPrimaryLink (headerName) {
+    var rowHeader = this._getRowHeader(headerName)
+    if (rowHeader) {
+      var primaryLink = rowHeader.getLinkByRel('primaryLink')
+      return primaryLink
+    }
+  }
+
+  getPropertiesLink (headerName) {
+    var rowHeader = this._getRowHeader(headerName)
+    if (rowHeader) {
+      return rowHeader.properties
+    }
+  }
+
+  hasPrimaryLink (headerName) {
+    var primaryLink = this.getPrimaryLink(headerName)
+    return primaryLink !== null && primaryLink !== undefined
+  }
+
+  hasHeaderLinks (headerName) {
+    return true
+  }
+
+  _getRowHeader (headerName) {
+    var rowsHeaders = this.store.getters.entity.getSubEntitiesByRel('rowHeader')
+    if (rowsHeaders && rowsHeaders.length > 0) {
+      var rowHeader = rowsHeaders.find(rowHeader => rowHeader.properties.name === headerName)
+      return rowHeader
+    }
   }
 
   _getHeadersByItemsKeys () {
@@ -64,8 +104,9 @@ export default class Grid {
     return headers
   }
 
-  _getHeadersByRowsHeaders (entity) {
+  _getHeadersByRowsHeaders () {
     var headers = []
+    var entity = this.store.getters.entity
     var headersEntities = entity.getSubEntitiesByRel('rowHeader')
     if (headersEntities && headersEntities.length > 0) {
       headersEntities.forEach((header) => {
@@ -78,7 +119,8 @@ export default class Grid {
             text: title,
             align: 'left',
             sortable: false,
-            value: properties.name
+            value: properties.name,
+            order: properties.order
           })
         }
       })

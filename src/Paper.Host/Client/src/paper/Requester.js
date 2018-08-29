@@ -124,8 +124,11 @@ export default class Requester {
     if (path.indexOf(location.origin) >= 0) {
       path = path.replace(location.origin, '')
     }
-    if (path.match(/page/g)) {
-      path = path.replace('page', '')
+    if (path.startsWith('/page')) {
+      path = path.substring(6, path.length)
+    }
+    if (path.startsWith('page')) {
+      path = path.substring(5, path.length)
     }
     if (path.match(/form/g)) {
       path = path.replace('form', '')

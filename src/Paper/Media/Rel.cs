@@ -93,6 +93,11 @@ namespace Paper.Media
     /// </summary>
     RowLink,
 
+    /// <summary>
+    /// Representação de um link primário, numa coleção de links
+    /// </summary>
+    PrimaryLink,
+
     #endregion
   }
 }
