@@ -31,7 +31,7 @@
         a(
           style="text-decoration: none; color: white"
           @click.stop="$paper.blueprint.goToIndexPage()"
-        ) {{ $paper.blueprint.getProjectTitle() }}
+        ) {{ $paper.blueprint.projectTitle }}
 
     v-text-field(
       v-if="$paper.blueprint.showNavBox()"

@@ -13,6 +13,8 @@ import State from './State.js'
 import User from './User.js'
 import Filters from './Filters.js'
 import Data from './Data.js'
+import DataTypeEnum from './DataTypeEnum.js'
+import TypeEnum from './TypeEnum.js'
 
 const paper = {
   install (Vue, options) {
@@ -31,6 +33,8 @@ const paper = {
     var user = new User(options)
     var filters = new Filters(options, actions)
     var data = new Data(options)
+    var dataType = new DataTypeEnum()
+    var typeEnum = new TypeEnum()
 
     var paper = {
       blueprint: blueprint,
@@ -47,6 +51,9 @@ const paper = {
       user: user,
       filters: filters,
       data: data,
+      parser: parser,
+      dataType: dataType,
+      type: typeEnum,
 
       getEntity () {
         return options.store.getters.entity
@@ -93,9 +100,12 @@ const paper = {
       },
 
       setEntityPath (path) {
-        console.log('path', path)
         path = 'http://localhost:5000' + path
         options.store.commit('setEntityPath', path)
+      },
+
+      setEntity (data) {
+        options.store.commit('setEntity', data)
       }
     }
 

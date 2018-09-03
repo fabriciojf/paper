@@ -9,7 +9,7 @@ export default class Blueprint {
     this.router = options.router
     this.vue = options.vm
     this.requester = requester
-    this.blueprintPage = '/Api/1/Blueprint'
+    this.blueprintPage = 'http://localhost:5000/Api/1/Blueprint'
     this.blueprint = this.store.getters['blueprint/blueprint']
     this.parser = new Parser(options)
     this.demo = demo
@@ -20,56 +20,55 @@ export default class Blueprint {
     return themes
   }
 
-  getPlannerPage () {
+  get plannerPage () {
     if (this.blueprint && this.blueprint.hasLinkByRel('planner')) {
       return this.blueprint.getLinkByRel('planner').href
     }
     return '#'
   }
 
-  getIndexPage () {
+  get indexPage () {
     if (this.blueprint && this.blueprint.hasLinkByRel('index')) {
       return this.blueprint.getLinkByRel('index').href
     }
-    return ''
   }
 
-  getProjectName () {
+  get projectName () {
     if (this.hasProjectInfo()) {
       return this.blueprint.properties.info.name
     }
     return ''
   }
 
-  getProjectTitle () {
+  get projectTitle () {
     if (this.hasProjectInfo()) {
       var title = this.blueprint.properties.info.title
-      return title !== null ? title : ''
+      return title && title.length > 0 ? title : ''
     }
     return ''
   }
 
-  getProjectDescription () {
+  get projectDescription () {
     if (this.hasProjectInfo()) {
       return this.blueprint.properties.info.description
     }
     return ''
   }
 
-  getProjectVersion () {
+  get projectVersion () {
     if (this.hasProjectInfo()) {
       return this.blueprint.properties.info.version
     }
     return ''
   }
 
-  getProjectInfo () {
+  get projectInfo () {
     if (this.hasProjectInfo()) {
       return this.blueprint.properties.info
     }
   }
 
-  getBlueprintTheme () {
+  get blueprintTheme () {
     return this.blueprint.properties.theme
   }
 
@@ -115,8 +114,7 @@ export default class Blueprint {
   setTheme () {
     var defaultTheme = themes[this.defaultTheme]
     if (this.hasBlueprintTheme()) {
-      var blueprintThemeName = this.getBlueprintTheme()
-      var blueprintTheme = themes[blueprintThemeName]
+      var blueprintTheme = themes[this.blueprintTheme]
     }
     var theme = blueprintTheme || defaultTheme
     this.vue.$vuetify.theme.primary = theme.primary
@@ -129,7 +127,10 @@ export default class Blueprint {
   }
 
   goToIndexPage () {
-    var indexPage = this.getIndexPage()
+    var indexPage = this.indexPage
+    if (!indexPage) {
+      return
+    }
 
     if (this.demo.isDemoPage(indexPage)) {
       this.requester.redirectToPage(indexPage)
@@ -146,7 +147,7 @@ export default class Blueprint {
   }
 
   load () {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.blueprint === null) {
         this.page.parse(this.blueprintPage).then(response => {
           if (response && response.ok) {

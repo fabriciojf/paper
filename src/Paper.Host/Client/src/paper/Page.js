@@ -1,3 +1,6 @@
+import {Enum} from 'enumify'
+class PageType extends Enum {}
+
 export default class Page {
 
   constructor (options, requester, parser, demo) {
@@ -6,14 +9,24 @@ export default class Page {
     this.requester = requester
     this.demo = demo
     this.parser = parser
-  }
-
-  get latest () {
-    return 'teste'
+    this.type = PageType.initEnum(['GRID', 'VIEW', 'CARDS'])
   }
 
   get title () {
     return (this.store.state.entity && this.store.state.entity.title) ? this.store.state.entity.title : ''
+  }
+
+  getType () {
+    var data = this.store.state.entity
+    if (data) {
+      if (data.class.includes('list') || data.class.includes('rows')) {
+        return PageType.GRID
+      }
+      if (data.class.includes('cards')) {
+        return PageType.CARDS
+      }
+    }
+    return PageType.VIEW
   }
 
   isRoot () {

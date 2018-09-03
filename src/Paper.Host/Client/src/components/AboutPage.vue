@@ -11,7 +11,7 @@
           class="elevation-3"
         )
           v-card-title(primary-title)
-            h2 {{ $paper.blueprint.getProjectTitle() }}
+            h2 {{ $paper.blueprint.projectTitle }}
 
           v-card-text
             v-container(fluid)
@@ -39,7 +39,7 @@
 
     computed: {
       items () {
-        var data = this.$paper.blueprint.getProjectInfo()
+        var data = this.$paper.blueprint.projectInfo
         var items = []
         if (data) {
           var keys = Object.keys(data)

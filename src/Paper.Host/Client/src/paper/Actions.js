@@ -8,7 +8,7 @@ export default class Actions {
     var actions = []
     var entity = this.store.getters.entity
     if (entity && entity.actions) {
-      actions = entity.actions.filter(action => action.name !== 'filters')
+      actions = entity.actions.filter(action => action.name !== '__filter')
     }
     return actions
   }
@@ -74,8 +74,7 @@ export default class Actions {
   }
 
   hasActions () {
-    var entity = this.store.getters.entity
-    return (entity && entity.actions) !== undefined
+    return this.all && this.all.length > 0
   }
 
   getTitle (action) {

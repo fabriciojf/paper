@@ -4,6 +4,8 @@
     :value="field.value"
     :name="field.name"
     v-model="field.value"
+    clearable
+    class="ma-0 pa-0"
   )
 </template>
 

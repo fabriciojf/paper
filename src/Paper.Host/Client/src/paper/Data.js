@@ -12,12 +12,14 @@ export default class Data {
       keys.forEach((key) => {
         if (!key.startsWith('_')) {
           var properties = this._getProperties(key)
-          var hidden = properties.hasOwnProperty('hidden') ? properties.hidden : false
-          if (properties && !hidden) {
-            items.push({
-              title: properties.title,
-              value: data.properties[key]
-            })
+          if (properties) {
+            var hidden = properties.hasOwnProperty('hidden') ? properties.hidden : false
+            if (!hidden) {
+              items.push({
+                title: properties.title,
+                value: data.properties[key]
+              })
+            }
           }
         }
       })

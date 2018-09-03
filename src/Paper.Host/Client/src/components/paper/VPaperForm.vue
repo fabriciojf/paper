@@ -32,6 +32,7 @@
 
         v-btn(
           color="white"
+          v-if="false"
           @click="goBack()"
         ) Cancelar
     
@@ -67,11 +68,11 @@
         this.$paper.requester.httpRequest(this.action.method, this.action.href, queryParams).then(response => {
           if (response.ok) {
             this.$notify({ message: 'Operação realizada com sucesso!', type: 'success' })
-            var location = response.data.headers['Location']
-            if (location && location.length > 0) {
-              this.$paper.requester.redirectToPage(location)
-            } else {
-              this.$paper.requester.goToRootPage()
+            // var location = response.data.headers['Location']
+            var json = response.data.data
+            if (json) {
+              var data = this.$paper.parser.parse(json)
+              this.$paper.setEntity(data)
             }
           } else {
             var error = this.$paper.errors.httpTranslate(response.data.status)

@@ -6,7 +6,7 @@ export default class Filters {
   }
 
   get entity () {
-    var filters = this.actions.getAction('filters')
+    var filters = this.actions.getAction('__filter')
     return filters
   }
 

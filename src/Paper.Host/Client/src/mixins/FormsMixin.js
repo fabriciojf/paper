@@ -12,42 +12,9 @@ import VPaperCurrency from '../components/paper/VPaperCurrency.vue'
 import VPaperUrl from '../components/paper/VPaperUrl.vue'
 import VPaperLabel from '../components/paper/VPaperLabel.vue'
 import VPaperDateRange from '../components/paper/VPaperDateRange.vue'
+
 export default {
-  data: () => ({
-    Type: {
-      HIDDEN: 'hidden',
-      TEXT: 'text',
-      SEARCH: 'search',
-      TEL: 'tel',
-      URL: 'url',
-      EMAIL: 'email',
-      PASSWORD: 'password',
-      DATETIME: 'datetime',
-      DATE: 'date',
-      MONTH: 'month',
-      WEEK: 'week',
-      TIME: 'time',
-      NUMBER: 'number',
-      RANGE: 'range',
-      COLOR: 'color',
-      CHECKBOX: 'checkbox',
-      RADIO: 'radio',
-      FILE: 'file'
-    },
-    DataType: {
-      BIT: 'bit',
-      BOOLEAN: 'boolean',
-      BOOL: 'bool',
-      NUMBER: 'numbr',
-      INT: 'int',
-      LONG: 'long',
-      DECIMAL: 'decimal',
-      DOUBLE: 'double',
-      FLOAT: 'float',
-      CURRENCY: 'currency',
-      STRING: 'string'
-    }
-  }),
+
   components: {
     VPaperText,
     VPaperNumber,
@@ -64,23 +31,26 @@ export default {
     VPaperDateRange,
     VPaperLabel
   },
+
   methods: {
     $_formsMixin_dynamicComponent (field) {
       switch (field.type) {
-        case this.Type.HIDDEN:
+        case this.$paper.type.HIDDEN:
           return 'VPaperHidden'
-        case this.Type.DATE:
+        case this.$paper.type.DATE:
           return 'VPaperDate'
-        case this.Type.TIME:
+        case this.$paper.type.TIME:
           return 'VPaperTime'
-        case this.Type.URL:
+        case this.$paper.type.URL:
           return 'VPaperUrl'
-        case this.Type.TEXT:
-          return this._getSubDataType(field.dataType)
-        case this.Type.NUMBER:
-          return this._getSubDataType(field.dataType)
-        case this.Type.CHECKBOX:
+        case this.$paper.type.TEXT:
+          return this._getSubDataType(field.__dataType)
+        case this.$paper.type.NUMBER:
+          return this._getSubDataType(field.__dataType)
+        case this.$paper.type.CHECKBOX:
           return 'VPaperSelect'
+        case this.$paper.type.DATETIME:
+          return 'VPaperDate'
         default:
           return 'VPaperText'
       }
@@ -91,11 +61,10 @@ export default {
       var formName = 'form-' + actionName
       var form = this.$refs[formName]
       form.inputs.forEach((field) => {
-        var fieldValue = field.$attrs.value
-        if (fieldValue && fieldValue.length > 0) {
+        var fieldValue = typeof (field.isActive) !== 'undefined' ? field.isActive : field.$attrs.value
+        if (fieldValue) {
           var param = field.$attrs.name
-          var value = field.$attrs.value
-          params[param] = value
+          params[param] = fieldValue
         }
       })
       return params
@@ -109,28 +78,28 @@ export default {
 
     $_formsMixin_haveInputs (action) {
       var input = action.fields.find(field =>
-        field.type !== this.Type.TEXT && field.dataType !== this.DataType.STRING
+        field.type !== this.$paper.type.TEXT && field.dataType !== this.$paper.dataType.STRING
       )
       return input !== undefined
     },
 
     _getSubDataType (dataType) {
       switch (dataType) {
-        case this.DataType.BIT:
-        case this.DataType.BOOL:
-        case this.DataType.BOOLEAN:
+        case this.$paper.dataType.BIT:
+        case this.$paper.dataType.BOOL:
+        case this.$paper.dataType.BOOLEAN:
           return 'VPaperSwitch'
-        case this.DataType.NUMBER:
-        case this.DataType.INT:
-        case this.DataType.LONG:
+        case this.$paper.dataType.NUMBER:
+        case this.$paper.dataType.INT:
+        case this.$paper.dataType.LONG:
           return 'VPaperNumber'
-        case this.DataType.DECIMAL:
-        case this.DataType.DOUBLE:
-        case this.DataType.FLOAT:
+        case this.$paper.dataType.DECIMAL:
+        case this.$paper.dataType.DOUBLE:
+        case this.$paper.dataType.FLOAT:
           return 'VPaperNumber'
-        case this.DataType.CURRENCY:
+        case this.$paper.dataType.CURRENCY:
           return 'VPaperCurrency'
-        case this.DataType.STRING:
+        case this.$paper.dataType.STRING:
           return 'VPaperLabel'
         default:
           return 'VPaperText'

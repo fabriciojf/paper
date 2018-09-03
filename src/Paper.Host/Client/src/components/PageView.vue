@@ -5,6 +5,7 @@
 <script>
   import PaperGrid from './GridView.vue'
   import PaperView from './View.vue'
+  import PaperCards from './CardsView.vue'
   export default {
     data: () => ({
       viewShow: ''
@@ -12,7 +13,8 @@
 
     components: {
       PaperGrid,
-      PaperView
+      PaperView,
+      PaperCards
     },
 
     beforeRouteUpdate (to, from, next) {
@@ -40,11 +42,15 @@
 
     computed: {
       dynamicComponent () {
-        var data = this.$paper.getEntity()
-        var isCollection = data && data.class && data.class.find(value =>
-          (value === 'list') || (value === 'rows')
-        )
-        return isCollection ? PaperGrid : PaperView
+        var pageType = this.$paper.page.getType()
+        switch (pageType) {
+          case this.$paper.page.type.CARDS:
+            return PaperCards
+          case this.$paper.page.type.GRID:
+            return PaperGrid
+          default:
+            return PaperView
+        }
       }
     }
   }

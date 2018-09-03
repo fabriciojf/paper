@@ -8,6 +8,7 @@ import money from 'v-money'
 import VueAuth from '@websanova/vue-auth'
 
 import 'vuetify/dist/vuetify.css'
+import './assets/css/style.sass'
 
 import App from './App'
 import router from './router'

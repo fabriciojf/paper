@@ -42,9 +42,30 @@ export default class Grid {
     return headers
   }
 
+  getDataHeader (item) {
+    var entity = this.store.getters.entity
+    if (entity && entity.hasSubEntityByRel('rowHeader')) {
+      var headers = entity.getSubEntitiesByRel('rowHeader')
+      var rowHeader = headers.find(header => header.properties.name === item)
+      return rowHeader
+    }
+  }
+
+  getColumnType (item) {
+    var dataHeader = this.getDataHeader(item)
+    var columnType = dataHeader.properties.type
+    return columnType
+  }
+
+  getColumnDataType (item) {
+    var dataHeader = this.getDataHeader(item)
+    var columnDataType = dataHeader.properties.dataType
+    return columnDataType
+  }
+
   getHeaderLinks (headerName) {
     var rowHeader = this._getRowHeader(headerName)
-    if (rowHeader) {
+    if (rowHeader && rowHeader.links && rowHeader.links.length > 0) {
       var links = rowHeader.links.filter(link => !link.rel.includes('primaryLink'))
       return links
     }
@@ -67,7 +88,7 @@ export default class Grid {
 
   hasPrimaryLink (headerName) {
     var primaryLink = this.getPrimaryLink(headerName)
-    return primaryLink !== null && primaryLink !== undefined
+    return primaryLink != null && primaryLink !== undefined
   }
 
   hasHeaderLinks (headerName) {
@@ -86,6 +107,9 @@ export default class Grid {
   _getHeadersByItemsKeys () {
     var validKeys = []
     this.validItems.forEach(item => {
+      if (!item.properties) {
+        return
+      }
       var keys = Object.keys(item.properties)
       keys.filter(key => {
         if (!key.startsWith('_') && !validKeys.includes(key)) {

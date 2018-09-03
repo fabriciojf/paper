@@ -1,5 +1,7 @@
 <template lang="pug">
+
   v-card
+  
     v-container(
       fluid
       grid-list-md
@@ -31,7 +33,10 @@
               align="left"
             )
 
-              v-tooltip(bottom)
+              v-tooltip(
+                bottom
+                v-if="$paper.grid.hasPrimaryLink(header.value)"
+              )
                 span(slot="activator") 
                   v-icon(
                     v-if="header.order === -1"
@@ -43,9 +48,14 @@
                     small
                     @click="openPrimaryLink(header.value)"
                   ) arrow_upward
-                  span(@click="openPrimaryLink(header.value)") {{ header.text }}
+                  span(
+                    @click="openPrimaryLink(header.value)"
+                    class="pointer"
+                  ) {{ header.text }}
 
                 span {{ $paper.grid.getPrimaryLink(header.value).title }}
+
+              span(v-else) {{ header.text }}
 
               v-menu(
                 bottom
@@ -70,6 +80,10 @@
                     @click="openLink(item.href)"
                   )
                     v-list-tile-title {{ item.title }}
+            th(
+              v-if="$paper.actions.hasSubEntitiesActions()"
+            )
+              span Ações
 
         template(
           slot="items" 
@@ -93,15 +107,24 @@
               v-for="(header, index) in headers"
               :key="items.index.toString() + index.toString()"
               :style="getColumnCursorStyle(items.item, header.value)"
-              class="text-xs-left"
               nowrap
             ) 
-              a(
+              v-tooltip(
+                bottom
                 v-if="hasColumnItemLink(items.item, header.value)"
-                @click.stop="openColumnItemView(items.item, header.value)"
-              ) {{ items.item[header.value] }}
+              )
+                a(
+                  slot="activator"
+                  v-if="hasColumnItemLink(items.item, header.value)"
+                  @click.stop="openColumnItemView(items.item, header.value)"
+                ) {{ items.item[header.value] }}
 
-              div(v-else) {{ items.item[header.value] }}
+                span {{ getColumnLink(items.item, header.value).title }}
+
+              div(
+                v-else
+                :class="getDataTypeClass(items.item, header)"
+              ) {{ isBooleanColumn(header) ? '' : items.item[header.value] }}
 
             td(
               class="text-xs-center" 
@@ -109,14 +132,15 @@
               v-if="hasItemLinks(items.index)"
             )
               v-menu(
-                offset-x 
+                offset-y
                 left 
                 bottom 
                 v-if="hasItemLinks(items.index)"
               )
-                v-btn(
+                span(
                   icon
                   slot="activator"
+                  small
                 )
                   v-icon
                     | more_vert
@@ -130,6 +154,8 @@
                       a(
                         @click.stop="$paper.requester.redirectToPage(item.href)"
                       ) {{ item.title ? item.title : item.rel[0] }}
+
+            td(v-else)
 
 </template>
 
@@ -206,6 +232,12 @@
         }
       },
 
+      getColumnLink (item, column) {
+        var entireItem = this.getRowIndex(item)
+        var link = entireItem.getLinkByRel(column)
+        return link
+      },
+
       openItemView (item) {
         var entireItem = this.getRowIndex(item)
         var link = entireItem.getLinkByRel('self')
@@ -243,6 +275,22 @@
         if (href) {
           this.$paper.requester.redirectToPage(href)
         }
+      },
+
+      getDataTypeClass (item, header) {
+        var dataType = this.$paper.grid.getColumnDataType(header.value)
+        switch (dataType) {
+          case this.$paper.dataType.BOOL:
+            var value = item[header.value]
+            return value === 1 ? 'checked text-xs-center' : 'text-xs-center'
+          default:
+            return 'text-xs-left'
+        }
+      },
+
+      isBooleanColumn (header) {
+        var columnType = this.$paper.grid.getColumnDataType(header.value)
+        return columnType === this.$paper.dataType.BOOL
       }
     },
 
@@ -272,3 +320,11 @@
     }
   }
 </script>
+
+<style lang="sass">
+  .vue-notifyjs .alert
+    z-index: 99999
+
+  table.v-table tbody td, table.v-table tbody th
+    height: 32px
+</style>

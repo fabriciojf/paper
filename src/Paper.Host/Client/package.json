@@ -23,7 +23,7 @@
     "vue-axios": "^2.0.2",
     "vue-notifyjs": "^0.4.1",
     "vue-router": "^2.3.1",
-    "vuetify": "^1.2.0"
+    "vuetify": "^1.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -43,6 +43,7 @@
     "cross-env": "^5.0.1",
     "css-loader": "^0.28.0",
     "cssnano": "^3.10.0",
+    "enumify": "^1.0.4",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^6.2.1",
     "eslint-friendly-formatter": "^3.0.0",

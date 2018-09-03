@@ -1,26 +1,14 @@
 <template lang="pug">
-  v-container(class="noPaddingLeft")
     v-switch(
       :label="field.title"
-      :value="value"
       :name="field.name"
       v-model="field.value"
+      class="ma-0 pa-0"
     )
 </template>
 
 <script>
   export default {
-    props: ['field'],
-
-    computed: {
-      value () {
-        return this.field.value !== undefined && this.field.value !== null ? this.field.value : false
-      }
-    }
+    props: ['field']
   }
 </script>
-
-<style lang="sass">
-  .noPaddingLeft
-    padding-left: 0px
-</style>
