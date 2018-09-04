@@ -62,6 +62,7 @@ namespace Paper.Media.Design.Rendering.Papers
       RenderOfPage.PreCache(paper, ctx);
       RenderOfData.CacheData(paper, ctx.Cache);
       RenderOfRows.CacheData(paper, ctx.Cache);
+      RenderOfCards.CacheData(paper, ctx.Cache);
       RenderOfPage.PostCache(paper, ctx);
 
       //
@@ -73,6 +74,7 @@ namespace Paper.Media.Design.Rendering.Papers
       RenderOfPage.Render(paper, entity, ctx);
       RenderOfSort.Render(paper, entity, ctx);
       RenderOfFilter.Render(paper, entity, ctx);
+      RenderOfCards.Render(paper, entity, ctx);
     }
   }
 }

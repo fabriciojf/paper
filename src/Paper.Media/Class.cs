@@ -25,6 +25,16 @@ namespace Paper.Media
     Row,
 
     /// <summary>
+    /// Nome de classe para ume entidade que se comporta como uma coleção de cards.
+    /// </summary>
+    Cards,
+
+    /// <summary>
+    /// Nome de classe para ume entidade que se comporta como um registro de coleção de cards.
+    /// </summary>
+    Card,
+
+    /// <summary>
     /// Nome de classe para ume entidade que se comporta como um cabeçalho.
     /// </summary>
     Header,

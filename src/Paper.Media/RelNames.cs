@@ -73,6 +73,11 @@ namespace Paper.Media
     public const string Row = "row";
 
     /// <summary>
+    /// Relacionamento entre o registro e a entidade cards.
+    /// </summary>
+    public const string Card = "card";
+
+    /// <summary>
     /// Estabelece relacionamento entre o alvo e um cabeçalho de dados.
     /// </summary>
     public const string DataHeader = "dataHeader";

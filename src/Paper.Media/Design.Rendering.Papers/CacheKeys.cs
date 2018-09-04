@@ -20,6 +20,11 @@ namespace Paper.Media.Design.Rendering.Papers
     public const string Rows = "Rows";
 
     /// <summary>
+    /// Coleção dos registros consultados durante a renderização da página.
+    /// </summary>
+    public const string Cards = "Cards";
+
+    /// <summary>
     /// Determina se ainda existem mais páginas de registro no lado do servidor.
     /// </summary>
     public const string HasMoreData = "HasMoreData";

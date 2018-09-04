@@ -19,11 +19,10 @@ export default class Page {
   getType () {
     var data = this.store.state.entity
     if (data) {
-      if (data.class.includes('list') || data.class.includes('rows')) {
-        return PageType.GRID
-      }
       if (data.class.includes('cards')) {
         return PageType.CARDS
+      } else if (data.class.includes('list') || data.class.includes('rows')) {
+        return PageType.GRID
       }
     }
     return PageType.VIEW

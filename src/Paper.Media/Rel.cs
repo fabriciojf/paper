@@ -74,6 +74,11 @@ namespace Paper.Media
     Row,
 
     /// <summary>
+    /// Relacionamento entre o registro e a entidade cards.
+    /// </summary>
+    Card,
+
+    /// <summary>
     /// Estabelece relacionamento entre o alvo e um cabeçalho de dados.
     /// </summary>
     DataHeader,

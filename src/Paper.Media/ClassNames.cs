@@ -22,6 +22,16 @@ namespace Paper.Media
     public const string Rows = "rows";
 
     /// <summary>
+    /// Nome de classe para ume entidade que se comporta como uma coleção de cards.
+    /// </summary>
+    public const string Cards = "cards";
+
+    /// <summary>
+    /// Nome de classe para ume entidade que se comporta como um registro de coleção de cards.
+    /// </summary>
+    public const string Card = "card";
+
+    /// <summary>
     /// Nome de classe para ume entidade que se comporta como um registro de coleção de registros.
     /// </summary>
     public const string Row = "row";

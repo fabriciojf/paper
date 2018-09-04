@@ -13,6 +13,7 @@ import State from './State.js'
 import User from './User.js'
 import Filters from './Filters.js'
 import Data from './Data.js'
+import Cards from './Cards.js'
 import DataTypeEnum from './DataTypeEnum.js'
 import TypeEnum from './TypeEnum.js'
 
@@ -35,6 +36,7 @@ const paper = {
     var data = new Data(options)
     var dataType = new DataTypeEnum()
     var typeEnum = new TypeEnum()
+    var cards = new Cards(options)
 
     var paper = {
       blueprint: blueprint,
@@ -54,6 +56,7 @@ const paper = {
       parser: parser,
       dataType: dataType,
       type: typeEnum,
+      cards: cards,
 
       getEntity () {
         return options.store.getters.entity
