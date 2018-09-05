@@ -17,7 +17,9 @@ export default class Data {
             if (!hidden) {
               items.push({
                 title: properties.title,
-                value: data.properties[key]
+                value: data.properties[key],
+                name: key,
+                dataType: properties.dataType
               })
             }
           }
@@ -25,6 +27,16 @@ export default class Data {
       })
     }
     return items
+  }
+
+  getLinks (itemName) {
+    var entity = this.store.getters.entity
+    if (entity && entity.links && entity.links.length > 1) {
+      var link = entity.links.filter(link => link.rel.includes(itemName))
+      if (link) {
+        return link
+      }
+    }
   }
 
   get dataHeaders () {
