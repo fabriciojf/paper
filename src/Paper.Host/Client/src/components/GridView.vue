@@ -93,8 +93,8 @@
           tr(
             :style="getRowCursorStyle(items.item)"
             @click.stop="openItemView(items.item)"
+            @contextmenu="showContextMenu(items.item, $event)"
           )
-
             td(v-if="$paper.grid.hasActions()")
               v-checkbox(
                 primary
@@ -145,30 +145,38 @@
                   v-icon
                     | more_vert
 
-                v-list
-                  v-list-tile(
-                    v-for="item in itemLinks(items.index)" 
-                    :key="item.href"
-                  )
-                    v-list-tile-content
-                      a(
-                        @click.stop="$paper.requester.redirectToPage(item.href)"
-                      ) {{ item.title ? item.title : item.rel[0] }}
-
+                grid-view-links(:items="items")
+                      
             td(v-else)
+
+            v-menu(
+              v-model="showMenuLinks"
+              :position-x="x"
+              :position-y="y"
+              absolute
+              offset-y
+              v-if="rowContextMenuVisible(items.index)"
+            )
+              grid-view-links(:items="items")
 
 </template>
 
 <script>
   import { Events } from '../event-bus.js'
   import GridViewPagination from './GridViewPagination.vue'
+  import GridViewLinks from './GridViewLinks.vue'
   export default {
     components: {
-      GridViewPagination
+      GridViewPagination,
+      GridViewLinks
     },
 
     data: () => ({
-      selected: []
+      lineSelected: 0,
+      selected: [],
+      showMenuLinks: false,
+      x: 0,
+      y: 0
     }),
 
     created () {
@@ -249,9 +257,17 @@
         return links
       },
 
+      rowContextMenuVisible (index) {
+        if (index === this.lineSelected) {
+          return this.hasItemLinks(index)
+        }
+        return false
+      },
+
       hasItemLinks (index) {
         var items = this.itemLinks(index)
-        return items && items.length > 0
+        var hasLinks = items && items.length > 0
+        return hasLinks
       },
 
       getRowIndex (item) {
@@ -285,6 +301,17 @@
       isBooleanColumn (header) {
         var columnType = this.$paper.grid.getColumnDataType(header.value)
         return columnType === this.$paper.dataType.BOOL
+      },
+
+      showContextMenu (item, e) {
+        this.lineSelected = item._indexRowItemTable
+        e.preventDefault()
+        this.showMenuLinks = false
+        this.x = e.clientX
+        this.y = e.clientY
+        this.$nextTick(() => {
+          this.showMenuLinks = true
+        })
       }
     },
 

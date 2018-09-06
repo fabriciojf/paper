@@ -69,8 +69,12 @@ export default class Actions {
   }
 
   hasSubEntitiesActions () {
-    var exist = this.store.getters.entity.entities.filter(entity => entity.hasAction())
-    return exist
+    var entities = this.store.getters.entity.entities
+    if (entities) {
+      var exist = entities.filter(entity => entity.hasAction())
+      return exist
+    }
+    return false
   }
 
   hasActions () {

@@ -22,7 +22,7 @@
             v-for="(item, index) in $paper.data.items" 
             :key="item.key"
           )
-            v-list-tile(@click="")
+            v-list-tile(@click="openSelfLink(item)")
               v-list-tile-content(style="width:40%; max-width:40%;")
                 v-list-tile-sub-title {{ item.title }}
 
@@ -35,7 +35,10 @@
                 v-list-tile-title(v-else)
                   | {{ item.value }}
 
-              v-list-tile-action(v-if="hasItemLinks(item)")
+              v-list-tile-action(
+                v-if="hasItemLinks(item)"
+                @click.stop=""
+              )
                 v-menu(
                   offset-y
                   left 
@@ -85,6 +88,16 @@
         var links = this.$paper.data.getLinks(item.name)
         if (links) {
           return links
+        }
+      },
+
+      openSelfLink (item) {
+        var links = this.itemLinks(item)
+        if (links && links.length > 0) {
+          var selfLink = links.find(link => link.rel.find(rel => rel === item.name))
+          if (selfLink) {
+            this.$paper.requester.redirectToPage(selfLink.href)
+          }
         }
       }
     }
