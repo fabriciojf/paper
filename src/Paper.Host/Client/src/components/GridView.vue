@@ -80,10 +80,6 @@
                     @click="openLink(item.href)"
                   )
                     v-list-tile-title {{ item.title }}
-            th(
-              v-if="$paper.actions.hasSubEntitiesActions()"
-            )
-              span Ações
 
         template(
           slot="items" 
@@ -93,7 +89,6 @@
           tr(
             :style="getRowCursorStyle(items.item)"
             @click.stop="openItemView(items.item)"
-            @contextmenu="showContextMenu(items.item, $event)"
           )
             td(v-if="$paper.grid.hasActions()")
               v-checkbox(
@@ -108,7 +103,9 @@
               :key="items.index.toString() + index.toString()"
               :style="getColumnCursorStyle(items.item, header.value)"
               nowrap
+              @click.stop=""
             ) 
+
               v-tooltip(
                 bottom
                 v-if="hasColumnItemLink(items.item, header.value)"
@@ -117,17 +114,26 @@
                   slot="activator"
                   v-if="hasColumnItemLink(items.item, header.value)"
                   @click.stop="openColumnItemView(items.item, header.value)"
-                ) {{ items.item[header.value] }}
+                ) {{ shorten(items.item[header.value]) }}
 
                 span {{ getColumnLink(items.item, header.value).title }}
 
               div(
                 v-else
                 :class="getDataTypeClass(items.item, header)"
-              ) {{ isBooleanColumn(header) ? '' : items.item[header.value] }}
+              ) {{ isBooleanColumn(header) ? '' : shorten(items.item[header.value]) }}
+
+                v-icon(
+                  v-if="isLongerText(items.item[header.value])"
+                  @click.stop=""
+                  small
+                  class="mr-2"
+                  @click="setTextDialog(items.item[header.value])"
+                ) visibility
 
             td(
-              class="text-xs-center" 
+              class="fixed-column" 
+              nowrap
               @click.stop=""
               v-if="hasItemLinks(items.index)"
             )
@@ -135,48 +141,61 @@
                 offset-y
                 left 
                 bottom 
+                class="menu-actions"
                 v-if="hasItemLinks(items.index)"
               )
                 span(
                   icon
                   slot="activator"
+                  style="height: 30px !important"
                   small
                 )
-                  v-icon
+                  v-icon(class="menu-actions")
                     | more_vert
 
-                grid-view-links(:items="items")
-                      
-            td(v-else)
+                v-list
+                  v-list-tile(
+                    v-for="link in itemLinks(items.index)" 
+                    :key="link.href"
+                  )
+                    v-list-tile-content
+                      a(
+                        @click.stop="$paper.requester.redirectToPage(link.href)"
+                      ) {{ link.title ? link.title : link.rel[0] }}
 
-            v-menu(
-              v-model="showMenuLinks"
-              :position-x="x"
-              :position-y="y"
-              absolute
-              offset-y
-              v-if="rowContextMenuVisible(items.index)"
-            )
-              grid-view-links(:items="items")
+    v-dialog(
+      v-model="dialog"
+      max-width="800px"
+    )
+      v-card
+        v-card-text {{ texto }}
+        
+        v-card-actions
+          v-spacer
+          v-btn(
+            color="primary" 
+            flat 
+            @click.native="dialog = false"
+          ) Fechar
+      
 
 </template>
 
 <script>
   import { Events } from '../event-bus.js'
   import GridViewPagination from './GridViewPagination.vue'
-  import GridViewLinks from './GridViewLinks.vue'
+  import GridViewDialog from './GridViewDialog.vue'
   export default {
     components: {
       GridViewPagination,
-      GridViewLinks
+      GridViewDialog
     },
 
     data: () => ({
-      lineSelected: 0,
       selected: [],
-      showMenuLinks: false,
-      x: 0,
-      y: 0
+      textColumnMaxLength: 50,
+      dialog: false,
+      texto: ''
     }),
 
     created () {
@@ -189,6 +208,11 @@
     },
 
     methods: {
+      setTextDialog (texto) {
+        this.dialog = true
+        this.texto = texto
+      },
+
       getRowCursorStyle (item) {
         var entireItem = this.getRowIndex(item)
         var link = entireItem.getLinkByRel('self')
@@ -257,13 +281,6 @@
         return links
       },
 
-      rowContextMenuVisible (index) {
-        if (index === this.lineSelected) {
-          return this.hasItemLinks(index)
-        }
-        return false
-      },
-
       hasItemLinks (index) {
         var items = this.itemLinks(index)
         var hasLinks = items && items.length > 0
@@ -303,15 +320,16 @@
         return columnType === this.$paper.dataType.BOOL
       },
 
-      showContextMenu (item, e) {
-        this.lineSelected = item._indexRowItemTable
-        e.preventDefault()
-        this.showMenuLinks = false
-        this.x = e.clientX
-        this.y = e.clientY
-        this.$nextTick(() => {
-          this.showMenuLinks = true
-        })
+      shorten (text) {
+        if (text && text.length > this.textColumnMaxLength) {
+          text = text.substr(0, this.textColumnMaxLength - 3) + '...'
+        }
+        return text
+      },
+
+      isLongerText (text) {
+        var isLongerText = text && text.length > this.textColumnMaxLength
+        return isLongerText
       }
     },
 
