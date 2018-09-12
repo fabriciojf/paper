@@ -22,19 +22,30 @@
             v-for="(item, index) in $paper.data.items" 
             :key="item.key"
           )
-            v-list-tile(@click="openSelfLink(item)")
-              v-list-tile-content(style="width:40%; max-width:40%;")
+            v-list-tile(
+              @click="openSelfLink(item)"
+            )
+              v-list-tile-content(class="view-title")
                 v-list-tile-sub-title {{ item.title }}
 
-              v-list-tile-content
+              v-list-tile-content(
+                :class="detailsClass(item)"
+              )
                 v-list-tile-title(
                   v-if="dataTypeIsBool(item)"
                   class="checked"
                 )
                 
-                v-list-tile-title(v-else)
-                  | {{ item.value }}
+                v-list-tile-sub-title(
+                  v-else
+                  class="text--primary"
+                ) {{ shorten(item.value) }}
 
+                  v-paper-visibility-btn(
+                    v-if="isLongerText(item.value)"
+                    :text="item.value"
+                  )
+                        
               v-list-tile-action(
                 v-if="hasItemLinks(item)"
                 @click.stop=""
@@ -67,8 +78,27 @@
 </template>
 
 <script>
+  import VPaperVisibilityBtn from './paper/VPaperVisibilityButton.vue'
   export default {
+    data: () => ({
+      textColumnMaxLength: 80
+    }),
+
+    components: {
+      VPaperVisibilityBtn
+    },
+
     methods: {
+      styleTest (item) {
+        var estilo = this.isLongerText(item) ? 'height: 89px' : ''
+        return estilo
+      },
+
+      detailsClass (item) {
+        var detailsClass = this.hasItemLinks(item) ? 'view-details-menu' : 'view-details'
+        return detailsClass
+      },
+
       dataTypeIsBool (item) {
         return item.dataType === this.$paper.dataType.BOOL
       },
@@ -99,6 +129,20 @@
             this.$paper.requester.redirectToPage(selfLink.href)
           }
         }
+      },
+
+      shorten (text) {
+        if (text && text.length > this.textColumnMaxLength) {
+          text = text.substr(0, this.textColumnMaxLength - 3) + '...'
+        }
+        return text
+      },
+
+      isLongerText (text) {
+        if (text && text.length > this.textColumnMaxLength) {
+          return true
+        }
+        return false
       }
     }
   }

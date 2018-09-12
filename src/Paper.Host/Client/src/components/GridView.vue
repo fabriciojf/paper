@@ -103,7 +103,6 @@
               :key="items.index.toString() + index.toString()"
               :style="getColumnCursorStyle(items.item, header.value)"
               nowrap
-              @click.stop=""
             ) 
 
               v-tooltip(
@@ -123,13 +122,10 @@
                 :class="getDataTypeClass(items.item, header)"
               ) {{ isBooleanColumn(header) ? '' : shorten(items.item[header.value]) }}
 
-                v-icon(
+                v-paper-visibility-btn(
                   v-if="isLongerText(items.item[header.value])"
-                  @click.stop=""
-                  small
-                  class="mr-2"
-                  @click="setTextDialog(items.item[header.value])"
-                ) visibility
+                  :text="items.item[header.value]"
+                )
 
             td(
               class="fixed-column" 
@@ -163,39 +159,21 @@
                         @click.stop="$paper.requester.redirectToPage(link.href)"
                       ) {{ link.title ? link.title : link.rel[0] }}
 
-    v-dialog(
-      v-model="dialog"
-      max-width="800px"
-    )
-      v-card
-        v-card-text {{ texto }}
-        
-        v-card-actions
-          v-spacer
-          v-btn(
-            color="primary" 
-            flat 
-            @click.native="dialog = false"
-          ) Fechar
-      
-
 </template>
 
 <script>
   import { Events } from '../event-bus.js'
   import GridViewPagination from './GridViewPagination.vue'
-  import GridViewDialog from './GridViewDialog.vue'
+  import VPaperVisibilityBtn from './paper/VPaperVisibilityButton.vue'
   export default {
     components: {
       GridViewPagination,
-      GridViewDialog
+      VPaperVisibilityBtn
     },
 
     data: () => ({
       selected: [],
-      textColumnMaxLength: 50,
-      dialog: false,
-      texto: ''
+      textColumnMaxLength: 50
     }),
 
     created () {
@@ -208,11 +186,6 @@
     },
 
     methods: {
-      setTextDialog (texto) {
-        this.dialog = true
-        this.texto = texto
-      },
-
       getRowCursorStyle (item) {
         var entireItem = this.getRowIndex(item)
         var link = entireItem.getLinkByRel('self')

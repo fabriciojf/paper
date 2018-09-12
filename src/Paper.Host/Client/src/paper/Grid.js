@@ -86,6 +86,13 @@ export default class Grid {
     }
   }
 
+  shortenText (text) {
+    if (text && text.length > this.textColumnMaxLength) {
+      text = text.substr(0, this.textColumnMaxLength - 3) + '...'
+    }
+    return text
+  }
+
   hasPrimaryLink (headerName) {
     var primaryLink = this.getPrimaryLink(headerName)
     return primaryLink != null && primaryLink !== undefined
