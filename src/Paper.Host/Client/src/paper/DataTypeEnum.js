@@ -12,6 +12,7 @@ export default class DataType {
     this.FLOAT = 'float'
     this.CURRENCY = 'currency'
     this.STRING = 'string'
+    this.DATETIME = 'datetime'
   }
 
 }

@@ -1,10 +1,11 @@
 export default class Demo {
-  constructor (options, parser) {
+  constructor (options, parser, entity) {
     this.router = options.router
     this.store = options.store
     this.parser = parser
     this.vue = options.vm
     this.blueprintPage = '/page/Blueprint'
+    this.entity = entity
   }
 
   isRoot () {
@@ -12,10 +13,13 @@ export default class Demo {
   }
 
   isDemoPage (path) {
-    return path !== null && (path.match(/\/page\/demo/g) !== null || path.match(/demo/g) !== null || path.match(/\/demo/g) !== null)
+    return path &&
+            (path.match(/\/page\/demo/g) !== null ||
+              path.match(/demo/g) !== null ||
+                path.match(/\/demo/g) !== null)
   }
 
-  loadBlueprint (indexPage) {
+  loadBlueprint () {
     this._importDemoFile(this.blueprintPage).then(json => {
       var data = this.parser.parse(json)
       this.store.commit('blueprint/setBlueprint', data)
@@ -26,11 +30,11 @@ export default class Demo {
   }
 
   load (jsonFile) {
-    this.store.commit('setEntityPath', jsonFile)
+    this.entity.setPath(jsonFile)
     jsonFile = this._makeJsonFilePath(jsonFile)
     this._importDemoFile(jsonFile).then(json => {
       var data = this.parser.parse(json)
-      this.store.commit('setEntity', data)
+      this.entity.setEntity(data)
     }).catch(() => {
       var message = 'Erro ao carregar a página de demonstração: ' + jsonFile
       this.vue.$notify({ message: message, type: 'danger' })

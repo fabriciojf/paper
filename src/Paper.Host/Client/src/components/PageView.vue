@@ -20,7 +20,7 @@
     beforeRouteUpdate (to, from, next) {
       if (to.params.length > 0) {
         var path = '/' + to.params.path.join('/')
-        this.$paper.setEntityPath(path)
+        this.$paper.page.setPagePath(path)
       }
       this.$paper.state.disableSelectionState()
       next()
@@ -31,7 +31,7 @@
       if (this.$route.params.path instanceof Array) {
         path = '/' + this.$route.params.path.join('/')
       }
-      this.$paper.setEntityPath(path)
+      this.$paper.page.setPagePath(path)
       this.$paper.page.load()
       this.$paper.navigation.setRightMenuVisible(true)
     },
@@ -42,11 +42,11 @@
 
     computed: {
       dynamicComponent () {
-        var pageType = this.$paper.page.getType()
+        var pageType = this.$paper.page.type
         switch (pageType) {
-          case this.$paper.page.type.CARDS:
+          case this.$paper.page.pageType.CARDS:
             return PaperCards
-          case this.$paper.page.type.GRID:
+          case this.$paper.page.pageType.GRID:
             return PaperGrid
           default:
             return PaperView

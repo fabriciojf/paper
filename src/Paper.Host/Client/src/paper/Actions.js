@@ -1,25 +1,23 @@
 export default class Actions {
 
-  constructor (options) {
-    this.store = options.store
+  constructor (entity) {
+    this.entity = entity
   }
 
   get all () {
-    var actions = []
-    var entity = this.store.getters.entity
-    if (entity && entity.actions) {
-      actions = entity.actions.filter(action => action.name !== '__filter')
+    var entityActions = this.entity.actions
+    if (entityActions) {
+      var actions = entityActions.filter(action => action.name !== '__filter')
+      return actions
     }
-    return actions
   }
 
   getAction (name) {
-    var entity = this.store.getters.entity
-    var action = null
-    if (entity && entity.actions) {
-      action = entity.getActionByName(name)
+    var actions = this.entity.actions
+    if (actions) {
+      var action = actions.find(action => action.name === name)
+      return action
     }
-    return action
   }
 
   getActions (entities) {
@@ -66,15 +64,6 @@ export default class Actions {
       })
     })
     return Object.values(commomFields)
-  }
-
-  hasSubEntitiesActions () {
-    var entities = this.store.getters.entity.entities
-    if (entities) {
-      var exist = entities.filter(entity => entity.hasAction())
-      return exist
-    }
-    return false
   }
 
   hasActions () {

@@ -2,12 +2,12 @@ import Errors from './Errors.js'
 
 export default class Requester {
 
-  constructor (options, demo) {
+  constructor (options, demo, entity) {
     this.router = options.router
     this.axios = options.axios
-    this.store = options.store
     this.vue = options.vm
     this.demo = demo
+    this.entity = entity
     this.errors = new Errors()
   }
 
@@ -20,7 +20,7 @@ export default class Requester {
         window.open(link, '_blank')
         return
       }
-      this.store.commit('setEntityPath', link)
+      this.entity.setPath(link)
       if (this.demo.isDemoPage(link)) {
         this.demo.load(link)
       }
@@ -31,7 +31,7 @@ export default class Requester {
 
   redirectToForm (link, action) {
     if (link) {
-      this.store.commit('setEntityPath', link)
+      this.entity.setPath(link)
       if (!(link instanceof Array)) {
         link = this._makeParams(link)
       }
@@ -96,9 +96,8 @@ export default class Requester {
   }
 
   goToRootPage () {
-    var data = this.store.state.entity
-    if (data && data.hasLinkByRel('self')) {
-      var link = data.getLinkByRel('self')
+    var link = this.entity.selfLink
+    if (link) {
       this.redirectToPage(link.href)
     }
   }

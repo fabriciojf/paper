@@ -1,57 +1,62 @@
 export default class Pagination {
 
-  constructor (options, requester) {
+  constructor (options, requester, entity) {
     this.store = options.store
     this.requester = requester
+    this.entity = entity
   }
 
-  previousLink () {
-    return this.showPrevious ? this.store.state.entity.getLinkByRel('previous').href : '#'
+  get previousLink () {
+    var link = this.entity.getLinkByRel('previous')
+    if (link) {
+      return link.href
+    }
   }
 
-  nextLink () {
-    return this.showPrevious ? this.store.state.entity.getLinkByRel('next').href : '#'
+  get nextLink () {
+    var link = this.entity.getLinkByRel('next')
+    if (link) {
+      return link.href
+    }
   }
 
-  firstLink () {
-    return this.showPrevious ? this.store.state.entity.getLinkByRel('first').href : '#'
+  get firstLink () {
+    var link = this.entity.getLinkByRel('first')
+    if (link) {
+      return link.href
+    }
   }
 
   showPrevious () {
-    return this.store.state.entity && this.store.state.entity.hasLinkByRel('previous')
+    return this.entity.hasLinkByRel('previous')
   }
 
   showNext () {
-    return this.store.state.entity && this.store.state.entity.hasLinkByRel('next')
+    return this.entity.hasLinkByRel('next')
   }
 
   showFirst () {
-    return this.store.state.entity && this.store.state.entity.hasLinkByRel('first')
+    return this.entity.hasLinkByRel('first')
   }
 
   goToFirstPage () {
-    this.requester.redirectToPage(this.firstLink())
+    this.requester.redirectToPage(this.firstLink)
   }
 
   goToNextPage () {
-    this.requester.redirectToPage(this.nextLink())
+    this.requester.redirectToPage(this.nextLink)
   }
 
   goToPreviousPage () {
-    this.requester.redirectToPage(this.previousLink())
+    this.requester.redirectToPage(this.previousLink)
   }
 
   getLink (page) {
-    switch (page) {
-      case 'next':
-        return this.nextLink
-      case 'previous':
-        return this.previousLink
-      case 'first':
-        return this.previousLink
-      default:
-        return '#'
+    var link = this.entity.getLinkByRel(page)
+    if (link) {
+      return link.href
     }
+    return '#'
   }
 
 }

@@ -5,12 +5,12 @@
       @click.stop=""
       small
       class="mr-2"
-      @click="showDialog=true"
+      @click="showDialog"
     ) visibility
 
     v-paper-dialog(
-      :show="showDialog"
       :value="text"
+      :show.sync="dialogVisible"
       hide-title
     )
       
@@ -19,16 +19,20 @@
 <script>
   import VPaperDialog from './VPaperDialog.vue'
   export default {
-    props: {
-      text: String
-    },
+    props: ['text'],
 
     components: {
       VPaperDialog
     },
 
     data: () => ({
-      showDialog: false
-    })
+      dialogVisible: false
+    }),
+
+    methods: {
+      showDialog () {
+        this.dialogVisible = true
+      }
+    }
   }
 </script>

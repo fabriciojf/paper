@@ -21,6 +21,7 @@
           div(
             v-for="(item, index) in $paper.data.items" 
             :key="item.key"
+            :hidden="item.hidden === 1"
           )
             v-list-tile(
               @click="openSelfLink(item)"

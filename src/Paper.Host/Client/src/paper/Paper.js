@@ -16,27 +16,29 @@ import Data from './Data.js'
 import Cards from './Cards.js'
 import DataTypeEnum from './DataTypeEnum.js'
 import TypeEnum from './TypeEnum.js'
+import Entity from './Entity.js'
 
 const paper = {
   install (Vue, options) {
     var errors = new Errors()
     var parser = new Parser(options)
-    var demo = new Demo(options, parser)
-    var requester = new Requester(options, demo)
-    var page = new Page(options, requester, parser, demo)
+    var entity = new Entity(options)
+    var demo = new Demo(options, parser, entity)
+    var requester = new Requester(options, demo, entity)
+    var page = new Page(options, requester, parser, demo, entity)
     var blueprint = new Blueprint(options, page, demo, requester)
-    var actions = new Actions(options)
-    var pagination = new Pagination(options, requester)
-    var navigation = new Navigation(options, actions)
-    var grid = new Grid(options)
+    var actions = new Actions(entity)
+    var pagination = new Pagination(options, requester, entity)
+    var navigation = new Navigation(options, entity, actions)
+    var grid = new Grid(options, entity)
     var auth = new Auth(options)
     var state = new State(options)
     var user = new User(options)
     var filters = new Filters(options, actions)
-    var data = new Data(options)
+    var data = new Data(options, entity)
     var dataType = new DataTypeEnum()
     var typeEnum = new TypeEnum()
-    var cards = new Cards(options)
+    var cards = new Cards(entity)
 
     var paper = {
       blueprint: blueprint,
@@ -59,7 +61,7 @@ const paper = {
       cards: cards,
 
       getEntity () {
-        return options.store.getters.entity
+        return options.store.state.entity.entity
       },
 
       isPaperPage (path) {
@@ -100,15 +102,6 @@ const paper = {
             this.requester.redirectToForm(route.path, action)
           }
         })
-      },
-
-      setEntityPath (path) {
-        path = 'http://localhost:5000' + path
-        options.store.commit('setEntityPath', path)
-      },
-
-      setEntity (data) {
-        options.store.commit('setEntity', data)
       }
     }
 

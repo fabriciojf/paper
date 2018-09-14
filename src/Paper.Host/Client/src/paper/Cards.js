@@ -1,14 +1,12 @@
 export default class Cards {
 
-  constructor (options) {
-    this.store = options.store
+  constructor (entity) {
+    this.entity = entity
   }
 
   get items () {
-    var entity = this.store.getters.entity
-    if (entity && entity.hasSubEntityByRel('card')) {
-      return entity.getSubEntitiesByRel('card')
-    }
+    var entities = this.entity.getEntitiesByRel('card')
+    return entities
   }
 
   get selfLink () {

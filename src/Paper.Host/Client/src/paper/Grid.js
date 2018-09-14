@@ -1,7 +1,11 @@
+import DataTypeEnum from './DataTypeEnum'
 export default class Grid {
 
-  constructor (options) {
+  constructor (options, entity) {
     this.store = options.store
+    this.moment = require('moment')
+    this.dataType = new DataTypeEnum()
+    this.entity = entity
   }
 
   get selectedItems () {
@@ -10,31 +14,19 @@ export default class Grid {
 
   get items () {
     var items = []
-    this.validItems.forEach((item, index) => {
-      var itensWithIndex = Object.assign(
-        { _indexRowItemTable: index }, item.properties
+    var entities = this.entity.getPropertiesByRel('row')
+    entities.forEach((item, index) => {
+      var formattedProperties = Object.assign(
+        {'_indexRowItemTable': index}, item
       )
-      items.push(itensWithIndex)
+      items.push(formattedProperties)
     })
     return items
   }
 
-  get validItems () {
-    var entity = this.store.getters.entity
-    if (entity && entity.hasSubEntityByRel('item')) {
-      return entity.getSubEntitiesByRel('item')
-    }
-    if (entity && entity.hasSubEntityByRel('row')) {
-      return entity.getSubEntitiesByRel('row')
-    }
-    return []
-  }
-
   get headers () {
-    var headers = []
-    var entity = this.store.getters.entity
-    if (entity && entity.hasSubEntityByRel('rowHeader')) {
-      headers = this._getHeadersByRowsHeaders()
+    if (this.entity.headers) {
+      var headers = this._getHeadersByRowsHeaders()
       return headers
     }
 
@@ -42,48 +34,98 @@ export default class Grid {
     return headers
   }
 
-  getDataHeader (item) {
-    var entity = this.store.getters.entity
-    if (entity && entity.hasSubEntityByRel('rowHeader')) {
-      var headers = entity.getSubEntitiesByRel('rowHeader')
-      var rowHeader = headers.find(header => header.properties.name === item)
-      return rowHeader
+  getColumnType (item) {
+    var dataHeader = this.entity.getHeader(item)
+    if (dataHeader.properties) {
+      var columnType = dataHeader.properties.type
+      return columnType
     }
   }
 
-  getColumnType (item) {
-    var dataHeader = this.getDataHeader(item)
-    var columnType = dataHeader.properties.type
-    return columnType
-  }
-
   getColumnDataType (item) {
-    var dataHeader = this.getDataHeader(item)
-    var columnDataType = dataHeader.properties.dataType
-    return columnDataType
+    var dataHeader = this.entity.getHeader(item)
+    if (dataHeader.properties) {
+      var columnDataType = dataHeader.properties.dataType
+      return columnDataType
+    }
   }
 
   getHeaderLinks (headerName) {
-    var rowHeader = this._getRowHeader(headerName)
-    if (rowHeader && rowHeader.links && rowHeader.links.length > 0) {
-      var links = rowHeader.links.filter(link => !link.rel.includes('primaryLink'))
+    var headerLinks = this.entity.getHeaderLinks(headerName)
+    return headerLinks
+  }
+
+  getPrimaryLink (headerName) {
+    return this.entity.getPrimaryLink(headerName)
+  }
+
+  getRowLinks (index) {
+    var entity = this.getItemByRow(index)
+    if (entity && entity.links && entity.links.length > 0) {
+      var links = entity.links.filter(link => !link.rel.includes('self'))
       return links
     }
   }
 
-  getPrimaryLink (headerName) {
-    var rowHeader = this._getRowHeader(headerName)
-    if (rowHeader) {
-      var primaryLink = rowHeader.getLinkByRel('primaryLink')
-      return primaryLink
+  getItemByRow (index) {
+    var entity = this.entity.getEntitiesByRel('row')[index]
+    return entity
+  }
+
+  getLinkByCel (indexRow, column) {
+    var item = this.getItemByRow(indexRow)
+    if (item) {
+      var link = item.getLinkByRel(column)
+      return link
     }
   }
 
-  getPropertiesLink (headerName) {
-    var rowHeader = this._getRowHeader(headerName)
-    if (rowHeader) {
-      return rowHeader.properties
+  hasLinkByCel (indexRow, column) {
+    var link = this.getLinkByCel(indexRow, column)
+    if (link && link.href && link.href.length > 0) {
+      return true
     }
+    return false
+  }
+
+  hasRowLinks (index) {
+    var links = this.getRowLinks(index)
+    if (links && links.length > 0) {
+      return true
+    }
+    return false
+  }
+
+  getSelfLinkByRow (index) {
+    var item = this.getItemByRow(index)
+    var link = item.getLinkByRel('self')
+    if (link && link.href && link.href.length > 0) {
+      return link
+    }
+  }
+
+  getLinksByRow (index) {
+    var item = this.getItemByRow(index)
+    var links = item.links.filter(link => !link.rel.includes('self'))
+    if (links && links.length > 0) {
+      return links
+    }
+  }
+
+  hasLinksByRow (index) {
+    var links = this.getLinksByRow(index)
+    if (links) {
+      return true
+    }
+    return false
+  }
+
+  hasSelfLinkByRow (index) {
+    var link = this.getSelfLinkByRow(index)
+    if (link) {
+      return true
+    }
+    return false
   }
 
   shortenText (text) {
@@ -94,43 +136,39 @@ export default class Grid {
   }
 
   hasPrimaryLink (headerName) {
-    var primaryLink = this.getPrimaryLink(headerName)
-    return primaryLink != null && primaryLink !== undefined
+    return this.entity.hasPrimaryLink(headerName)
   }
 
   hasHeaderLinks (headerName) {
-    var headerLink = this.getHeaderLinks(headerName)
-    return headerLink && headerLink.length > 0
+    return this.entity.hasHeaderLinks(headerName)
   }
 
-  _getRowHeader (headerName) {
-    var rowsHeaders = this.store.getters.entity.getSubEntitiesByRel('rowHeader')
-    if (rowsHeaders && rowsHeaders.length > 0) {
-      var rowHeader = rowsHeaders.find(rowHeader => rowHeader.properties.name === headerName)
-      return rowHeader
-    }
+  hasActions () {
+    return false
+  }
+
+  setSelectedItems (items) {
+    this.store.commit('selection/setSelectedItems', items)
   }
 
   _getHeadersByItemsKeys () {
-    var validKeys = []
-    this.validItems.forEach(item => {
+    var headers = []
+    var items = this.items
+    if (!items) {
+      return
+    }
+    items.forEach(item => {
       if (!item.properties) {
         return
       }
-      var keys = Object.keys(item.properties)
-      keys.filter(key => {
-        if (!key.startsWith('_') && !validKeys.includes(key)) {
-          validKeys.push(key)
-        }
-      })
-    })
-    var headers = []
-    validKeys.forEach(key => {
-      headers.push({
-        text: key,
-        align: 'left',
-        sortable: false,
-        value: key
+      var keys = item.__dataHeaders
+      keys.forEach(key => {
+        headers.push({
+          text: key,
+          align: 'left',
+          sortable: false,
+          value: key
+        })
       })
     })
     return headers
@@ -138,10 +176,9 @@ export default class Grid {
 
   _getHeadersByRowsHeaders () {
     var headers = []
-    var entity = this.store.getters.entity
-    var headersEntities = entity.getSubEntitiesByRel('rowHeader')
+    var headersEntities = this.entity.headers
     if (headersEntities && headersEntities.length > 0) {
-      headersEntities.forEach((header) => {
+      headersEntities.forEach(header => {
         var properties = header.properties
         if (!properties.hidden) {
           var title = properties && properties.title && properties.title.length > 0
@@ -158,15 +195,6 @@ export default class Grid {
       })
     }
     return headers
-  }
-
-  hasActions () {
-    var exist = this.validItems.filter(entity => entity.hasAction())
-    return exist && exist.length > 0
-  }
-
-  setSelectedItems (items) {
-    this.store.commit('selection/setSelectedItems', items)
   }
 
 }

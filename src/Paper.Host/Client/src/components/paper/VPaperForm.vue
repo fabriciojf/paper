@@ -65,15 +65,9 @@
     methods: {
       submit () {
         var queryParams = this.$_formsMixin_makeParams(this.action.name)
-        this.$paper.requester.httpRequest(this.action.method, this.action.href, queryParams).then(response => {
+        this.$paper.page.loadAction(this.action, queryParams).then(response => {
           if (response.ok) {
             this.$notify({ message: 'Operação realizada com sucesso!', type: 'success' })
-            // var location = response.data.headers['Location']
-            var json = response.data.data
-            if (json) {
-              var data = this.$paper.parser.parse(json)
-              this.$paper.setEntity(data)
-            }
           } else {
             var error = this.$paper.errors.httpTranslate(response.data.status)
             var message = 'Erro ao acessar a url: ' + this.action.href + '. ' + error

@@ -1,31 +1,27 @@
 export default class Navigation {
 
-  constructor (options, actions) {
+  constructor (options, entity, actions) {
     this.store = options.store
+    this.entity = entity
     this.actions = actions
     this.openedRightMenu = this.store.getters['navigation/openedRightMenu']
   }
 
   get links () {
-    var items = []
-    var entity = this.store.getters.entity
-    if (entity && entity.links) {
-      items = entity.links.filter(
+    var links = this.entity.links
+    if (links) {
+      var items = links.filter(
         item => item.rel.indexOf('self') &&
                 item.rel.indexOf('next') &&
                 item.rel.indexOf('previous') &&
                 item.rel.indexOf('first')
       )
+      return items
     }
-    return items
   }
 
   hasLinks () {
-    var entity = this.store.getters.entity
-    if (entity && entity.links) {
-      return this.links.length > 0
-    }
-    return false
+    return this.entity.hasLinks
   }
 
   showRightMenu () {

@@ -87,8 +87,8 @@
         )
 
           tr(
-            :style="getRowCursorStyle(items.item)"
-            @click.stop="openItemView(items.item)"
+            :style="getRowStyle(items.index)"
+            @click.stop="openRowView(items.index)"
           )
             td(v-if="$paper.grid.hasActions()")
               v-checkbox(
@@ -101,21 +101,20 @@
             td(
               v-for="(header, index) in headers"
               :key="items.index.toString() + index.toString()"
-              :style="getColumnCursorStyle(items.item, header.value)"
+              :style="getCelStyle(items.index, header.value)"
               nowrap
             ) 
 
               v-tooltip(
                 bottom
-                v-if="hasColumnItemLink(items.item, header.value)"
+                v-if="hasCelLink(items.index, header.value)"
               )
                 a(
                   slot="activator"
-                  v-if="hasColumnItemLink(items.item, header.value)"
-                  @click.stop="openColumnItemView(items.item, header.value)"
+                  @click.stop="openCelView(items.index, header.value)"
                 ) {{ shorten(items.item[header.value]) }}
 
-                span {{ getColumnLink(items.item, header.value).title }}
+                span {{ getCelTootip(items.index, header.value) }}
 
               div(
                 v-else
@@ -131,14 +130,13 @@
               class="fixed-column" 
               nowrap
               @click.stop=""
-              v-if="hasItemLinks(items.index)"
+              v-if="hasRowLinks(items.index)"
             )
               v-menu(
                 offset-y
                 left 
                 bottom 
                 class="menu-actions"
-                v-if="hasItemLinks(items.index)"
               )
                 span(
                   icon
@@ -151,12 +149,12 @@
 
                 v-list
                   v-list-tile(
-                    v-for="link in itemLinks(items.index)" 
+                    v-for="link in getRowLinks(items.index)" 
                     :key="link.href"
                   )
                     v-list-tile-content
                       a(
-                        @click.stop="$paper.requester.redirectToPage(link.href)"
+                        @click.stop="redirect(link.href)"
                       ) {{ link.title ? link.title : link.rel[0] }}
 
 </template>
@@ -186,24 +184,18 @@
     },
 
     methods: {
-      getRowCursorStyle (item) {
-        var entireItem = this.getRowIndex(item)
-        var link = entireItem.getLinkByRel('self')
-        var exist = link && link.href && link.href.length > 0
-        var cursor = exist ? 'cursor: pointer' : 'cursor: default'
+      getRowStyle (index) {
+        var link = this.$paper.grid.getSelfLinkByRow(index)
+        var cursor = link ? 'cursor: pointer' : 'cursor: default'
         return cursor
       },
 
-      getColumnCursorStyle (item, column) {
-        var entireItem = this.getRowIndex(item)
-        var link = entireItem.getLinkByRel(column)
-        var exist = link && link.href && link.href.length > 0
-        var cursor = exist ? 'cursor: pointer' : ''
-        return cursor
-      },
-
-      columnKey (column, index, item) {
-        return column.value
+      getCelStyle (index, column) {
+        var links = this.$paper.grid.getLinkByCel(index, column)
+        if (links) {
+          var cursor = links ? 'cursor: pointer' : ''
+          return cursor
+        }
       },
 
       selectedMode (selected) {
@@ -217,51 +209,43 @@
         else this.selected = this.items.slice()
       },
 
-      hasColumnItemLink (item, column) {
-        var entireItem = this.getRowIndex(item)
-        var link = entireItem.getLinkByRel(column)
-        return link && link.href && link.href.length > 0
+      hasCelLink (index, column) {
+        return this.$paper.grid.hasLinkByCel(index, column)
       },
 
-      openColumnItemView (item, column) {
-        var entireItem = this.getRowIndex(item)
-        var link = entireItem.getLinkByRel(column)
+      openRowView (index) {
+        var link = this.$paper.grid.getSelfLinkByRow(index)
         if (link) {
           this.$paper.requester.redirectToPage(link.href)
         }
       },
 
-      getColumnLink (item, column) {
-        var entireItem = this.getRowIndex(item)
-        var link = entireItem.getLinkByRel(column)
-        return link
-      },
-
-      openItemView (item) {
-        var entireItem = this.getRowIndex(item)
-        var link = entireItem.getLinkByRel('self')
-        if (link) {
-          this.$paper.requester.redirectToPage(link.href)
+      openCelView (index, column) {
+        var hasCelLink = this.$paper.grid.hasLinkByCel(index, column)
+        if (hasCelLink) {
+          var link = this.$paper.grid.getLinkByCel(index, column)
+          if (link) {
+            this.$paper.requester.redirectToPage(link.href)
+          }
         }
       },
 
-      itemLinks (index) {
-        var entity = this.$paper.getEntity().entities[index]
-        var links = []
-        if (entity.links && entity.links.length > 0) {
-          links = entity.links.filter(link => !link.rel.includes('self'))
+      getCelTootip (index, column) {
+        var hasCelLink = this.$paper.grid.hasLinkByCel(index, column)
+        if (hasCelLink) {
+          var link = this.$paper.grid.getLinkByCel(index, column)
+          if (link) {
+            return link.title
+          }
         }
-        return links
       },
 
-      hasItemLinks (index) {
-        var items = this.itemLinks(index)
-        var hasLinks = items && items.length > 0
-        return hasLinks
+      getRowLinks (index) {
+        return this.$paper.grid.getRowLinks(index)
       },
 
-      getRowIndex (item) {
-        return this.$paper.grid.validItems[item._indexRowItemTable]
+      hasRowLinks (index) {
+        return this.$paper.grid.hasRowLinks(index)
       },
 
       openPrimaryLink (headerName) {
@@ -303,6 +287,10 @@
       isLongerText (text) {
         var isLongerText = text && text.length > this.textColumnMaxLength
         return isLongerText
+      },
+
+      redirect (href) {
+        this.$paper.requester.redirectToPage(href)
       }
     },
 

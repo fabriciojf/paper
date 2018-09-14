@@ -23,7 +23,7 @@
         v-btn(
           color="secondary" 
           flat 
-          @click.native="show = false"
+          @click="close"
         ) Fechar
       
 </template>
@@ -41,6 +41,12 @@
         type: Boolean,
         default: false,
         required: true
+      }
+    },
+
+    methods: {
+      close () {
+        this.$emit('update:show', false)
       }
     }
   }

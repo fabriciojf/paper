@@ -3,29 +3,40 @@ class PageType extends Enum {}
 
 export default class Page {
 
-  constructor (options, requester, parser, demo) {
-    this.store = options.store
+  constructor (options, requester, parser, demo, entity) {
     this.router = options.router
     this.requester = requester
     this.demo = demo
     this.parser = parser
-    this.type = PageType.initEnum(['GRID', 'VIEW', 'CARDS'])
+    this.pageType = PageType.initEnum(['GRID', 'VIEW', 'CARDS'])
+    this.entity = entity
   }
 
   get title () {
-    return (this.store.state.entity && this.store.state.entity.title) ? this.store.state.entity.title : ''
+    return this.entity.title
   }
 
-  getType () {
-    var data = this.store.state.entity
-    if (data) {
-      if (data.class.includes('cards')) {
-        return PageType.CARDS
-      } else if (data.class.includes('list') || data.class.includes('rows')) {
-        return PageType.GRID
-      }
+  get type () {
+    var classes = this.entity.classes
+    if (!classes) {
+      return
+    }
+    if (classes.includes('cards')) {
+      return PageType.CARDS
+    } else if (classes.includes('rows')) {
+      return PageType.GRID
     }
     return PageType.VIEW
+  }
+
+  setPagePath (path) {
+    if (this.entity) {
+      this.entity.setPath(path)
+    }
+  }
+
+  hasTitle () {
+    return this.title && this.title.length > 0
   }
 
   isRoot () {
@@ -34,24 +45,44 @@ export default class Page {
   }
 
   load () {
-    var pathEntity = this.store.state.pathEntity
-    if (this.demo.isDemoPage(pathEntity)) {
-      this.demo.load(pathEntity)
+    var entityPath = this.entity.path
+    if (this.demo.isDemoPage(entityPath)) {
+      this.demo.load(entityPath)
       return
     }
-    this.requester.httpRequest('get', pathEntity, {}).then(response => {
+    this.requester.httpRequest('get', entityPath, {}).then(response => {
       if (response.ok) {
         var json = response.data.data
         if (json) {
           var data = this.parser.parse(json)
-          this.store.commit('setEntity', data)
+          this.entity.setEntity(data)
         }
       } else {
         if (response.data.status === 404) {
-          this.router.replace({name: 'notFound', params: { routerName: pathEntity }})
+          this.router.replace({name: 'notFound', params: { routerName: entityPath }})
         } else {
           this.router.replace({name: 'error', params: { error: response.data }})
         }
+      }
+    })
+  }
+
+  loadAction (action, queryParams) {
+    return this.requester.httpRequest(action.method, action.href, queryParams).then(response => {
+      if (response.ok) {
+        var json = response.data.data
+        if (json) {
+          var data = this.parser.parse(json)
+          this.entity.setEntity(data)
+        }
+        return {
+          ok: true,
+          data: response
+        }
+      }
+      return {
+        ok: false,
+        data: response
       }
     })
   }
@@ -78,8 +109,8 @@ export default class Page {
   }
 
   unload () {
-    this.store.commit('setEntity', null)
-    this.store.commit('setEntityPath', null)
+    this.entity.setPath(null)
+    this.entity.setEntity(null)
   }
 
   save (path, data) {
@@ -88,10 +119,6 @@ export default class Page {
         this.requester.redirectToPage(path)
       }
     })
-  }
-
-  hasTitle () {
-    return this.store.state.entity && this.store.state.entity.title
   }
 
 }
