@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Media.Utilities.Types;
-using Paper.Media.Design;
-using Paper.Media.Rendering;
 using Paper.Media.Rendering;
 using Toolset;
 using Toolset.Collections;

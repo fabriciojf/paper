@@ -61,7 +61,7 @@
       )
         v-list-tile-content
           v-list-tile-title
-            | {{ $paper.blueprint.projectTitle }}
+            | {{ $paper.blueprint.title }}
           
 </template>
 

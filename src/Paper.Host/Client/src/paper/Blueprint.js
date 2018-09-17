@@ -20,6 +20,13 @@ export default class Blueprint {
     return themes
   }
 
+  get title () {
+    if (this.blueprint && this.blueprint.hasOwnProperty('title')) {
+      return this.blueprint.title
+    }
+    return ''
+  }
+
   get plannerPage () {
     if (this.blueprint && this.blueprint.hasLinkByRel('planner')) {
       return this.blueprint.getLinkByRel('planner').href
@@ -36,14 +43,6 @@ export default class Blueprint {
   get projectName () {
     if (this.hasProjectInfo()) {
       return this.blueprint.properties.info.name
-    }
-    return ''
-  }
-
-  get projectTitle () {
-    if (this.hasProjectInfo()) {
-      var title = this.blueprint.properties.info.title
-      return title && title.length > 0 ? title : ''
     }
     return ''
   }

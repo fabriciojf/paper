@@ -11,6 +11,7 @@
           row
           wrap
         )
+
           v-flex(
             xs3
             v-for="item in $paper.cards.items"
@@ -19,9 +20,20 @@
             a(@click.stop="openLink(item)")
 
               v-card
-                v-card-title(primary-title)
-                  div(class="headline") {{ item.properties.title }}
-                  div {{ item.properties.description }}
+                v-layout
+                  v-flex
+                    v-container(
+                      fluid
+                      style="padding-right:0px"
+                    )
+                      v-icon(
+                        x-large
+                        color="secondary"
+                      ) {{ item.properties.icon }}
+                  v-flex
+                    v-card-title(primary-title)
+                      div(class="headline") {{ item.properties.title }}
+                      div {{ item.properties.description }}
 
 </template>
 

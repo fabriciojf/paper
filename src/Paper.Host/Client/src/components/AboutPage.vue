@@ -11,7 +11,7 @@
           class="elevation-3"
         )
           v-card-title(primary-title)
-            h2 {{ $paper.blueprint.projectTitle }}
+            h2 {{ $paper.blueprint.title }}
 
           v-card-text
             v-container(fluid)

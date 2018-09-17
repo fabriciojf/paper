@@ -21,13 +21,13 @@ export default class Navigation {
   }
 
   hasLinks () {
-    return this.entity.hasLinks
+    var hasLinks = this.links && this.links.length > 0
+    return hasLinks
   }
 
   showRightMenu () {
-    var hasLinkOrAction = this.actions.hasActions() || this.hasLinks()
     var rightMenuVisible = this.store.getters['navigation/rightMenuVisible']
-    return hasLinkOrAction && rightMenuVisible
+    return rightMenuVisible
   }
 
   openRightMenu () {

@@ -1,18 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
+﻿using Microsoft.AspNetCore.Http;
 using Paper.Media.Serialization;
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
 using Paper.Media;
 using Toolset;
-using Paper.Media.Rendering;
 using Paper.Media.Rendering;
 using Paper.Media.Rendering.Papers;
 

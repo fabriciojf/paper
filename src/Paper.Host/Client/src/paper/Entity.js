@@ -17,10 +17,9 @@ export default class Entity {
 
   get classes () {
     var entity = this.store.state.entity.self
-    if (!entity) {
-      return
+    if (entity) {
+      return entity.class
     }
-    return entity.class
   }
 
   get path () {
@@ -29,11 +28,10 @@ export default class Entity {
 
   get properties () {
     var entity = this.store.state.entity.self
-    if (!entity) {
-      return
+    if (entity) {
+      var formattedEntity = this._formatProperties(entity)
+      return formattedEntity
     }
-    var formattedEntity = this._formatProperties(entity)
-    return formattedEntity
   }
 
   get links () {
@@ -53,7 +51,7 @@ export default class Entity {
 
   get selfLink () {
     var entity = this.store.state.entity.self
-    if (entity) {
+    if (entity && entity.hasLinkByRel('self')) {
       var link = entity.getLinkByRel('self')
       return link
     }
@@ -111,15 +109,15 @@ export default class Entity {
 
   hasLinkByRel (rel) {
     var entity = this.store.state.entity.self
-    if (entity && entity.hasLinkByRel(rel)) {
-      return true
+    if (entity) {
+      return entity.hasLinkByRel(rel)
     }
     return false
   }
 
   getLinkByRel (rel) {
-    var entity = this.store.state.entity.self
     if (this.hasLinkByRel(rel)) {
+      var entity = this.store.state.entity.self
       return entity.getLinkByRel(rel)
     }
   }
@@ -140,24 +138,18 @@ export default class Entity {
   }
 
   getPrimaryLink (headerName) {
-    var rowHeader = this.getHeader(headerName)
-    if (rowHeader) {
-      var primaryLink = rowHeader.getLinkByRel('primaryLink')
+    if (this.hasPrimaryLink(headerName)) {
+      var header = this.getHeader(headerName)
+      var primaryLink = header.getLinkByRel('primaryLink')
       return primaryLink
     }
   }
 
-  shortenText (text) {
-    if (text && text.length > this.textColumnMaxLength) {
-      text = text.substr(0, this.textColumnMaxLength - 3) + '...'
-    }
-    return text
-  }
-
   hasPrimaryLink (headerName) {
-    var primaryLink = this.getPrimaryLink(headerName)
-    if (primaryLink != null && primaryLink !== undefined) {
-      return true
+    var header = this.getHeader(headerName)
+    if (header) {
+      var hasPrimaryLink = header.hasLinkByRel('primaryLink')
+      return hasPrimaryLink
     }
     return false
   }
