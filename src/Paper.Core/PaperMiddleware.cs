@@ -12,28 +12,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Paper.Media;
 using Toolset;
-using Paper.Media.Design.Rendering;
-using Paper.Media.Routing;
-using Paper.Media.Design.Rendering.Papers;
+using Paper.Media.Rendering;
+using Paper.Media.Rendering;
+using Paper.Media.Rendering.Papers;
 
-namespace Paper.Core.Service
+namespace Paper.Core
 {
   public class PaperMiddleware
   {
     private readonly RequestDelegate next;
-    private readonly IPaperRegistry registry;
+    private readonly IPaperCatalog catalog;
 
-    public PaperMiddleware(RequestDelegate next, IPaperRegistry registry)
+    public PaperMiddleware(RequestDelegate next, IPaperCatalog catalog)
     {
       this.next = next;
-      this.registry = registry;
+      this.catalog = catalog;
     }
 
     public async Task Invoke(HttpContext httpContext, IServiceProvider serviceProvider)
     {
       var path = httpContext.Request.Path.Value;
 
-      var paparInfo = registry.FindPaper(path);
+      var paparInfo = catalog.FindPaper(path);
       var paperType = paparInfo?.Type;
       if (paperType == null)
       {
@@ -69,7 +69,7 @@ namespace Paper.Core.Service
         paper = injector.CreateInstance(paperType);
 
         var requestUri = httpContext.Request.GetRequestUri();
-        var paperContext = new PaperContext(injector, paper, registry, requestUri);
+        var paperContext = new PaperContext(injector, paper, catalog, requestUri);
         var paperRenderer = new PaperRenderer(injector);
 
         var ret = paperRenderer.RenderEntity(paperContext);

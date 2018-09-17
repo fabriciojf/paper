@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using Paper.Media.Design.Rendering;
+using Paper.Media.Rendering;
 
 namespace Paper.Core
 {

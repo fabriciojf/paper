@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Paper.Core.Service;
 using Toolset;
 
 namespace Paper.Core.Proxies

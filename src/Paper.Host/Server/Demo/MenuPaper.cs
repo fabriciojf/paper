@@ -12,7 +12,7 @@ using Toolset.Reflection;
 
 namespace Paper.Host.Server.Demo
 {
-  [Paper("/Menu")]
+  [Expose, Paper("/Menu")]
   public class MenuPaper : IPaperBasics, IPaperRows<IFilter, ILink>
   {
     public Page Page { get; }

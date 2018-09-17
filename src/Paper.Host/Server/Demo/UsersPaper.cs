@@ -65,7 +65,7 @@ namespace Paper.Host.Server.Demo
     }
   }
 
-  [Paper("/Users")]
+  [Expose, Paper("/Users")]
   public class UsersPaper : IPaperBasics, IPaperRows<UserFilter, User>
   {
     public Page Page { get; } = new Page();
@@ -101,6 +101,8 @@ namespace Paper.Host.Server.Demo
       => null;
 
     public IEnumerable<ILink> GetRowLinks(User row)
-      => null;
+      => new[]{
+        new LinkTo<UserPaper>(paper => paper.Id = row.Id.Value)
+      };
   }
 }

@@ -12,9 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using static System.Environment;
-using Paper.Media.Routing;
+using Paper.Media.Rendering;
 
-namespace Paper.Core.Service
+namespace Paper.Core
 {
   public static class AspNetCoreExtensions
   {
@@ -53,11 +53,11 @@ namespace Paper.Core.Service
 
     public static IServiceCollection AddPaperServices(this IServiceCollection services)
     {
-      var paperRegistry = new PaperRegistry();
-      paperRegistry.AddExposedTypes();
-      paperRegistry.PrintInfo();
+      var catalog = new PaperAggregateCatalog();
+      catalog.AddExposedTypes();
+      catalog.PrintInfo();
 
-      services.AddSingleton<IPaperRegistry>(paperRegistry);
+      services.AddSingleton<IPaperCatalog>(catalog);
 
       var serviceProvider = services.BuildServiceProvider();
       var settings = serviceProvider.GetService<IPaperSettings>();

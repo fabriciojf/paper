@@ -10,6 +10,11 @@ namespace Paper.Media
   public enum Class
   {
     /// <summary>
+    /// Nome de classe para ume entidade que representa a configuração de um site.
+    /// </summary>
+    Blueprint,
+
+    /// <summary>
     /// Nome de classe para ume entidade que se comporta como dados.
     /// </summary>
     Data,

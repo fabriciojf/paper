@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Paper.Media.Design.Rendering;
+using Paper.Media.Rendering;
 using Toolset.Collections;
 
 namespace Paper.Media.Design.Mappings

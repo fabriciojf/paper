@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Toolset.Collections;
 using System.Reflection;
-using Paper.Media.Design.Rendering;
+using Paper.Media.Rendering;
 
 namespace Paper.Media.Design.Mappings
 {

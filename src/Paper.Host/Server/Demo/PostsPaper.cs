@@ -64,7 +64,7 @@ namespace Paper.Host.Server.Demo
     }
   }
 
-  [Paper("/Posts")]
+  [Expose, Paper("/Posts")]
   public class PostsPaper : IPaperBasics, IPaperRows<PostFilter, Post>
   {
     public Page Page { get; } = new Page();

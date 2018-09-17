@@ -16,7 +16,7 @@ using Toolset;
 
 namespace Paper.Host.Server.Demo
 {
-  [Paper("/Users/{id}")]
+  [Expose, Paper("/Users/{id}")]
   public class UserPaper : IPaperBasics, IPaperData<User>
   {
     public int Id { get; set; }

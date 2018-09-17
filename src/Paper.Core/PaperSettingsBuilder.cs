@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Paper.Core.Service
+namespace Paper.Core
 {
   public class PaperSettingsBuilder
   {

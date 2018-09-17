@@ -12,6 +12,11 @@ namespace Paper.Media
   public static class ClassNames
   {
     /// <summary>
+    /// Nome de classe para ume entidade que representa a configuração de um site.
+    /// </summary>
+    public const string Blueprint = "blueprint";
+
+    /// <summary>
     /// Nome de classe para ume entidade que se comporta como dados.
     /// </summary>
     public const string Data = "data";
@@ -22,6 +27,11 @@ namespace Paper.Media
     public const string Rows = "rows";
 
     /// <summary>
+    /// Nome de classe para ume entidade que se comporta como um registro de coleção de registros.
+    /// </summary>
+    public const string Row = "row";
+
+    /// <summary>
     /// Nome de classe para ume entidade que se comporta como uma coleção de cards.
     /// </summary>
     public const string Cards = "cards";
@@ -30,11 +40,6 @@ namespace Paper.Media
     /// Nome de classe para ume entidade que se comporta como um registro de coleção de cards.
     /// </summary>
     public const string Card = "card";
-
-    /// <summary>
-    /// Nome de classe para ume entidade que se comporta como um registro de coleção de registros.
-    /// </summary>
-    public const string Row = "row";
 
     /// <summary>
     /// Nome de classe para ume entidade que se comporta como um cabeçalho.

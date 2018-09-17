@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Media.Utilities.Types;
 using Paper.Media.Design;
-using Paper.Media.Design.Rendering;
-using Paper.Media.Routing;
+using Paper.Media.Rendering;
+using Paper.Media.Rendering;
 using Toolset;
 using Toolset.Collections;
 using Toolset.Reflection;
@@ -55,8 +56,8 @@ namespace Paper.Media.Design.Papers
 
     private string CreateHref(PaperContext ctx, T paper)
     {
-      var paperInfo = PaperInfo.CreatePaperInfo<T>();
-      var paperTemplate = new UriTemplate(paperInfo.Path);
+      var paperInfo = PaperSpec.GetSpec<T>();
+      var paperTemplate = new UriTemplate(paperInfo.Route);
 
       paperTemplate.SetArgsFromGraph(paper);
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Paper.Core.Proxies;
 using Paper.Core.Utilities;
+using Paper.Media.Utilities;
 using Toolset;
 
 namespace Paper.WebApp.Server.Proxies

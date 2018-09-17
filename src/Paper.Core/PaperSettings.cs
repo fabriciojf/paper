@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 
-namespace Paper.Core.Service
+namespace Paper.Core
 {
   internal class PaperSettings : IPaperSettings
   {

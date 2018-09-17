@@ -10,7 +10,7 @@ using Toolset;
 
 namespace Paper.Host.Server.Demo
 {
-  [Paper]
+  [Expose]
   public class SampleEntity : Entity
   {
     public override NameCollection Class { get; set; }

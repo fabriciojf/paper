@@ -256,6 +256,21 @@ namespace Toolset
     }
 
     /// <summary>
+    /// Aplica uma substituição no texto usando regras de expressão regular.
+    /// </summary>
+    /// <param name="text">O texto a ser modificado.</param>
+    /// <param name="regex">A expressão regular aplicada.</param>
+    /// <param name="replacement">
+    /// O texto substituto segundo as regeras de <see cref="Regex.Replace(string, string, string, RegexOptions)"/>
+    /// </param>
+    /// <param name="options">Opções de aplicação da expressão regular.</param>
+    /// <returns>O texto com a substituição aplicada.</returns>
+    public static string ReplacePattern(this string text, string regex, string replacement, RegexOptions options = default(RegexOptions))
+    {
+      return Regex.Replace(text, regex, replacement, options);
+    }
+
+    /// <summary>
     /// Extrai um trecho de uma sentença pela aplicação de uma expressão regular.
     /// 
     /// Suporta todas as substituições de Regex.Replace:
@@ -275,21 +290,22 @@ namespace Toolset
     /// <param name="replacement">
     /// Uma substituição opcional. De acordo com as regras de Regex.Replace.
     /// </param>
+    /// <param name="options">Opções de aplicação da expressão regular.</param>
     /// <returns>O trecho extraído da string.</returns>
-    public static string Strip(this string text, string regex, string replacement = null)
+    public static string Strip(this string text, string regex, string replacement = null, RegexOptions options = default(RegexOptions))
     {
-      var flags = System.Text.RegularExpressions.RegexOptions.Multiline;
+      options |= System.Text.RegularExpressions.RegexOptions.Multiline;
 
       text = text.Replace("\r", "");
 
-      var match = System.Text.RegularExpressions.Regex.Match(text, regex, flags);
+      var match = System.Text.RegularExpressions.Regex.Match(text, regex, (RegexOptions)options);
       if (!match.Success)
         return null;
 
       text = match.Captures[0].Value;
 
       if (replacement == null) replacement = "$&";
-      return System.Text.RegularExpressions.Regex.Replace(text, regex, replacement, flags);
+      return System.Text.RegularExpressions.Regex.Replace(text, regex, replacement, (RegexOptions)options);
     }
 
     /// <summary>

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Toolset.Collections;
 
-namespace Paper
+namespace Paper.Core
 {
   public static class HttpExtensions
   {

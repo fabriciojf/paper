@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Paper.Media;
-using Paper.Media.Design.Rendering;
+using Paper.Media.Rendering;
 
 namespace Paper.Media.Design.Papers
 {

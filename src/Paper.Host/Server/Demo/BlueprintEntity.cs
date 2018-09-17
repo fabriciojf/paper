@@ -10,7 +10,7 @@ using Toolset;
 
 namespace Paper.Host.Server.Demo
 {
-  [Paper("/Blueprint")]
+  [Expose, Paper("/Blueprint")]
   public class BlueprintEntity : Entity
   {
     private readonly static string Guid = System.Guid.NewGuid().ToString();
