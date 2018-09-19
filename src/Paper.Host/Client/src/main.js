@@ -6,7 +6,6 @@ import VueMask from 'di-vue-mask'
 import axios from 'axios'
 import money from 'v-money'
 import VueAuth from '@websanova/vue-auth'
-import VueElectron from 'vue-electron'
 
 import 'vuetify/dist/vuetify.css'
 import './assets/css/style.sass'
@@ -22,7 +21,6 @@ Vue.use(VueMask)
 Vue.use(Vuetify)
 Vue.use(VueAxios, axios)
 Vue.use(money, {precision: 4})
-Vue.use(VueElectron)
 Vue.use(Notify, {
   timeout: 5000,
   horizontalAlign: 'left',
