@@ -1,0 +1,2 @@
+webpackJsonp([11],{465:function(e,o){e.exports={class:["order"],rel:["http://x.io/rels/customer"],title:"Detalhes do Item 14",properties:{name:"Donut",calories:452,fat:25,carbs:51,protein:4.9,sodium:326,calcium:"2%",iron:"22%"},links:[{rel:["self"],href:"/demo/14"}]}}});
+//# sourceMappingURL=11.b05960ab7d5c2aa8149d.js.map

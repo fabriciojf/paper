@@ -1,0 +1,2 @@
+webpackJsonp([3],{473:function(e,o){e.exports={class:["order"],rel:["http://x.io/rels/customer"],title:"Detalhes do Item 8",properties:{name:"Honeycomb",calories:408,fat:3.2,carbs:87,protein:6.5,sodium:562,calcium:"0%",iron:"45%"},links:[{rel:["self"],href:"/demo/8"}]}}});
+//# sourceMappingURL=3.52039e88f3b331b7b98b.js.map

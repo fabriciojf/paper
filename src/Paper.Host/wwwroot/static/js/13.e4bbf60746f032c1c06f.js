@@ -1,0 +1,2 @@
+webpackJsonp([13],{463:function(e,o){e.exports={class:["order"],rel:["http://x.io/rels/customer"],title:"Detalhes do Item 12",properties:{name:"Lollipop",calories:392,fat:.2,carbs:98,protein:0,sodium:38,calcium:"0%",iron:"2%"},links:[{rel:["self"],href:"/demo/12"}]}}});
+//# sourceMappingURL=13.e4bbf60746f032c1c06f.js.map

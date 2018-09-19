@@ -1,0 +1,2 @@
+webpackJsonp([7],{469:function(e,r){e.exports={class:["order"],rel:["http://x.io/rels/customer"],title:"Detalhes do Item 4",properties:{name:"Cupcake",calories:305,fat:3.7,carbs:67,protein:4.3,sodium:413,calcium:"3%",iron:"8%"},links:[{rel:["self"],href:"/demo/4"}]}}});
+//# sourceMappingURL=7.5800ccc3756b1ae19747.js.map
