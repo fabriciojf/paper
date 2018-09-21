@@ -9,7 +9,7 @@ export default class Blueprint {
     this.router = options.router
     this.vue = options.vm
     this.requester = requester
-    this.blueprintPage = 'http://localhost:5000/Api/1/Blueprint'
+    this.blueprintPage = '/Api/1/Blueprint'
     this.blueprint = this.store.getters['blueprint/blueprint']
     this.parser = new Parser(options)
     this.demo = demo

@@ -13,9 +13,6 @@ export default class Requester {
 
   redirectToPage (link) {
     if (link) {
-      if (link.includes('http://localhost:5000')) {
-        link = link.split('http://localhost:5000')[1]
-      }
       if (link.startsWith('http') && !link.startsWith(window.location.origin)) {
         window.open(link, '_blank')
         return

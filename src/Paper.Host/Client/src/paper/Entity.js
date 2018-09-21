@@ -65,7 +65,6 @@ export default class Entity {
   }
 
   setPath (path) {
-    path = 'http://localhost:5000' + path
     this.store.commit('entity/setPath', path)
   }
 

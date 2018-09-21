@@ -1,13 +1,17 @@
 <template lang="pug">
     v-footer(
       color="primary"
+      dark
+      height="auto"
     )
-      v-flex(
-        xs12
-        py-3
-        white--text
-      ) 
-        | KeepCoding &copy; 2018  v{{ version }}
+      v-card(
+        flat
+        color="primary"
+        dark
+      )
+        v-card-text(class="white--text")
+          | KeepCoding &copy; 2018  v{{ version }}
+          
 </template>
 
 <script>

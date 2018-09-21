@@ -6,7 +6,7 @@
     main-toolbar
     v-content
       router-view(:key="$route.fullPath")
-    main-footer
+    // main-footer
     notifications
 </template>
 

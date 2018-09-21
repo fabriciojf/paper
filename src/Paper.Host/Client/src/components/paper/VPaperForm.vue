@@ -35,6 +35,7 @@
           v-if="false"
           @click="goBack()"
         ) Cancelar
+
     
 </template>
 

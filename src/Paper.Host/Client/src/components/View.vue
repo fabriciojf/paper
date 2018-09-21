@@ -10,13 +10,14 @@
 
     v-flex(
       xs12
-      sm8
-      offset-xs2
+      sm12
+      md8
+      offset-md2
     )
 
       v-card
         
-        v-list
+        v-list(v-if="$vuetify.breakpoint.smAndUp")
 
           div(
             v-for="(item, index) in $paper.data.items"
@@ -77,15 +78,72 @@
                           @click.stop="openLink(link)"
                         ) {{ link.title ? link.title : item.rel[0] }}
 
+        v-list(
+          v-if="$vuetify.breakpoint.xs"
+          two-line
+        )
+
+          div(
+            v-for="(item, index) in $paper.data.items"
+            :key="item.key"
+            :hidden="item.hidden"
+          )
+
+            v-divider(v-if="index > firstVisibleIndex")
+
+            v-list-tile(
+              @click="openSelfLink(item)"
+            )
+              v-list-tile-content
+                v-list-tile-sub-title(color="grey") {{ item.title }}
+
+                v-list-tile-sub-title(
+                  v-if="dataTypeIsBool(item)"
+                  class="checked"
+                )
+                
+                v-list-tile-sub-title(
+                  v-else
+                  class="text--primary"
+                ) {{ shorten(item.value) }}
+
+                  v-paper-visibility-btn(
+                    v-if="isLongerText(item.value)"
+                    :text="item.value"
+                  )
+                     
+              v-list-tile-action(
+                v-if="hasItemLinks(item)"
+                @click.stop=""
+              )
+                v-menu(
+                  offset-y
+                  left 
+                  bottom
+                )
+                  span(
+                    icon
+                    slot="activator"
+                    small
+                  )
+                    v-icon(color="grey")
+                      | more_vert
+
+                  v-list
+                    v-list-tile(
+                      v-for="link in itemLinks(item)" 
+                      :key="link.href"
+                    )
+                      v-list-tile-content
+                        a(
+                          @click.stop="openLink(link)"
+                        ) {{ link.title ? link.title : item.rel[0] }}
+
 </template>
 
 <script>
   import VPaperVisibilityBtn from './paper/VPaperVisibilityButton.vue'
   export default {
-    data: () => ({
-      textColumnMaxLength: 80
-    }),
-
     components: {
       VPaperVisibilityBtn
     },
@@ -141,14 +199,16 @@
       },
 
       shorten (text) {
-        if (text && text.length > this.textColumnMaxLength) {
-          text = text.substr(0, this.textColumnMaxLength - 3) + '...'
+        var size = this.$vuetify.breakpoint.smAndUp ? 80 : 35
+        if (text && text.length > size) {
+          text = text.substr(0, size - 3) + '...'
         }
         return text
       },
 
       isLongerText (text) {
-        if (text && text.length > this.textColumnMaxLength) {
+        var size = this.$vuetify.breakpoint.smAndUp ? 80 : 35
+        if (text && text.length > size) {
           return true
         }
         return false

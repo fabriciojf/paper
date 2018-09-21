@@ -7,7 +7,7 @@
     app
     v-if="show"
     class="grey lighten-4"
-    style="max-height: calc(100% - 60px)"
+    :style="[$vuetify.breakpoint.smAndUp ? 'max-height: calc(100% - 60px)' : '']"
     :width="navigationSize"
   )
     v-subheader APLICAR FILTROS

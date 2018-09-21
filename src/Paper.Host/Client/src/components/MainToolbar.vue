@@ -23,15 +23,22 @@
 
     v-toolbar-title(
       :style="$vuetify.breakpoint.smAndUp ? 'width: 300px; min-width: 50px' : 'min-width: 20px'" 
-      class="ml-0 pl-3 "
+      class="ml-0 pl-0"
     )
-      span(
-        :class="showTitle"
-      ) 
+      template(v-if="$vuetify.breakpoint.xs") 
+        v-btn(
+          icon
+          @click.stop="$paper.blueprint.goToIndexPage()"
+        )
+          v-icon home
+
+      template(v-else) 
         a(
           style="text-decoration: none; color: white"
           @click.stop="$paper.blueprint.goToIndexPage()"
         ) {{ $paper.blueprint.title }}
+
+      
 
     v-text-field(
       v-if="$paper.blueprint.showNavBox()"
