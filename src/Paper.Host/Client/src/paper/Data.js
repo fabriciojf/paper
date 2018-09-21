@@ -17,7 +17,9 @@ export default class Data {
       keys.forEach(key => {
         var header = this.entity.getHeader(key)
         if (header) {
-          var hidden = header.properties.hasOwnProperty('hidden') ? header.properties.hidden : false
+          var hidden = header.properties.hasOwnProperty('hidden')
+                     ? header.properties.hidden === 1
+                     : false
           items.push({
             title: header.properties.title,
             value: this.entity.properties[key],

@@ -19,10 +19,13 @@
         v-list
 
           div(
-            v-for="(item, index) in $paper.data.items" 
+            v-for="(item, index) in $paper.data.items"
             :key="item.key"
-            :hidden="item.hidden === 1"
+            :hidden="item.hidden"
           )
+
+            v-divider(v-if="index > firstVisibleIndex")
+
             v-list-tile(
               @click="openSelfLink(item)"
             )
@@ -46,7 +49,7 @@
                     v-if="isLongerText(item.value)"
                     :text="item.value"
                   )
-                        
+                     
               v-list-tile-action(
                 v-if="hasItemLinks(item)"
                 @click.stop=""
@@ -74,8 +77,6 @@
                           @click.stop="openLink(link)"
                         ) {{ link.title ? link.title : item.rel[0] }}
 
-            v-divider(v-if="index !== $paper.data.items.length - 1")
-
 </template>
 
 <script>
@@ -87,6 +88,13 @@
 
     components: {
       VPaperVisibilityBtn
+    },
+
+    computed: {
+      firstVisibleIndex () {
+        var index = this.$paper.data.items.findIndex(item => !item.hidden)
+        return index
+      }
     },
 
     methods: {

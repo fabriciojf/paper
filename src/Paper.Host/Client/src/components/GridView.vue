@@ -20,6 +20,7 @@
         hide-actions=true
         :select-all="$paper.grid.hasActions()"
         no-data-text="Não existem dados para exibir"
+        class="elevation-1"
       )
 
         template(

@@ -1,11 +1,8 @@
 <template lang="pug">
-  v-layout(justify-center)
-    v-flex(
-      xs12
-    )
+    v-layout(justify-center)
       v-container(
         fluid
-        grid-list-md
+        grid-list-lg
       )
         v-layout(
           row
@@ -13,7 +10,9 @@
         )
 
           v-flex(
-            xs3
+            xs12
+            sm6
+            md3
             v-for="item in $paper.cards.items"
             :key="item.properties.title"
           )
@@ -21,7 +20,7 @@
 
               v-card
                 v-layout
-                  v-flex
+                  v-flex(xs2)
                     v-container(
                       fluid
                       style="padding-right:0px"
@@ -30,10 +29,12 @@
                         x-large
                         color="secondary"
                       ) {{ item.properties.icon }}
-                  v-flex
+                  v-flex(xs8)
                     v-card-title(primary-title)
                       div(class="headline") {{ item.properties.title }}
                       div {{ item.properties.description }}
+                      
+                v-divider(light)
 
 </template>
 
