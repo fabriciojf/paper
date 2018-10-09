@@ -189,7 +189,7 @@ namespace Toolset
       return text;
     }
 
-    public static IEnumerable<string> EnumerateWords(string sentence)
+    public static IEnumerable<string> EnumerateWords(this string sentence)
     {
       var characters = ReplaceDelimiters(sentence);
       var phrase = new string(characters.ToArray());
