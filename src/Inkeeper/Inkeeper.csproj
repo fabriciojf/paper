@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Toolset.Serialization\Toolset.Serialization.csproj" />
     <ProjectReference Include="..\Toolset\Toolset.csproj" />
   </ItemGroup>
 

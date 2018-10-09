@@ -10,6 +10,14 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.IO;
 using Toolset.Xml;
+using System.Net;
+using Toolset.Serialization;
+using System.Xml.Linq;
+using System.Xml;
+using Toolset.Serialization.Json;
+using Toolset.Serialization.Xml;
+using Toolset.Collections;
+using Microsoft.Net.Http.Headers;
 
 namespace Inkeeper.RestApi
 {
@@ -17,12 +25,35 @@ namespace Inkeeper.RestApi
   {
     class Spec
     {
-      public string Method { get; set; }
+      private string[] _allTargets;
+
+      public string[] Methods { get; set; }
       public Regex PathRegex { get; set; }
       public string[] PathTargets { get; set; }
       public string[] QuerySources { get; set; }
       public string[] QueryTargets { get; set; }
       public MethodInfo Callee { get; set; }
+
+      public string[] AllTargets
+      {
+        get
+        {
+          if (_allTargets == null)
+          {
+            var targets = Enumerable.Empty<string>();
+            if (PathTargets != null)
+            {
+              targets = targets.Concat(PathTargets);
+            }
+            if (QueryTargets != null)
+            {
+              targets = targets.Concat(QueryTargets);
+            }
+            _allTargets = targets.ToArray();
+          }
+          return _allTargets;
+        }
+      }
     }
 
     class Parameter
@@ -81,7 +112,7 @@ namespace Inkeeper.RestApi
         this.routes.Add(new Spec
         {
           Callee = spec.method,
-          Method = spec.attr.Method,
+          Methods = spec.attr.Methods,
           PathRegex = new Regex(pathPattern),
           PathTargets = pathArgNames,
           QuerySources = queryArgNames.Select(x => x.source).ToArray(),
@@ -95,20 +126,125 @@ namespace Inkeeper.RestApi
       var route = context.Request.Path;
       var spec = routes.FirstOrDefault(x => x.PathRegex.IsMatch(route));
 
-      if (spec == null || !spec.Method.EqualsIgnoreCase(context.Request.Method))
+      if (spec == null)
       {
         await next(context);
         return;
       }
 
-      var instance = ActivatorUtilities.CreateInstance(provider, serviceType);
-      var parameters = CreateParameters(spec.Callee.GetParameters(), provider, context).ToArray();
-      SetParsedParameters(spec, parameters, context.Request.Path, context.Request.Query);
+      if (!context.Request.Method.EqualsAnyIgnoreCase(spec.Methods))
+      {
+        context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
+        return;
+      }
+
+      Parameter[] parameters =
+        CreateParameters(spec.Callee.GetParameters(), provider, context)
+          .ToArray();
+
+      Parameter input = await ParseInputAsync(context, spec);
+      if (input != null)
+      {
+        var item = parameters.First(x => x.Info == input.Info);
+        item.Value = input.Value;
+      }
+
+      ExtractUriParameters(spec, parameters, context.Request.Path, context.Request.Query);
 
       var calleeArgs = parameters.Select(x => x.Value).ToArray();
+
+      var instance = ActivatorUtilities.CreateInstance(provider, serviceType);
       var result = spec.Callee.Invoke(instance, calleeArgs);
 
       await WriteResultAsync(context, result);
+    }
+
+    /// <summary>
+    /// Interpreta os dados recebidos do cliente.
+    /// </summary>
+    /// <param name="context">O contexto HTTP.</param>
+    /// <param name="spec"></param>
+    /// <returns>O dado interpretado; Nulo se nenhum dado foi recebido.</returns>
+    private async Task<Parameter> ParseInputAsync(HttpContext context, Spec spec)
+    {
+      if (context.Request.Method != "POST" && context.Request.Method != "PUT")
+        return null;
+
+      var parameter = (
+        from p in spec.Callee.GetParameters()
+        where !p.Name.EqualsAnyIgnoreCase(spec.AllTargets)
+           && p.ParameterType != typeof(HttpContext)
+        select p
+      ).FirstOrDefault();
+
+      if (parameter == null)
+        return null;
+
+      if (parameter.ParameterType == typeof(Stream))
+      {
+        return new Parameter
+        {
+          Info = parameter,
+          Value = context.Request.Body
+        };
+      }
+
+      if (parameter.ParameterType == typeof(string)
+       || parameter.ParameterType == typeof(object))
+      {
+        var text = await new StreamReader(context.Request.Body).ReadToEndAsync();
+        return new Parameter
+        {
+          Info = parameter,
+          Value = text
+        };
+      }
+      
+      XDocument xml;
+
+      var reader = SupportedDocumentTextReader.Create(context.Request.Body);
+
+      if (reader.DocumentFormat == SupportedDocumentTextReader.JsonFormat)
+      {
+        var writer = new StringWriter();
+
+        var jsonReader = new JsonReader(reader);
+        var xmlWriter = new XmlDocumentWriter(writer);
+        jsonReader.CopyTo(xmlWriter);
+
+        var content = writer.ToString();
+        xml = XDocument.Parse(content);
+      }
+      else
+      {
+        xml = XDocument.Load(XmlReader.Create(reader));
+      }
+
+      if (parameter.ParameterType == typeof(XElement))
+      {
+        return new Parameter
+        {
+          Info = parameter,
+          Value = xml.Root
+        };
+      }
+      else if (typeof(XNode).IsAssignableFrom(parameter.ParameterType))
+      {
+        return new Parameter
+        {
+          Info = parameter,
+          Value = xml
+        };
+      }
+      else
+      {
+        var graph = xml.ToXmlObject(parameter.ParameterType);
+        return new Parameter
+        {
+          Info = parameter,
+          Value = graph
+        };
+      }
     }
 
     /// <summary>
@@ -118,33 +254,73 @@ namespace Inkeeper.RestApi
     /// <param name="data">O dado a ser enviado.</param>
     private async Task WriteResultAsync(HttpContext context, object data)
     {
-      context.Response.ContentType = "application/xml; charset=UTF-8";
+      string format;
+      var accept = context.Request.Headers[HeaderNames.Accept];
+
+      if (accept.Contains("xml"))
+      {
+        format = "xml";
+        context.Response.ContentType = "application/xml; charset=UTF-8";
+      }
+      else if (accept.Contains("json"))
+      {
+        format = "json";
+        context.Response.ContentType = "application/json; charset=UTF-8";
+      }
+      else if (accept.Contains("csv"))
+      {
+        format = "csv";
+        context.Response.ContentType = "text/csv; charset=UTF-8";
+      }
+      else if (accept.Contains("excel") || accept.Contains("xls"))
+      {
+        format = "excel";
+        context.Response.ContentType = "application/vnd.ms-excel; charset=UTF-8";
+      }
+      else
+      {
+        format = "raw";
+        context.Response.ContentType = "application/octet-stream; charset=UTF-8";
+      }
 
       if (data == null)
       {
         return;
       }
 
-      if (data is Stream stream)
+      if (format == "raw")
       {
-        using (stream)
+        if (data is Stream)
         {
-          await stream.CopyToAsync(context.Response.Body);
-          return;
+          using (var stream = (Stream)data)
+          {
+            await stream.CopyToAsync(context.Response.Body);
+          }
         }
-      }
-
-      if (data is string text)
-      {
-        await context.Response.WriteAsync(text);
+        else
+        {
+          using (var stream = SerializeData(data, "plain"))
+          {
+            await stream.CopyToAsync(context.Response.Body);
+          }
+        }
         return;
       }
 
-      using (stream = data.ToXmlStream())
+      using (var stream = SerializeData(data, format))
       {
         await stream.CopyToAsync(context.Response.Body);
-        return;
       }
+    }
+
+    private Stream SerializeData(object data, string format)
+    {
+      // plain
+      // xml
+      // json
+      // csv
+      // excel
+      throw new NotImplementedException();
     }
 
     /// <summary>
@@ -157,7 +333,7 @@ namespace Inkeeper.RestApi
     /// <returns>Lista de valores criados para os argumentos.</returns>
     private IEnumerable<Parameter> CreateParameters(ParameterInfo[] parameters, IServiceProvider provider, params object[] providedArgs)
     {
-      var availables = new List<object>(providedArgs);
+      var availables = new List<object>(providedArgs.Where(x => x != null));
       foreach (var parameter in parameters)
       {
         var type = parameter.ParameterType;
@@ -180,7 +356,9 @@ namespace Inkeeper.RestApi
           continue;
         }
 
-        provided = availables.FirstOrDefault(x => type.IsAssignableFrom(x.GetType()));
+        provided = availables.FirstOrDefault(
+          x => type != typeof(HttpContext) && type.IsAssignableFrom(x.GetType())
+        );
         if (provided != null)
         {
           availables.Remove(provided);
@@ -192,15 +370,18 @@ namespace Inkeeper.RestApi
           continue;
         }
 
-        var resolvedType = provider.GetService(type);
-        if (resolvedType != null)
+        if (type != typeof(object))
         {
-          yield return new Parameter
+          var resolvedType = provider.GetService(type);
+          if (resolvedType != null)
           {
-            Info = parameter,
-            Value = resolvedType
-          };
-          continue;
+            yield return new Parameter
+            {
+              Info = parameter,
+              Value = resolvedType
+            };
+            continue;
+          }
         }
 
         yield return new Parameter
@@ -224,7 +405,7 @@ namespace Inkeeper.RestApi
     /// <param name="parameters">A lista de parâmetros destino.</param>
     /// <param name="path">O caminho da URI.</param>
     /// <param name="query">Os argumentos da URI.</param>
-    private void SetParsedParameters(Spec spec, Parameter[] parameters, string path, IQueryCollection query)
+    private void ExtractUriParameters(Spec spec, IEnumerable<Parameter> parameters, string path, IQueryCollection query)
     {
       if (spec.PathTargets != null)
       {

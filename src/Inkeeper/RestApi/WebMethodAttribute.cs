@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Http;
@@ -8,12 +9,25 @@ namespace Inkeeper.RestApi
 {
   public class WebMethodAttribute : Attribute
   {
-    public string Method { get; }
+    internal string[] Methods { get; }
     public string Route { get; set; }
 
     public WebMethodAttribute(string method, string route = null)
     {
-      this.Method = method;
+      string[] methods;
+
+      if (method == "*")
+      {
+        methods = new[] { "GET", "POST", "PUT", "DELETE" };
+      }
+      else
+      {
+        methods = method
+          .ToUpper()
+          .Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+      }
+
+      this.Methods = methods;
       this.Route = route;
     }
 
