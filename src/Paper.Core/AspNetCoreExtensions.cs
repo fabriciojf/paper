@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using static System.Environment;
-using Paper.Media.Rendering;
+using Paper.Media.Rendering_Obsolete;
 
 namespace Paper.Core
 {

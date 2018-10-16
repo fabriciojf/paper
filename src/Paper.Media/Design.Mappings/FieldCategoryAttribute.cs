@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using Toolset.Collections;
 using System.Reflection;
-using Paper.Media.Rendering;
+using Paper.Media.Rendering_Obsolete;
+using Paper.Media.Routing;
 
 namespace Paper.Media.Design.Mappings
 {
@@ -19,6 +20,11 @@ namespace Paper.Media.Design.Mappings
     }
 
     internal override void RenderField(Field field, PropertyInfo property, object host, PaperContext ctx)
+    {
+      field.AddCategory(Value);
+    }
+
+    internal override void RenderField(Field field, PropertyInfo property, object host)
     {
       field.AddCategory(Value);
     }

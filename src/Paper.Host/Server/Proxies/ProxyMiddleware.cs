@@ -14,7 +14,7 @@ using Paper.Media;
 using Paper.Media.Serialization;
 using Toolset;
 
-namespace Paper.WebApp.Server.Proxies
+namespace Paper.Host.Server.Proxies
 {
   class ProxyMiddleware
   {
@@ -68,21 +68,21 @@ namespace Paper.WebApp.Server.Proxies
           var res = httpContext.Response;
 
           var uri = CreateTargetUri(req, proxy);
-          if (uri.IsFault())
+          if (!uri.Ok)
           {
             await SendStatusAsync(httpContext, uri);
             return;
           }
 
           var message = CreateMessage(req, uri);
-          if (message.IsFault())
+          if (!message.Ok)
           {
             await SendStatusAsync(httpContext, message);
             return;
           }
 
           ret = CopyRequestToMessage(req, message);
-          if (ret.IsFault())
+          if (!ret.Ok)
           {
             await SendStatusAsync(httpContext, ret);
             return;
@@ -91,7 +91,7 @@ namespace Paper.WebApp.Server.Proxies
           var result = await httpClient.SendAsync(message);
 
           ret = CopyResultToResponse(result, res);
-          if (ret.IsFault())
+          if (!ret.Ok)
           {
             await SendStatusAsync(httpContext, ret);
             return;
@@ -101,7 +101,7 @@ namespace Paper.WebApp.Server.Proxies
         }
         catch (Exception ex)
         {
-          await SendStatusAsync(httpContext, Ret.Fail(ex));
+          await SendStatusAsync(httpContext, ex);
         }
       }
     }
@@ -112,7 +112,7 @@ namespace Paper.WebApp.Server.Proxies
       var res = httpContext.Response;
 
       var entity = 
-        (ret.Data as Entity)
+        (ret.Value as Entity)
         ?? HttpEntity.CreateFromRet(req.GetRequestUri(), ret);
 
       var contentType = HttpNegotiation.SelectContentType(req);
@@ -121,7 +121,7 @@ namespace Paper.WebApp.Server.Proxies
       var serializer = new MediaSerializer(contentType);
       var data = serializer.Serialize(entity);
 
-      res.StatusCode = ret.Status;
+      res.StatusCode = (int)ret.Status;
       res.ContentType = $"{contentType}; charset={encoding.HeaderName}";
 
       await res.WriteAsync(data, encoding);
@@ -131,7 +131,7 @@ namespace Paper.WebApp.Server.Proxies
     {
       if (!req.Path.StartsWithSegments(proxy.Path))
       {
-        return Ret.Fail(HttpStatusCode.BadGateway,
+        return Ret.As(HttpStatusCode.BadGateway,
           $"As configurações de proxy para esta roda não estão corretas: {req.Path.Value}");
       }
 

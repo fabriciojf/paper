@@ -2,6 +2,7 @@
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,12 +18,21 @@ namespace Paper.Host.Server
     {
       try
       {
-        WebHost.CreateDefaultBuilder(args)
-          //.UsePaperWebAppSettings()
-          .UsePaperSettings()
-          .UseStartup<Startup>()
-          .Build()
-          .Run();
+        var builder =
+          WebHost.CreateDefaultBuilder(args)
+            //.UsePaperWebAppSettings()
+            .UsePaperSettings()
+            .UseStartup<Startup>();
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+          builder.UseHttpSys(options =>
+          {
+            options.UrlPrefixes.Add("http://localhost:90");
+          });
+        }
+
+        builder.Build().Run();
       }
       catch (Exception ex)
       {

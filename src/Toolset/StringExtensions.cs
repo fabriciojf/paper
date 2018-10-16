@@ -249,10 +249,9 @@ namespace Toolset
       return split;
     }
 
-    public static string[] Split(this string text, params string[] tokens)
+    public static string[] Split(this string text, string token, StringSplitOptions options = StringSplitOptions.None)
     {
-      var split = text.Split(tokens, StringSplitOptions.RemoveEmptyEntries);
-      return split;
+      return text.Split(new[] { token }, options);
     }
 
     /// <summary>

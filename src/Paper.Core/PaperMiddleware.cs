@@ -4,8 +4,8 @@ using System;
 using System.Threading.Tasks;
 using Paper.Media;
 using Toolset;
-using Paper.Media.Rendering;
-using Paper.Media.Rendering.Papers;
+using Paper.Media.Rendering_Obsolete;
+using Paper.Media.Rendering_Obsolete.Papers;
 
 namespace Paper.Core
 {
@@ -38,7 +38,7 @@ namespace Paper.Core
       var injector = new Injector(serviceProvider);
 
       var ret = RenderEntity(httpContext, injector, paperType);
-      var entity = ret.Data ?? HttpEntity.CreateFromRet(req.GetRequestUri(), ret);
+      var entity = ret.Value ?? HttpEntity.CreateFromRet(req.GetRequestUri(), ret);
 
       var contentType = HttpNegotiation.SelectContentType(req);
       var encoding = HttpNegotiation.SelectEncoding(req);
@@ -46,7 +46,7 @@ namespace Paper.Core
       var serializer = new MediaSerializer(contentType);
       var data = serializer.Serialize(entity);
 
-      res.StatusCode = ret.Status;
+      res.StatusCode = (int)ret.Status;
       res.ContentType = $"{contentType}; charset={encoding.HeaderName}";
 
       await res.WriteAsync(data, encoding);

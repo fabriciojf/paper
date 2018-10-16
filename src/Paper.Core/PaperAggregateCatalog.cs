@@ -7,7 +7,7 @@ using System.Text;
 using Paper.Core.Utilities;
 using Paper.Media;
 using Paper.Media.Design;
-using Paper.Media.Rendering;
+using Paper.Media.Rendering_Obsolete;
 using Paper.Media.Utilities;
 using Toolset;
 using Toolset.Collections;

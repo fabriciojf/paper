@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Media.Utilities.Types;
-using Paper.Media.Rendering;
+using Paper.Media.Rendering_Obsolete;
+using Paper.Media.Routing;
 using Toolset;
 using Toolset.Collections;
 using Toolset.Reflection;
@@ -49,6 +50,65 @@ namespace Paper.Media.Design.Papers
       return link;
     }
 
+    public Link RenderLink(IContext ctx)
+    {
+      var paper = ctx.Factory.CreateInstance<T>();
+
+      setup?.Invoke(paper);
+
+      var link = new Link
+      {
+        Href = CreateHref(ctx, paper)
+      };
+
+      if (paper._Has<string>("GetTitle"))
+      {
+        link.Title = paper._Call<string>("GetTitle");
+      }
+
+      builder?.Invoke(link);
+
+      if (link.Rel?.Any() != true)
+        link.Rel = RelNames.Link;
+
+      return link;
+    }
+
+    private string CreateHref(IContext ctx, T paper)
+    {
+      var paperInfo = PaperSpec.GetSpec<T>();
+      var paperTemplate = new UriTemplate(paperInfo.Route);
+
+      paperTemplate.SetArgsFromGraph(paper);
+
+      var uri = paperTemplate.CreateUri();
+      var targetUri = new Route(uri);
+
+      targetUri = targetUri.SetArg(
+        "f", ctx.RequestUri.Query["f"],
+        "in", ctx.RequestUri.Query["in"],
+        "out", ctx.RequestUri.Query["out"]
+      );
+
+      var filter = paper._Get<IFilter>("Filter");
+      if (filter != null)
+      {
+        var map = new FieldMap(filter);
+        var args = (
+          from field in map
+          where field.Value != null
+          select new[] {
+            field.Key.ChangeCase(TextCase.CamelCase),
+            field.Value
+          }
+        ).SelectMany();
+        targetUri = targetUri.SetArg(args);
+      }
+
+      return targetUri.ToString();
+    }
+
+    [Obsolete("Será removido em breve")]
     private string CreateHref(PaperContext ctx, T paper)
     {
       var paperInfo = PaperSpec.GetSpec<T>();

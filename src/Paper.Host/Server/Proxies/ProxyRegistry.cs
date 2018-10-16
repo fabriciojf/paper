@@ -10,7 +10,7 @@ using Paper.Core.Utilities;
 using Paper.Media.Utilities;
 using Toolset;
 
-namespace Paper.WebApp.Server.Proxies
+namespace Paper.Host.Server.Proxies
 {
   class ProxyRegistry : IProxyRegistry
   {

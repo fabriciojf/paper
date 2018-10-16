@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Paper.WebApp": {
+    "Paper.Host": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {

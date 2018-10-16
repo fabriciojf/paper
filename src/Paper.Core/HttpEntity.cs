@@ -21,12 +21,12 @@ namespace Paper.Core
       }
     }
 
-    public static Ret<Entity> CreateFromRet(Route route, IRet ret)
+    public static Ret<Entity> CreateFromRet(Route route, Ret ret)
     {
-      if (ret.Data is Entity)
-        return (Entity)ret.Data;
+      if (ret.Value is Entity entity)
+        return entity;
 
-      return Create(route, ret.Status, ret.GetMessage(), ret.GetException());
+      return Create(route, ret.Status, ret.GetMessage(), ret.FaultException);
     }
 
     public static Ret<Entity> Create(Route route, HttpStatusCode status, string message, Exception exception)
@@ -62,7 +62,7 @@ namespace Paper.Core
         Rel = RelNames.Self
       });
 
-      return Ret.As(status, entity);
+      return Ret.Succeed(entity, status);
     }
 
     public static Ret<Entity> Create(Route route, HttpStatusCode status, string message)

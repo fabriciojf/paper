@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Paper.Media.Design;
 
 namespace Paper.Media.Routing
 {
@@ -8,36 +9,39 @@ namespace Paper.Media.Routing
   {
     public static void Main()
     {
-      IProvider provider = Provider.GetDefaultProvider();
+      IProvider provider = Provider.Current;
 
       //
       // Catalog
       //
-      ICatalogCollection catalogs = provider.GetCatalogCollection();
+      ICatalogSearcher catalogs = provider.GetCatalogCollection();
       ICatalog tradeCatalog = catalogs.SearchCatalog("/Trade/Api/2");
-
-      catalogs.AddDefaultCatalog(tradeCatalog);
-      ICatalog defaultCatalog = catalogs.GetDefaultCatalog();
 
       //
       // Entity
       //
-      Route requestUri = "http://host.com/Trade/Api/2/Documents/One.xml";
+      RequestUri requestUri = new RequestUri("/Trade/Api/2", "http://host.com/Trade/Api/2/Documents/One.xml");
 
-      IPaper paper = defaultCatalog.GetPaper(requestUri.Path);
-      IRenderer renderer = provider.GetRenderer(paper);
+      PaperBlueprint blueprint = tradeCatalog.GetPaperBlueprint(requestUri.Path);
+      IRenderer renderer = provider.GetRenderer(blueprint);
 
+      ICache cache = new DefaultCache();
       IObjectFactory factory = new DefaultObjectFactory();
+
+      IArgs args = new DefaultArgs(blueprint.UriTemplate, requestUri);
 
       IContext context = new DefaultContext
       {
+        RequestArgs = args,
+        RequestUri = requestUri,
         Provider = provider,
-        Catalog = defaultCatalog
+        Catalog = tradeCatalog,
+        Factory = factory,
+        Cache = cache
       };
 
-      IArgs args = new DefaultArgs(paper.UriTemplate, requestUri.PathAndQueryString);
-
-      Entity entity = renderer.RenderEntity(paper, args, context, factory);
+      IPaper paper = blueprint.Paper;
+      Entity entity = renderer.RenderEntity(paper, context);
 
       //
       // PaperUtility
